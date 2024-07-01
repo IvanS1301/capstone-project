@@ -11,7 +11,6 @@ const UpdateUserAG = ({ userId, onUserUpdate }) => {
 
   const [userData, setUserData] = useState({
     name: '',
-    email: '',
     birthday: '',
     number: '',
     homeaddress: '',
@@ -27,7 +26,6 @@ const UpdateUserAG = ({ userId, onUserUpdate }) => {
     if (userlg) {
       setUserData({
         name: userlg.name || '',
-        email: userlg.email || '',
         birthday: userlg.birthday ? moment(userlg.birthday).format('YYYY-MM-DD') : '', // Format the date
         number: userlg.number || '',
         homeaddress: userlg.homeaddress || '',
@@ -49,7 +47,7 @@ const UpdateUserAG = ({ userId, onUserUpdate }) => {
     setLoading(true); // Start loading
 
     // Send the updated user data to the backend for updating
-    const response = await fetch(`/api/userLG/${userId}`, {
+    const response = await fetch(`http://localhost:4000/api/userLG/${userId}`, {
       method: 'PATCH',
       body: JSON.stringify(userData),
       headers: {
@@ -103,14 +101,6 @@ const UpdateUserAG = ({ userId, onUserUpdate }) => {
           label="Name"
           name="name"
           value={userData.name}
-          onChange={handleChange}
-          margin="normal"
-        />
-        <TextField
-          fullWidth
-          label="Email"
-          name="email"
-          value={userData.email}
           onChange={handleChange}
           margin="normal"
         />
