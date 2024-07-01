@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import AssignLead from '../../components/admin/AssignLead';
+import { URL } from "../../utils/URL";
 import { useUsersContext } from '../../hooks/useUsersContext';
 import { URL } from "../../../utils/URL";
 
