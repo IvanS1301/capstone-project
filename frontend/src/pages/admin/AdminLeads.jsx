@@ -23,7 +23,7 @@ const AdminLeads = () => {
 
   const fetchLeads = useCallback(async () => {
     try {
-      const response = await fetch('/api/leads/tl', {
+      const response = await fetch('http://localhost:4000/api/leads/tl', {
         headers: { 'Authorization': `Bearer ${userLG.token}` },
       });
       const json = await response.json();
@@ -52,7 +52,7 @@ const AdminLeads = () => {
 
   useEffect(() => {
     const fetchUsers = async () => {
-      const response = await fetch('/api/userLG');
+      const response = await fetch('http://localhost:4000/api/userLG');
       const json = await response.json();
 
       if (response.ok) {
