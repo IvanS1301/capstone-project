@@ -35,7 +35,7 @@ const AddUser = () => {
         setLoading(true); // Set loading to true when submitting the form
 
         try {
-            const response = await fetch('/api/userLG/signup', {
+            const response = await fetch('http://localhost:4000/api/userLG/signup', {
                 method: 'POST',
                 body: JSON.stringify(user),
                 headers: {
