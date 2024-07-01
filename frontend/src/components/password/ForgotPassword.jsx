@@ -14,7 +14,7 @@ const ForgotPassword = () => {
         setError(null);
 
         try {
-            const response = await fetch('/api/password/forgot-password', {
+            const response = await fetch('http://localhost:4000/api/password/forgot-password', {
                 method: 'POST',
                 body: JSON.stringify({ email }),
                 headers: {
