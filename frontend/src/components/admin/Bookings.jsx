@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { URL } from "@utils/URL";
 
 /** --- MATERIAL UI --- */
 import { Box, Button, Snackbar, IconButton, Modal, CircularProgress, Typography } from "@mui/material";
@@ -38,7 +39,7 @@ const Bookings = ({ recentBookings, onLeadDelete }) => {
     const handleDeleteConfirmation = async () => {
         try {
             setLoadingDelete(true);
-            const response = await fetch(`http://localhost:4000/api/bookings/${selectedBookingId}`, {
+            const response = await fetch(`${URL}/api/bookings/${selectedBookingId}`, {
                 method: "DELETE",
                 headers: {
                     'Authorization': `Bearer ${userLG.token}`
