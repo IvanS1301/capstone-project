@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { URL } from "../../../utils/URL";
+import { URL } from "../../utils/URL";
 import { Box, Button, TextField, CircularProgress, Modal } from "@mui/material";
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { useParams, useNavigate } from 'react-router-dom';
