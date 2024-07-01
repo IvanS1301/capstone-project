@@ -38,7 +38,7 @@ const Bookings = ({ recentBookings, onLeadDelete }) => {
     const handleDeleteConfirmation = async () => {
         try {
             setLoadingDelete(true);
-            const response = await fetch(`/api/bookings/${selectedBookingId}`, {
+            const response = await fetch(`http://localhost:4000/api/bookings/${selectedBookingId}`, {
                 method: "DELETE",
                 headers: {
                     'Authorization': `Bearer ${userLG.token}`
