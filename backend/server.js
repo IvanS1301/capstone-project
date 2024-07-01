@@ -2,6 +2,7 @@ require('dotenv').config()
 
 const express = require('express')
 const mongoose = require('mongoose')
+const cors = require('cors')
 
 // ROUTES IMPORT
 const leadRoutes = require('./routes/leads')
@@ -18,12 +19,32 @@ const app = express()
 // middleware
 app.use(express.json())
 
+// CORS middleware
+app.use(
+    cors({
+        origin: "*",
+        credentials: true,
+    })
+);
+
+app.use(
+    cors({
+        origin: "*",
+    }),
+    (req, res, next) => {
+        res.setHeader("Access-Control-Allow-Origin", "*");
+        res.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,PATCH,DELETE");
+        res.setHeader("Access-Control-Allow-Headers", "Content-Type,Authorization");
+        next();
+    }
+);
+
 app.use((req, res, next) => {
     console.log(req.path, req.method)
     next()
 })
 
-//routes
+// routes
 app.use('/api/leads', leadRoutes)
 app.use('/api/userLG', userLGRoutes)
 app.use('/api/emails', emailRoutes)
@@ -36,7 +57,7 @@ app.use('/api/password', passwordRoutes)
 mongoose.connect(process.env.MONGO_URI)
     .then(() => {
         // listen for requests
-        app.listen(process.env.PORT || 4000, () => {
+        app.listen(process.env.PORT, () => {
             console.log('connected to db & listening on port', process.env.PORT)
         })
     })
