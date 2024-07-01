@@ -1,4 +1,4 @@
-const UserLG = require('../models/userLGmodel')
+const UserLG = require('../models/userLGModel')
 const jwt = require('jsonwebtoken')
 const mongoose = require('mongoose')
 const { updateInventoryCounts } = require('./inventoryController')
