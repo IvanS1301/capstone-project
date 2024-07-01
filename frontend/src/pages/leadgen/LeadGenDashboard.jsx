@@ -27,10 +27,10 @@ const LeadGenDashboard = () => {
     const fetchData = useCallback(async () => {
         try {
             const [leadGenStatsRes, leadsRes] = await Promise.all([
-                fetch('/api/services/lead-gen-performance', {
+                fetch('http://localhost:4000/api/services/lead-gen-performance', {
                     headers: { 'Authorization': `Bearer ${userLG.token}` },
                 }),
-                fetch('/api/leads', {
+                fetch('http://localhost:4000/api/leads', {
                     headers: { 'Authorization': `Bearer ${userLG.token}` },
                 })
             ]);
