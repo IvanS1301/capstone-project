@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { URL } from "@utils/URL";
 import { useUsersContext } from "../../hooks/useUsersContext";
 import { useAuthContext } from '../../hooks/useAuthContext';
 import { Box, Button, TextField, Select, MenuItem, FormControl, InputLabel, CircularProgress, Modal, Typography } from '@mui/material';
@@ -50,7 +51,7 @@ const UpdateUserTL = ({ userId, onUserUpdate }) => {
         setLoading(true);
 
         try {
-            const response = await fetch(`http://localhost:4000/api/userLG/${userId}`, {
+            const response = await fetch(`${URL}/api/userLG/${userId}`, {
                 method: 'PATCH',
                 body: JSON.stringify(userData),
                 headers: {
