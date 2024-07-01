@@ -24,10 +24,10 @@ const AdminDashboard = () => {
     const fetchData = useCallback(async () => {
         try {
             const [inventoryRes, bookingsRes] = await Promise.all([
-                fetch('/api/inventories/inventory', {
+                fetch('http://localhost:4000/api/inventories/inventory', {
                     headers: { 'Authorization': `Bearer ${userLG.token}` },
                 }),
-                fetch('/api/bookings/recent-bookings', {
+                fetch('http://localhost:4000/api/bookings/recent-bookings', {
                     headers: { 'Authorization': `Bearer ${userLG.token}` },
                 })
             ]);
