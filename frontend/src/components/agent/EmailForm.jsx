@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { URL } from "@utils/URL";
 
 /** --- MATERIAL UI --- */
 import { Box, Button, TextField, CircularProgress, Modal, Grid } from '@mui/material';
@@ -41,7 +42,7 @@ const EmailForm = () => {
             return;
         }
 
-        const response = await fetch('http://localhost:4000/api/emails/', {
+        const response = await fetch(`${URL}/api/emails/`, {
             method: 'POST',
             body: JSON.stringify(emailData),
             headers: {
