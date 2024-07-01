@@ -10,7 +10,7 @@ export const useLoginLG = () => {
     setIsLoading(true)
     setError(null)
   
-    const response = await fetch('https://ald-backend.onrender.com/api/userLG/login', {
+    const response = await fetch('/api/userLG/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password, role })
