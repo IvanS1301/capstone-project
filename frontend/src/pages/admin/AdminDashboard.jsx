@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
+import { URL } from "@utils/URL";
 
 /** --- COMPONENTS --- */
 import AdminSidebar from '../../components/admin/AdminSidebar';
@@ -24,10 +25,10 @@ const AdminDashboard = () => {
     const fetchData = useCallback(async () => {
         try {
             const [inventoryRes, bookingsRes] = await Promise.all([
-                fetch('http://localhost:4000/api/inventories/inventory', {
+                fetch(`${URL}/api/inventories/inventory`, {
                     headers: { 'Authorization': `Bearer ${userLG.token}` },
                 }),
-                fetch('http://localhost:4000/api/bookings/recent-bookings', {
+                fetch(`${URL}/api/bookings/recent-bookings`, {
                     headers: { 'Authorization': `Bearer ${userLG.token}` },
                 })
             ]);
