@@ -44,7 +44,7 @@ const LeadForm = () => {
       return;
     }
 
-    const response = await fetch('/api/leads', {
+    const response = await fetch('http://localhost:4000/api/leads', {
       method: 'POST',
       body: JSON.stringify(leadData),
       headers: {
