@@ -21,7 +21,7 @@ const AgentLeads = () => {
   const fetchLeads = useCallback(async () => {
     try {
       setLoading(true); // Start loading when fetching leads
-      const response = await fetch('/api/leads/unassigned', {
+      const response = await fetch('http://localhost:4000/api/leads/unassigned', {
         headers: { 'Authorization': `Bearer ${userLG.token}` },
       })
       const json = await response.json()
