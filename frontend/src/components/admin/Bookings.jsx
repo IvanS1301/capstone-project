@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { URL } from "../../../utils/URL";
+import { URL } from "../../utils/URL";
 
 /** --- MATERIAL UI --- */
 import { Box, Button, Snackbar, IconButton, Modal, CircularProgress, Typography } from "@mui/material";
