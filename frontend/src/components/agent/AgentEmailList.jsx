@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { URL } from "../../../utils/URL";
 
 /** --- MATERIAL UI --- */
 import { Box, Button, Snackbar, IconButton, Modal, CircularProgress, Typography } from "@mui/material";
@@ -47,7 +48,7 @@ const AgentEmailList = ({ emails, userlgs, onEmailDelete }) => {
     const handleDeleteConfirmation = async () => {
         try {
             setLoadingDelete(true); // Start delete loading
-            const response = await fetch(`http://localhost:4000/api/emails/${selectedEmailId}`, {
+            const response = await fetch(`${URL}/api/emails/${selectedEmailId}`, {
                 method: "DELETE",
                 headers: {
                     'Authorization': `Bearer ${userLG.token}`
