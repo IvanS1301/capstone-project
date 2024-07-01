@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { URL } from "@utils/URL";
 
 /** --- MATERIAL UI --- */
 import { Box, Button, Select, MenuItem, FormControl, CircularProgress, Modal, InputLabel } from '@mui/material';
@@ -42,7 +43,7 @@ const AgentUpdateStatus = ({ userId, onUserUpdate }) => {
         setLoading(true); // Start loading
 
         // Send the updated user data to the backend for updating
-        const response = await fetch(`http://localhost:4000/api/userLG/${userId}`, {
+        const response = await fetch(`${URL}/api/userLG/${userId}`, {
             method: 'PATCH',
             body: JSON.stringify(userData),
             headers: {
