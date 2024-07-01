@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useLeadsContext } from "../../hooks/useLeadsContext";
 import { useAuthContext } from '../../hooks/useAuthContext';
+import { URL } from "@utils/URL";
 
 /** --- MATERIAL UI --- */
 import { Box, Button, Select, MenuItem, FormControl, InputLabel, Modal, CircularProgress } from '@mui/material';
@@ -40,7 +41,7 @@ const AssignLead = ({ userlgs, leadId, onLeadUpdate }) => {
     setLoading(true); // Start loading
 
     // Send the updated lead data to the backend for updating
-    const response = await fetch(`http://localhost:4000/api/leads/${leadId}`, {
+    const response = await fetch(`${URL}/api/leads/${leadId}`, {
       method: 'PATCH',
       body: JSON.stringify(leadData),
       headers: {
