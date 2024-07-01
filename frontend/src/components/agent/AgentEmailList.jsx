@@ -5,6 +5,7 @@ import { Box, Button, Snackbar, IconButton, Modal, CircularProgress, Typography 
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { Delete, Visibility } from '@mui/icons-material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 
 /** --- IMPORT CONTEXT --- */
 import { useEmailsContext } from "../../hooks/useEmailsContext";
@@ -46,7 +47,7 @@ const AgentEmailList = ({ emails, userlgs, onEmailDelete }) => {
     const handleDeleteConfirmation = async () => {
         try {
             setLoadingDelete(true); // Start delete loading
-            const response = await fetch(`/api/emails/${selectedEmailId}`, {
+            const response = await fetch(`http://localhost:4000/api/emails/${selectedEmailId}`, {
                 method: "DELETE",
                 headers: {
                     'Authorization': `Bearer ${userLG.token}`
@@ -268,17 +269,19 @@ const AgentEmailList = ({ emails, userlgs, onEmailDelete }) => {
                         top: '50%',
                         left: '50%',
                         transform: 'translate(-50%, -50%)',
-                        width: 400,
-                        bgcolor: 'background.paper',
+                        width: 500,
+                        bgcolor: '#f1f1f1',
                         border: '2px solid #000',
                         boxShadow: 24,
-                        p: 4,
+                        p: 5,
                         textAlign: 'center',
+                        borderRadius: '30px'
                     }}
                 >
-                    <div>Are you sure you want to delete this email?</div>
-                    <Button onClick={handleDeleteConfirmation}>Yes</Button>
-                    <Button onClick={handleCloseConfirmation}>No</Button>
+                    <WarningAmberIcon sx={{ fontSize: 90, color: 'orange' }} />
+                    <div style={{ fontSize: '20px', margin: '20px 0' }}>Are you sure you want to delete this email?</div>
+                    <Button onClick={handleDeleteConfirmation} variant="contained" color="primary" sx={{ mr: 2 }}>Yes</Button>
+                    <Button onClick={handleCloseConfirmation} variant="contained" color="secondary">No</Button>
                 </Box>
             </Modal>
 
