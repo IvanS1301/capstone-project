@@ -50,7 +50,7 @@ const UpdateUserTL = ({ userId, onUserUpdate }) => {
         setLoading(true);
 
         try {
-            const response = await fetch(`/api/userLG/${userId}`, {
+            const response = await fetch(`http://localhost:4000/api/userLG/${userId}`, {
                 method: 'PATCH',
                 body: JSON.stringify(userData),
                 headers: {
