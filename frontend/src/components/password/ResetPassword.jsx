@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { URL } from "@utils/URL";
 import { Box, Button, TextField, CircularProgress, Modal } from "@mui/material";
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { useParams, useNavigate } from 'react-router-dom';
@@ -25,7 +26,7 @@ const ResetPassword = () => {
         setError(null);
 
         try {
-            const response = await fetch(`http://localhost:4000/api/password/reset/${id}/${token}`, {
+            const response = await fetch(`${URL}/api/password/reset/${id}/${token}`, {
                 method: 'POST',
                 body: JSON.stringify({ password }),
                 headers: {
