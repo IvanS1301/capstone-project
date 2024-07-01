@@ -22,7 +22,7 @@ const AgentAnalytics = () => {
         const fetchData = async () => {
             try {
                 const [bookedUnitsRes] = await Promise.all([
-                    fetch('/api/services/booked-units-performance', {
+                    fetch('http://localhost:4000/api/services/booked-units-performance', {
                         headers: { 'Authorization': `Bearer ${userLG.token}` },
                     })
                 ]);
