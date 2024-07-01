@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { URL } from "../../../utils/URL";
+import { URL } from "../../utils/URL";
 
 /** --- MATERIAL UI --- */
 import { CircularProgress } from "@mui/material";
