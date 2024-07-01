@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { URL } from "../../../../utils/URL";
+import { URL } from "../../../utils/URL";
 
 /** --- MATERIAL UI --- */
 import { Box, Button, TextField, Select, MenuItem, FormControl, InputLabel, CircularProgress, Modal, Grid } from '@mui/material';
