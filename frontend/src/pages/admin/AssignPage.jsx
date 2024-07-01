@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { URL } from "../../utils/URL";
+import AssignLead from '../../components/admin/AssignLead';
 import { useUsersContext } from '../../hooks/useUsersContext';
 
 const AssignPage = ({ leadId, onLeadUpdate }) => {
