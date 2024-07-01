@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { URL } from "@utils/URL";
 import { Box, Button, TextField, CircularProgress, Modal } from "@mui/material";
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
@@ -14,7 +15,7 @@ const ForgotPassword = () => {
         setError(null);
 
         try {
-            const response = await fetch('http://localhost:4000/api/password/forgot-password', {
+            const response = await fetch(`${URL}/api/password/forgot-password`, {
                 method: 'POST',
                 body: JSON.stringify({ email }),
                 headers: {
