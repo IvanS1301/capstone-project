@@ -23,7 +23,7 @@ const AdminEmails = () => {
 
   const fetchEmails = useCallback(async () => {
     try {
-      const response = await fetch('/api/emails/tl', {
+      const response = await fetch('http://localhost:4000/api/emails/tl', {
         headers: { 'Authorization': `Bearer ${userLG.token}` },
       });
       const json = await response.json();
@@ -45,7 +45,7 @@ const AdminEmails = () => {
 
   useEffect(() => {
     const fetchUsers = async () => {
-      const response = await fetch('/api/userLG');
+      const response = await fetch('http://localhost:4000/api/userLG');
       const json = await response.json();
 
       if (response.ok) {
