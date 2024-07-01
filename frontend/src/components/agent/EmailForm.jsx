@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { URL } from "@utils/URL";
+import { URL } from "../../../../utils/URL";
 
 /** --- MATERIAL UI --- */
 import { Box, Button, TextField, CircularProgress, Modal, Grid } from '@mui/material';
