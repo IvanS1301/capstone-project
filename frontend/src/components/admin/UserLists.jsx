@@ -54,7 +54,7 @@ const UserLists = ({ userlgs, onUserUpdate }) => {
   const handleDeleteConfirmation = async () => {
     try {
       setLoadingDelete(true); // Start delete loading
-      const response = await fetch(`/api/userLG/${selectedUserId}`, {
+      const response = await fetch(`http://localhost:4000/api/userLG/${selectedUserId}`, {
         method: "DELETE",
         headers: {
           'Authorization': `Bearer ${userLG.token}`
