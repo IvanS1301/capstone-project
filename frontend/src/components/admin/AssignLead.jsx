@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useLeadsContext } from "../../hooks/useLeadsContext";
 import { useAuthContext } from '../../hooks/useAuthContext';
-import { URL } from "../../../utils/URL";
+import { URL } from "../../utils/URL";
 
 /** --- MATERIAL UI --- */
 import { Box, Button, Select, MenuItem, FormControl, InputLabel, Modal, CircularProgress } from '@mui/material';
