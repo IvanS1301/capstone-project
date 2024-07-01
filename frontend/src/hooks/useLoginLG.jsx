@@ -6,17 +6,17 @@ export const useLoginLG = () => {
   const [isLoading, setIsLoading] = useState(false)
   const { dispatch } = useAuthContext()
 
-  const loginLG = async ( email, password, role) => {
+  const loginLG = async (email, password, role) => {
     setIsLoading(true)
     setError(null)
-  
-    const response = await fetch('/api/userLG/login', {
+
+    const response = await fetch('http://localhost:4000/api/userLG/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password, role })
     });
     const json = await response.json();
-  
+
     if (!response.ok) {
       setIsLoading(false)
       setError(json.error)
@@ -30,16 +30,18 @@ export const useLoginLG = () => {
         token: json.token,
         role: json.role // Include the role in the user object
       }))
-  
+
       // Update the auth context
-      dispatch({ type: 'LOGIN', payload: {
-        _id: json._id,
-        name: json.name,
-        email: json.email,
-        token: json.token,
-        role: json.role // Include the role in the user object
-      } })
-  
+      dispatch({
+        type: 'LOGIN', payload: {
+          _id: json._id,
+          name: json.name,
+          email: json.email,
+          token: json.token,
+          role: json.role // Include the role in the user object
+        }
+      })
+
       // Update loading state
       setIsLoading(false)
     }
