@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { CircularProgress } from '@mui/material';
-import { URL } from "@utils/URL";
+import { URL } from "../../../utils/URL";
 
 // components
 import AdminSidebar from '../../components/admin/AdminSidebar';
