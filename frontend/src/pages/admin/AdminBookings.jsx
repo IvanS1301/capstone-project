@@ -19,7 +19,7 @@ const AdminBookings = () => {
 
   const fetchBookings = useCallback(async () => {
     try {
-      const response = await fetch('/api/bookings/recent-bookings', {
+      const response = await fetch('http://localhost:4000/api/bookings/recent-bookings', {
         headers: { 'Authorization': `Bearer ${userLG.token}` },
       });
       const json = await response.json();
