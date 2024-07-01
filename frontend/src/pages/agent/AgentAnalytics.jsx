@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { URL } from "../../../utils/URL";
+import { URL } from "../../utils/URL";
 
 /** --- COMPONENTS --- */
 import AgentSidebar from '../../components/agent/AgentSidebar';
