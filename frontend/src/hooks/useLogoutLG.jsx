@@ -1,6 +1,7 @@
 import { useAuthContext } from './useAuthContext'
 import { useLeadsContext } from "../hooks/useLeadsContext"
 import { useUsersContext } from "../hooks/useUsersContext"
+import { URL } from "@utils/URL";
 
 export const useLogoutLG = () => {
   const { dispatch } = useAuthContext()
@@ -18,7 +19,7 @@ export const useLogoutLG = () => {
     }
 
     // Send a request to the backend logout endpoint
-    fetch('http://localhost:4000/api/userLG/logout', {
+    fetch(`${URL}/api/userLG/logout`, {
       method: 'POST',
       headers: headers
     })
