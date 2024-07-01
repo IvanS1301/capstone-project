@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
+import { URL } from "@utils/URL";
 
 /** --- COMPONENTS --- */
 import AgentSidebar from '../../components/agent/AgentSidebar';
@@ -27,10 +28,10 @@ const AgentDashboard = () => {
     const fetchData = useCallback(async () => {
         try {
             const [bookedUnitsRes, unassignedLeadsRes] = await Promise.all([
-                fetch('http://localhost:4000/api/services/booked-units-performance', {
+                fetch(`${URL}/api/services/booked-units-performance`, {
                     headers: { 'Authorization': `Bearer ${userLG.token}` },
                 }),
-                fetch('http://localhost:4000/api/leads/unassigned', {
+                fetch(`${URL}/api/leads/unassigned`, {
                     headers: { 'Authorization': `Bearer ${userLG.token}` },
                 })
             ]);
