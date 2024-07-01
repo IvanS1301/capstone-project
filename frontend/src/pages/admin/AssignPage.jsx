@@ -1,13 +1,14 @@
 import React, { useEffect } from 'react';
 import AssignLead from '../../components/admin/AssignLead';
 import { useUsersContext } from '../../hooks/useUsersContext';
+import { URL } from "@utils/URL";
 
 const AssignPage = ({ leadId, onLeadUpdate }) => {
     const { userlgs, dispatch: userDispatch } = useUsersContext();
 
     useEffect(() => {
         const fetchUsers = async () => {
-            const response = await fetch('http://localhost:4000/api/userLG');
+            const response = await fetch(`${URL}/api/userLG`);
             const json = await response.json();
 
             if (response.ok) {
