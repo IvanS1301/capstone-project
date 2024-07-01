@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { URL } from "@utils/URL";
 
 /** --- COMPONENTS --- */
 import AgentSidebar from '../../components/agent/AgentSidebar';
@@ -22,7 +23,7 @@ const AgentAnalytics = () => {
         const fetchData = async () => {
             try {
                 const [bookedUnitsRes] = await Promise.all([
-                    fetch('http://localhost:4000/api/services/booked-units-performance', {
+                    fetch(`${URL}/api/services/booked-units-performance`, {
                         headers: { 'Authorization': `Bearer ${userLG.token}` },
                     })
                 ]);
