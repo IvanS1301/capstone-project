@@ -58,7 +58,7 @@ const AgentUpdateForm = ({ unassignedId, onLeadUpdate }) => {
         setLoading(true); // Start loading
 
         // Send the updated lead data to the backend for updating
-        const response = await fetch(`/api/leads/${unassignedId}`, {
+        const response = await fetch(`http://localhost:4000/api/leads/${unassignedId}`, {
             method: 'PATCH',
             body: JSON.stringify(leadData),
             headers: {
