@@ -1,7 +1,7 @@
 import { useAuthContext } from './useAuthContext'
 import { useLeadsContext } from "../hooks/useLeadsContext"
 import { useUsersContext } from "../hooks/useUsersContext"
-import { URL } from "../../utils/URL";
+import { URL } from "../utils/URL";
 
 export const useLogoutLG = () => {
   const { dispatch } = useAuthContext()
