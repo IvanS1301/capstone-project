@@ -27,10 +27,10 @@ const AgentDashboard = () => {
     const fetchData = useCallback(async () => {
         try {
             const [bookedUnitsRes, unassignedLeadsRes] = await Promise.all([
-                fetch('/api/services/booked-units-performance', {
+                fetch('http://localhost:4000/api/services/booked-units-performance', {
                     headers: { 'Authorization': `Bearer ${userLG.token}` },
                 }),
-                fetch('/api/leads/unassigned', {
+                fetch('http://localhost:4000/api/leads/unassigned', {
                     headers: { 'Authorization': `Bearer ${userLG.token}` },
                 })
             ]);
