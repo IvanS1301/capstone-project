@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
+import { URL } from "@utils/URL";
 
 /** --- COMPONENTS --- */
 import LeadGenSidebar from '../../components/leadgen/LeadGenSidebar';
@@ -27,10 +28,10 @@ const LeadGenDashboard = () => {
     const fetchData = useCallback(async () => {
         try {
             const [leadGenStatsRes, leadsRes] = await Promise.all([
-                fetch('http://localhost:4000/api/services/lead-gen-performance', {
+                fetch(`${URL}/api/services/lead-gen-performance`, {
                     headers: { 'Authorization': `Bearer ${userLG.token}` },
                 }),
-                fetch('http://localhost:4000/api/leads', {
+                fetch(`${URL}/api/leads`, {
                     headers: { 'Authorization': `Bearer ${userLG.token}` },
                 })
             ]);
