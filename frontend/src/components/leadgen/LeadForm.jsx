@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { URL } from "@utils/URL";
 
 /** --- MATERIAL UI --- */
 import { Box, Button, TextField, Select, MenuItem, FormControl, InputLabel, CircularProgress, Modal, Grid } from '@mui/material';
@@ -44,7 +45,7 @@ const LeadForm = () => {
       return;
     }
 
-    const response = await fetch('http://localhost:4000/api/leads', {
+    const response = await fetch(`${URL}/api/leads`, {
       method: 'POST',
       body: JSON.stringify(leadData),
       headers: {
