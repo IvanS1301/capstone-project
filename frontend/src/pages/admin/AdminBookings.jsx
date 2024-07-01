@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { CircularProgress } from "@mui/material";
+import { URL } from "@utils/URL";
 
 /** --- COMPONENTS --- */
 import Bookings from "../../components/admin/Bookings"
@@ -19,7 +20,7 @@ const AdminBookings = () => {
 
   const fetchBookings = useCallback(async () => {
     try {
-      const response = await fetch('http://localhost:4000/api/bookings/recent-bookings', {
+      const response = await fetch(`${URL}/api/bookings/recent-bookings`, {
         headers: { 'Authorization': `Bearer ${userLG.token}` },
       });
       const json = await response.json();
