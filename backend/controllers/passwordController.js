@@ -1,5 +1,5 @@
 require('dotenv').config()
-const UserLG = require('../models/userLGmodel')
+const UserLG = require('../models/userLGModel')
 const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
 
