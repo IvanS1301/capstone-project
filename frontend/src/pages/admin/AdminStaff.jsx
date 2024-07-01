@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { URL } from "@utils/URL";
 
 /** --- MATERIAL UI --- */
 import { CircularProgress } from "@mui/material";
@@ -25,10 +26,10 @@ const AdminStaff = () => {
     const fetchData = useCallback(async () => {
         try {
             const [leadGenRes, bookedUnitsRes] = await Promise.all([
-                fetch('http://localhost:4000/api/services/lead-gen-performance', {
+                fetch(`${URL}/api/services/lead-gen-performance`, {
                     headers: { 'Authorization': `Bearer ${userLG.token}` },
                 }),
-                fetch('http://localhost:4000/api/services/booked-units-performance', {
+                fetch(`${URL}/api/services/booked-units-performance`, {
                     headers: { 'Authorization': `Bearer ${userLG.token}` },
                 })
             ]);
