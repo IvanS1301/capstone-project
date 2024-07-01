@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { URL } from "../../../utils/URL";
+import { URL } from "../../utils/URL";
 
 /** --- IMPORT CONTEXT --- */
 import { useEmailsContext } from "../../hooks/useEmailsContext";
