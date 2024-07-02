@@ -256,6 +256,9 @@ const DashboardTabs = ({ inventory, recentBookings }) => {
                                     Telemarketer Name
                                 </Typography>
                                 <Typography color="#e0e0e0" variant="subtitle1" fontWeight="600" flex={1} textAlign="left">
+                                    Team
+                                </Typography>
+                                <Typography color="#e0e0e0" variant="subtitle1" fontWeight="600" flex={1} textAlign="left">
                                     Lead Name
                                 </Typography>
                                 <Typography color="#e0e0e0" variant="subtitle1" fontWeight="600" flex={1} textAlign="left">
@@ -279,6 +282,9 @@ const DashboardTabs = ({ inventory, recentBookings }) => {
                                     >
                                         <Typography color="#e0e0e0" fontSize="17px" flex={1} textAlign="left">
                                             {booking.telemarketerName}
+                                        </Typography>
+                                        <Typography color="#4cceac" fontSize="17px" flex={1} textAlign="left">
+                                            {booking.team}
                                         </Typography>
                                         <Typography color="#e0e0e0" fontSize="17px" flex={1} textAlign="left">
                                             {booking.leadName}
