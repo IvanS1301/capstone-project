@@ -8,6 +8,7 @@ const Schema = mongoose.Schema
 const roleEnum = ["Lead Generation", "Telemarketer", "Team Leader"]
 const genderEnum = ["Male", "Female"]
 const statsEnum = ["Start Shift", "End Shift", "First Break", "Lunch", "Team Meeting", "Coaching"]
+const teamEnum = ["Team A", "Team B", "Team C"]
 
 const userLGSchema = new Schema({
   name: {
@@ -44,6 +45,10 @@ const userLGSchema = new Schema({
   status: {
     type: String,
     enum: statsEnum // Define the enum here
+  },
+  team: {
+    type: String,
+    enum: teamEnum // Define the enum here
   },
   isActive: {
     type: Boolean,
