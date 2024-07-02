@@ -51,7 +51,7 @@ const AgentLeadDetails = ({ unassignedLeads, userlgs, onLeadUpdate }) => {
         case 'Email':
           return 'bg-cyan-800';
         default:
-          return 'none'; // Default color for unrecognized statuses
+          return 'text-gray-950'; // Default color for unrecognized statuses
       }
     };
 
@@ -144,6 +144,9 @@ const AgentLeadDetails = ({ unassignedLeads, userlgs, onLeadUpdate }) => {
     },
   ];
 
+  // Filter out rows where callDisposition is 'Do Not Call'
+  const filteredLeads = unassignedLeads.filter(lead => lead.callDisposition !== 'Do Not Call');
+
   return (
     <Box m="20px">
       <Box mb="20px">
@@ -202,7 +205,7 @@ const AgentLeadDetails = ({ unassignedLeads, userlgs, onLeadUpdate }) => {
         }}
       >
         <DataGrid
-          rows={unassignedLeads}
+          rows={filteredLeads}
           columns={columns}
           initialState={{
             pagination: {
