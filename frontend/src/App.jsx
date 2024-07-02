@@ -111,7 +111,7 @@ function App() {
             <Route path="/AdminUsers" element={userLG ? <AdminUsers /> : <Navigate to="/loginLG" />} />
             <Route path="/AdminSignup" element={userLG ? <AdminSignup /> : <Navigate to="/loginLG" />} />
             <Route path="/AdminEmails" element={userLG ? <AdminEmails /> : <Navigate to="/loginLG" />} />
-            <Route path="/AdminBookings" element={userLG ? <AdminBookings /> : <Navigate to="/loginLG" />} />
+            <Route path="/RecentBookings" element={userLG ? <AdminBookings /> : <Navigate to="/loginLG" />} />
             <Route path="/AdminStaff" element={userLG ? <AdminStaff /> : <Navigate to="/loginLG" />} />
             <Route path="/viewprofile/:id" element={userLG ? <ReadProfile /> : <Navigate to="/loginLG" />} />
             <Route path="/TLview/:id" element={userLG ? <ReadLead /> : <Navigate to="/loginLG" />} />
