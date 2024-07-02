@@ -60,7 +60,7 @@ const AdminSidebar = () => {
       case `/viewprofile/${userLG._id}`:
         setSelected("Profile");
         break;
-      case "/AdminBookings":
+      case "/RecentBookings":
         setSelected("Recent Bookings");
         break;
       case "/AdminStaff":
@@ -201,7 +201,7 @@ const AdminSidebar = () => {
         />
         <Item
           title="Recent Bookings"
-          to="/AdminBookings"
+          to="/RecentBookings"
           icon={<ReceiptOutlined />}
           selected={selected}
           setSelected={setSelected}
