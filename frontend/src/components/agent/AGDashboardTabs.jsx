@@ -309,7 +309,7 @@ const AGDashboardTabs = ({ bookedUnits, unassignedLeads }) => {
                             backgroundColor="#192231"
                         >
                             <Typography color="#e0e0e0" variant="h5" fontWeight="600">
-                                Types Received
+                                Total Types Received
                     </Typography>
                         </Box>
                         <Box flexGrow={1} display="flex" flexDirection="column" overflow="auto">
