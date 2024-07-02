@@ -28,7 +28,7 @@ const AdminStaff = () => {
 
     const fetchData = useCallback(async () => {
         try {
-            const [leadGenRes, bookedUnitsRes] = await Promise.all([
+            const [leadGenRes, bookedUnitsRes, inventoryRes] = await Promise.all([
                 fetch(`${URL}/api/services/lead-gen-performance`, {
                     headers: { 'Authorization': `Bearer ${userLG.token}` },
                 }),
