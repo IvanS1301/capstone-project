@@ -5,7 +5,6 @@ const mongoose = require('mongoose')
 const { updateLeadGenPerformance } = require('../services/leadGenService'); // Import the service
 const { updateBookedUnits } = require('../services/TelemarketerService'); // Import the service
 
-
 /** --- GET ALL LEADS FOR LEAD GENERATION --- */
 const getLeads = async (req, res) => {
     const userLG_id = req.userLG._id
@@ -158,7 +157,8 @@ const createLead = async (req, res) => {
                 telemarketerName: req.userLG.name,
                 callDisposition: 'Booked',
                 lead: lead._id,
-                leadName: lead.name
+                leadName: lead.name,
+                team: req.userLG.team
             });
             tasks.push(recentBooking.save());
         }
@@ -226,7 +226,8 @@ const updateLead = async (req, res) => {
                 telemarketerName: req.userLG.name,
                 callDisposition: 'Booked',
                 lead: lead._id,
-                leadName: lead.name
+                leadName: lead.name,
+                team: req.userLG.team
             });
             tasks.push(recentBooking.save());
         }
