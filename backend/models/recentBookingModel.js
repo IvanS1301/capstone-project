@@ -20,6 +20,10 @@ const recentBookingSchema = new Schema({
     leadName: {
         type: String,
         required: true
+    },
+    team: {
+        type: String,
+        enum: ["Team A", "Team B", "Team C"], // Define the enum here
     }
 }, { timestamps: true });
 
