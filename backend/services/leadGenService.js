@@ -14,10 +14,23 @@ const getLeadGenPerformance = async (req, res) => {
 
 const updateLeadGenPerformance = async () => {
     try {
-        const leadGenUsers = await Lead.distinct('userLG_id');
+        const leadGenUsers = await UserLG.find({ role: 'Lead Generation' }); // Fetch all Lead Generation users
         const performanceData = [];
 
-        await Promise.all(leadGenUsers.map(async (userLG_id) => {
+        // Define all possible types
+        const typeEnum = [
+            "Warehouse", "Restaurant", "Boutiques", "Salon", "Spa",
+            "Manufacturing", "Hotel", "Gym", "Automotive", "Cafe",
+            "Brewery", "Pet Shops", "Laundry", "Clinic", "Garages",
+            "Mechanics", "Butchery", "Agricultural", "Schools",
+            "Convenience Store", "Business Consultant", "Financing", "Publishing"
+        ];
+
+        // Initialize performanceData array with updated lead generation data
+        await Promise.all(leadGenUsers.map(async (leadGenUser) => {
+            const userLG_id = leadGenUser._id;
+            const leadGenName = leadGenUser.name;
+
             const leadsCreated = await Lead.countDocuments({ userLG_id });
             const leadsAssigned = await Lead.countDocuments({ userLG_id, assignedTo: { $exists: true } });
             const leadsAvailable = leadsCreated - leadsAssigned;
@@ -41,10 +54,6 @@ const updateLeadGenPerformance = async () => {
                 acc[_id] = count;
                 return acc;
             }, {});
-
-            // Fetch the lead generation user's name
-            const leadGenUser = await UserLG.findById(userLG_id);
-            const leadGenName = leadGenUser.name;
 
             const performance = await LeadGenPerformance.findOneAndUpdate(
                 { leadGenName },
