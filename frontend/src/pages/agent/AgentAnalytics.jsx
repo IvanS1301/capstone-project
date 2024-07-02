@@ -17,26 +17,33 @@ const AgentAnalytics = () => {
     const { userLG } = useAuthContext();
     const [loading, setLoading] = useState(true);
     const [bookedUnits, setBookedUnits] = useState(null);
+    const [recentBookings, setRecentBookings] = useState(null);
     const [userBookedUnits, setUserBookedUnits] = useState(null);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const [bookedUnitsRes] = await Promise.all([
+                const [bookedUnitsRes, bookingsRes] = await Promise.all([
                     fetch(`${URL}/api/services/booked-units-performance`, {
+                        headers: { 'Authorization': `Bearer ${userLG.token}` },
+                    }),
+                    fetch(`${URL}/api/bookings/recent-bookings`, {
                         headers: { 'Authorization': `Bearer ${userLG.token}` },
                     })
                 ]);
 
-                const [bookedUnitsData] = await Promise.all([
-                    bookedUnitsRes.json()
+                const [bookedUnitsData, bookingsData] = await Promise.all([
+                    bookedUnitsRes.json(),
+                    bookingsRes.json()
                 ]);
 
-                if (bookedUnitsRes.ok) {
+                if (bookedUnitsRes.ok && bookingsRes.ok) {
                     setBookedUnits(bookedUnitsData);
+                    setRecentBookings(bookingsData);
                     dispatch({ type: 'SET_BOOKED_UNITS', payload: bookedUnitsData });
+                    dispatch({ type: 'SET_BOOKINGS', payload: bookingsData });
                 } else {
-                    console.error('Failed to fetch data', { bookedUnitsData });
+                    console.error('Failed to fetch data', { bookedUnitsData, bookingsData });
                 }
             } catch (error) {
                 console.error('Error fetching data:', error);
@@ -63,9 +70,9 @@ const AgentAnalytics = () => {
                     {loading ? (
                         <CircularProgress />
                     ) : (
-                            <div className="flex flex-col w-full items-center overflow-y-hidden">
+                            <div className="flex flex-col w-full items-center overflow-y-hidden mt-5">
                                 <div className="w-full">
-                                    <AgentAnalyticsTabs bookedUnits={userBookedUnits} />
+                                    <AgentAnalyticsTabs bookedUnits={userBookedUnits} recentBookings={recentBookings}/>
                                 </div>
                             </div>
                         )}
