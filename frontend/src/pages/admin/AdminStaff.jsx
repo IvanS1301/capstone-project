@@ -8,15 +8,18 @@ import { CircularProgress } from "@mui/material";
 import LeadGenStats from "../../components/admin/LeadGenStats"
 import BookedUnits from "../../components/admin/BookedUnits"
 import LeadDistribution from "../../components/admin/LeadDistribution"
+import TeamStatistics from "../../components/admin/TeamStatistics"
 import AdminSidebar from "../../components/admin/AdminSidebar"
 import AdminNavbar from '../../components/admin/AdminNavbar'
 
 /** --- CONTEXT --- */
 import { useServicesContext } from "../../hooks/useServicesContext"
+import { useAdminContext } from "../../hooks/useAdminContext"
 import { useAuthContext } from "../../hooks/useAuthContext"
 
 const AdminStaff = () => {
     const { leadGenStats, bookedUnits, dispatch } = useServicesContext();
+    const { inventory, dispatch: dispatchTeam } = useAdminContext();
     const { userLG } = useAuthContext();
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
@@ -31,28 +34,33 @@ const AdminStaff = () => {
                 }),
                 fetch(`${URL}/api/services/booked-units-performance`, {
                     headers: { 'Authorization': `Bearer ${userLG.token}` },
+                }),
+                fetch(`${URL}/api/inventories/inventory`, {
+                    headers: { 'Authorization': `Bearer ${userLG.token}` },
                 })
             ]);
 
-            const [leadGenData, bookedUnitsData] = await Promise.all([
+            const [leadGenData, bookedUnitsData, inventoryData] = await Promise.all([
                 leadGenRes.json(),
-                bookedUnitsRes.json()
+                bookedUnitsRes.json(),
+                inventoryRes.json(),
             ]);
 
             if (leadGenRes.ok && bookedUnitsRes.ok) {
                 dispatch({ type: 'SET_LEADGEN_STATS', payload: leadGenData });
                 dispatch({ type: 'SET_BOOKED_UNITS', payload: bookedUnitsData });
+                dispatchTeam({ type: 'SET_INVENTORY', payload: inventoryData });
                 setFilteredLeadGenStats(leadGenData); // Initialize filteredLeadGenStats with all data
                 setFilteredBookedUnits(bookedUnitsData); // Initialize filteredBookedUnits with all data
             } else {
-                console.error('Failed to fetch data', { leadGenData, bookedUnitsData });
+                console.error('Failed to fetch data', { leadGenData, bookedUnitsData, inventoryData });
             }
         } catch (error) {
             console.error('Error fetching data:', error);
         } finally {
             setLoading(false);
         }
-    }, [dispatch, userLG]);
+    }, [dispatch, dispatchTeam, userLG]);
 
     useEffect(() => {
         fetchData();
@@ -92,6 +100,9 @@ const AdminStaff = () => {
                         <CircularProgress />
                     ) : (
                             <div className="flex flex-col w-full items-center overflow-y-hidden">
+                                <div className="w-full">
+                                    <TeamStatistics inventory={inventory} />
+                                </div>
                                 <div className="w-full">
                                     <LeadDistribution bookedUnits={searchQuery ? filteredBookedUnits : bookedUnits} />
                                 </div>
