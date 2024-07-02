@@ -115,7 +115,7 @@ const LeadList = ({ tlLeads, userlgs, onLeadUpdate }) => {
         case 'Email':
           return 'bg-cyan-800';
         default:
-          return 'none'; // Default color for unrecognized statuses
+          return 'text-gray-950'; // Default color for unrecognized statuses
       }
     };
 
@@ -213,6 +213,9 @@ const LeadList = ({ tlLeads, userlgs, onLeadUpdate }) => {
     },
   ];
 
+  // Filter out rows where callDisposition is 'Do Not Call'
+  const filteredLeads = tlLeads.filter(lead => lead.callDisposition !== 'Do Not Call');
+
   return (
     <Box m="20px">
       <Box mb="20px">
@@ -271,7 +274,7 @@ const LeadList = ({ tlLeads, userlgs, onLeadUpdate }) => {
         }}
       >
         <DataGrid
-          rows={tlLeads}
+          rows={filteredLeads}
           columns={columns}
           initialState={{
             pagination: {
