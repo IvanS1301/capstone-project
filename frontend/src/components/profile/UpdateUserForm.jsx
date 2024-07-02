@@ -14,6 +14,7 @@ const UpdateUserForm = ({ userId, onUserUpdate }) => {
     name: '',
     email: '',
     role: '',
+    team: '',
     birthday: '',
     number: '',
     homeaddress: '',
@@ -30,6 +31,7 @@ const UpdateUserForm = ({ userId, onUserUpdate }) => {
         name: userlg.name || '',
         email: userlg.email || '',
         role: userlg.role || '',
+        team: userlg.team || '',
         birthday: userlg.birthday ? moment(userlg.birthday).format('YYYY-MM-DD') : '',
         number: userlg.number || '',
         homeaddress: userlg.homeaddress || '',
@@ -132,6 +134,20 @@ const UpdateUserForm = ({ userId, onUserUpdate }) => {
           <MenuItem value="Lead Generation">Lead Generation</MenuItem>
           <MenuItem value="Telemarketer">Telemarketer</MenuItem>
           <MenuItem value="Team Leader">Team Leader</MenuItem>
+        </Select>
+      </FormControl>
+      <FormControl fullWidth margin="normal">
+        <InputLabel id="team-label">Team</InputLabel>
+        <Select
+          labelId="team-label"
+          name="team"
+          value={userData.team}
+          onChange={handleChange}
+        >
+          <MenuItem value=""><em>Choose One</em></MenuItem>
+          <MenuItem value="Team A">Team A</MenuItem>
+          <MenuItem value="Team B">Team B</MenuItem>
+          <MenuItem value="Team C">Team C</MenuItem>
         </Select>
       </FormControl>
       <TextField
