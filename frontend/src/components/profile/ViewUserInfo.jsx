@@ -6,7 +6,7 @@ import moment from 'moment';
 // Function to shorten ObjectId
 const objectIdToShortId = (objectId) => {
     const hexString = objectId.toString();
-    return hexString.substring(20, 26);
+    return hexString.substring(17, 26);
 };
 
 const ViewUserInfo = ({ userId }) => {
@@ -24,7 +24,7 @@ const ViewUserInfo = ({ userId }) => {
     return (
         <Container>
             <Box display="flex" justifyContent="center" alignItems="center" minHeight="80vh">
-                <Paper elevation={3} sx={{ padding: '50px', borderRadius: 6, boxShadow: '1px 1px 8px rgba(0, 0, 0, 0.065)', backgroundColor: '#041926', maxWidth: '500px', width: '100%' }}>
+                <Paper elevation={3} sx={{ padding: '40px', borderRadius: 6, boxShadow: '1px 1px 8px rgba(0, 0, 0, 0.065)', backgroundColor: '#041926', maxWidth: '500px', width: '100%' }}>
                     <Box display="flex" flexDirection="column" alignItems="center">
                         <Box mb={4}>
                             <img
@@ -40,6 +40,7 @@ const ViewUserInfo = ({ userId }) => {
                         <Typography variant="h6" gutterBottom style={{ color: '#ef4444', marginBottom: '30px' }}>{userlg.status}</Typography>
                         <div className="view-details" style={{ textAlign: 'center' }}>
                             <Typography variant="body1" component="p" fontSize="24px" style={{ color: '#94e2cd', marginBottom: '20px' }}><strong>Employee ID: </strong><span style={{ color: 'white' }}>{objectIdToShortId(userlg._id)}</span></Typography>
+                            <Typography variant="body1" component="p" fontSize="24px" style={{ color: '#94e2cd', marginBottom: '20px' }}><strong>Team: </strong><span style={{ color: 'white' }}>{userlg.team}</span></Typography>
                             <Typography variant="body1" component="p" fontSize="24px" style={{ color: '#94e2cd', marginBottom: '20px' }}><strong>Birthday: </strong><span style={{ color: 'white' }}>{formattedBirthday}</span></Typography>
                             <Typography variant="body1" component="p" fontSize="24px" style={{ color: '#94e2cd', marginBottom: '20px' }}><strong>Phone Number: </strong><span style={{ color: 'white' }}>{userlg.number}</span></Typography>
                             <Typography variant="body1" component="p" fontSize="24px" style={{ color: '#94e2cd', marginBottom: '20px' }}><strong>Email: </strong><span style={{ color: 'white' }}>{userlg.email}</span></Typography>
