@@ -55,8 +55,9 @@ const AdminUsers = () => {
         const name = user.name ? user.name.toLowerCase() : ''; // Check if fullName is defined
         const role = user.role ? user.role.toLowerCase() : '';
         const status = user.status ? user.status.toLowerCase() : '';
+        const team = user.team ? user.team.toLowerCase() : '';
 
-        return name.includes(lowerCaseQuery) || role.includes(lowerCaseQuery) || status.includes(lowerCaseQuery);
+        return name.includes(lowerCaseQuery) || role.includes(lowerCaseQuery) || status.includes(lowerCaseQuery) || team.includes(lowerCaseQuery);
       });
       setFilteredUsers(filtered);
     }
