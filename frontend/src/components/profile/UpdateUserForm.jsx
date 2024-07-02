@@ -4,7 +4,6 @@ import { useUsersContext } from "../../hooks/useUsersContext";
 import { useAuthContext } from '../../hooks/useAuthContext';
 import { Box, Button, TextField, Select, MenuItem, FormControl, InputLabel, CircularProgress, Modal, Typography } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import moment from 'moment';
 
 const UpdateUserForm = ({ userId, onUserUpdate }) => {
   const { userlgs, dispatch } = useUsersContext();
@@ -14,11 +13,7 @@ const UpdateUserForm = ({ userId, onUserUpdate }) => {
     name: '',
     email: '',
     role: '',
-    team: '',
-    birthday: '',
-    number: '',
-    homeaddress: '',
-    gender: ''
+    team: ''
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -31,11 +26,7 @@ const UpdateUserForm = ({ userId, onUserUpdate }) => {
         name: userlg.name || '',
         email: userlg.email || '',
         role: userlg.role || '',
-        team: userlg.team || '',
-        birthday: userlg.birthday ? moment(userlg.birthday).format('YYYY-MM-DD') : '',
-        number: userlg.number || '',
-        homeaddress: userlg.homeaddress || '',
-        gender: userlg.gender || ''
+        team: userlg.team || ''
       });
     }
   }, [userId, userlgs]);
@@ -148,45 +139,6 @@ const UpdateUserForm = ({ userId, onUserUpdate }) => {
           <MenuItem value="Team A">Team A</MenuItem>
           <MenuItem value="Team B">Team B</MenuItem>
           <MenuItem value="Team C">Team C</MenuItem>
-        </Select>
-      </FormControl>
-      <TextField
-        fullWidth
-        label="Birthday"
-        type="date"
-        name="birthday"
-        value={userData.birthday}
-        onChange={handleChange}
-        margin="normal"
-        InputLabelProps={{ shrink: true }}
-      />
-      <TextField
-        fullWidth
-        label="Phone Number"
-        name="number"
-        value={userData.number}
-        onChange={handleChange}
-        margin="normal"
-      />
-      <TextField
-        fullWidth
-        label="Home Address"
-        name="homeaddress"
-        value={userData.homeaddress}
-        onChange={handleChange}
-        margin="normal"
-      />
-      <FormControl fullWidth margin="normal">
-        <InputLabel id="gender-label">Gender</InputLabel>
-        <Select
-          labelId="gender-label"
-          name="gender"
-          value={userData.gender}
-          onChange={handleChange}
-        >
-          <MenuItem value=""><em>Choose One</em></MenuItem>
-          <MenuItem value="Male">Male</MenuItem>
-          <MenuItem value="Female">Female</MenuItem>
         </Select>
       </FormControl>
       <Box mt={2}>
