@@ -17,7 +17,7 @@ import { useUsersContext } from "../../hooks/useUsersContext";
 // Function to shorten ObjectId
 const objectIdToShortId = (objectId) => {
     const hexString = objectId.toString();
-    return hexString.substring(20, 26);
+    return hexString.substring(17, 26);
 };
 
 const ViewProfile = ({ onUserUpdate }) => {
