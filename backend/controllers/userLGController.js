@@ -30,7 +30,7 @@ const signupUserLG = async (req, res) => {
   const { name, email, password, role, birthday, number, homeaddress, gender, status } = req.body
 
   try {
-    const userLG = await UserLG.signup(name, email, password, role, birthday, number, homeaddress, gender, status)
+    const userLG = await UserLG.signup(name, email, password, role, birthday, number, homeaddress, gender, status, team)
 
     // Update inventory
     await updateInventoryCounts()
