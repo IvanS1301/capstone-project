@@ -143,18 +143,18 @@ const UserLists = ({ userlgs, onUserUpdate }) => {
     );
   };
 
-  // Custom rendering function for status
+  // Custom rendering function for role
   const renderRoleCell = (params) => {
-    const getRoleColor = (status) => {
-      switch (status) {
+    const getRoleColor = (role) => {
+      switch (role) {
         case 'Lead Generation':
           return 'bg-teal-800';
         case 'Telemarketer':
-          return 'bg-blue-800';
+          return 'bg-blue-900';
         case 'Team Leader':
           return 'bg-rose-700';
         default:
-          return 'none'; // Default color for unrecognized statuses
+          return 'none'; // Default color for unrecognized roles
       }
     };
 
@@ -169,6 +169,31 @@ const UserLists = ({ userlgs, onUserUpdate }) => {
     );
   };
 
+  // Custom rendering function for status
+  const renderTeamCell = (params) => {
+    const getTeamColor = (team) => {
+      switch (team) {
+        case 'Team A':
+          return 'bg-amber-900';
+        case 'Team B':
+          return 'bg-purple-950';
+        case 'Team C':
+          return 'bg-pink-950';
+        default:
+          return 'none'; // Default color for unrecognized teams
+      }
+    };
+
+    const teamColorClass = getTeamColor(params.value);
+
+    return (
+      <div className="flex items-center h-full mr-3 mb-4">
+        <div className={`flex items-center justify-center text-white rounded-full w-40 h-7 ${teamColorClass}`}>
+          {params.value}
+        </div>
+      </div>
+    );
+  };
   const columns = [
     {
       field: "_id",
@@ -198,10 +223,11 @@ const UserLists = ({ userlgs, onUserUpdate }) => {
       renderCell: renderRoleCell,
     },
     {
-      field: "number",
-      headerName: "Phone Number",
+      field: "team",
+      headerName: "Team",
       flex: 1,
       minWidth: 220,
+      renderCell: renderTeamCell,
     },
     {
       field: "isActive",
