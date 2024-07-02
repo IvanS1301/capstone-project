@@ -27,7 +27,7 @@ const loginUserLG = async (req, res) => {
 
 // signup user
 const signupUserLG = async (req, res) => {
-  const { name, email, password, role, birthday, number, homeaddress, gender, status } = req.body
+  const { name, email, password, role, birthday, number, homeaddress, gender, status, team } = req.body
 
   try {
     const userLG = await UserLG.signup(name, email, password, role, birthday, number, homeaddress, gender, status, team)
