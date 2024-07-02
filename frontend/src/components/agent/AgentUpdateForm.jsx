@@ -239,6 +239,7 @@ const AgentUpdateForm = ({ unassignedId, onLeadUpdate }) => {
                             name="remarks"
                             value={leadData.remarks}
                             onChange={handleChange}
+                            placeholder="Describe how your call went.."
                             margin="normal"
                             InputProps={{
                                 sx: {
