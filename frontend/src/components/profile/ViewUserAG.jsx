@@ -9,7 +9,7 @@ import moment from 'moment';
 // Function to shorten ObjectId
 const objectIdToShortId = (objectId) => {
     const hexString = objectId.toString();
-    return hexString.substring(20, 26);
+    return hexString.substring(17, 26);
 };
 
 const ViewUserAG = ({ onUserUpdate }) => {
@@ -75,6 +75,10 @@ const ViewUserAG = ({ onUserUpdate }) => {
                         <Grid item xs={12} sm={6}>
                             <Typography variant="h6" component="h3" style={{ color: '#94e2cd', marginBottom: '8px' }}>Employee ID</Typography>
                             <Typography variant="body1" component="p" style={{ color: 'white', fontSize: '1.2rem' }}>{objectIdToShortId(userlg._id)}</Typography>
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                            <Typography variant="h6" component="h3" style={{ color: '#94e2cd', marginBottom: '8px' }}>Team</Typography>
+                            <Typography variant="body1" component="p" style={{ color: 'white', fontSize: '1.2rem' }}>{userlg.team}</Typography>
                         </Grid>
                         <Grid item xs={12} sm={6}>
                             <Typography variant="h6" component="h3" style={{ color: '#94e2cd', marginBottom: '8px' }}>Birthday</Typography>
