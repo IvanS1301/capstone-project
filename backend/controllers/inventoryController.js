@@ -2,6 +2,7 @@ const Lead = require('../models/leadModel');
 const UserLG = require('../models/userLGModel');
 const Email = require('../models/emailModel');
 const Inventory = require('../models/inventoryModel');
+const RecentBooking = require('../models/recentBookingModel')
 
 // type and callDisposition enumerations
 const typeEnum = ["Warehouse", "Restaurant", "Boutiques", "Salon", "Spa", "Manufacturing", "Hotel", "Gym", "Automotive", "Cafe", "Brewery", "Pet Shops", "Laundry", "Clinic", "Garages", "Mechanics", "Butchery", "Agricultural", "Schools", "Convenience Store", "Business Consultant", "Financing", "Publishing"];
@@ -17,6 +18,7 @@ const updateInventoryCounts = async () => {
             totalUnassignedLeads,
             typeCountsArray,
             callDispositionCountsArray,
+            teamBookedCountsArray
         ] = await Promise.all([
             Lead.countDocuments(),
             UserLG.countDocuments(),
@@ -25,6 +27,7 @@ const updateInventoryCounts = async () => {
             Lead.countDocuments({ assignedTo: { $exists: false } }),
             Promise.all(typeEnum.map(async (type) => ({ type, count: await Lead.countDocuments({ type }) }))),
             Promise.all(callDispositionEnum.map(async (disposition) => ({ disposition, count: await Lead.countDocuments({ callDisposition: disposition }) }))),
+            Promise.all(["Team A", "Team B", "Team C"].map(async (team) => ({ team, count: await RecentBooking.countDocuments({ callDisposition: 'Booked', team }) }))),
         ]);
 
         const typeCounts = typeCountsArray.reduce((acc, { type, count }) => {
@@ -37,6 +40,11 @@ const updateInventoryCounts = async () => {
             return acc;
         }, {});
 
+        const teamBookedCounts = teamBookedCountsArray.reduce((acc, { team, count }) => {
+            acc[team] = count;
+            return acc;
+        }, { 'Team A': 0, 'Team B': 0, 'Team C': 0 });
+
         let inventory = await Inventory.findOne();
 
         if (!inventory) {
@@ -47,7 +55,8 @@ const updateInventoryCounts = async () => {
                 numberOfUnassignedLeads: totalUnassignedLeads,
                 numberOfEmails: totalEmails,
                 typeCounts,
-                callDispositionCounts
+                callDispositionCounts,
+                teamBookedCounts
             });
         } else {
             inventory.numberOfLeads = totalLeads;
@@ -57,6 +66,7 @@ const updateInventoryCounts = async () => {
             inventory.numberOfEmails = totalEmails;
             inventory.typeCounts = typeCounts;
             inventory.callDispositionCounts = callDispositionCounts;
+            inventory.teamBookedCounts = teamBookedCounts;
         }
 
         await inventory.save();
