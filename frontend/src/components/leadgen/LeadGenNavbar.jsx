@@ -1,26 +1,69 @@
-import { useContext, useState } from "react";
-import { ColorModeContext } from "../../theme";
+import { useState, useEffect } from "react";
+import { URL } from "../../utils/URL";
 
 /** --- MATERIAL UI --- */
-import { Box, IconButton, useTheme } from "@mui/material";
+import { Box, IconButton, Badge, Menu, MenuItem } from "@mui/material";
+
+/** --- MATERIAL UI ICONS --- */
 import InputBase from "@mui/material/InputBase";
-import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
-import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import SearchIcon from "@mui/icons-material/Search";
 
 const LeadGenNavbar = ({ onSearch }) => {
-    const theme = useTheme();
-    const colorMode = useContext(ColorModeContext);
     const [searchQuery, setSearchQuery] = useState("");
+    const [notifications, setNotifications] = useState([]);
+    const [anchorEl, setAnchorEl] = useState(null);
+
+    useEffect(() => {
+        const fetchNotifications = async () => {
+            try {
+                const response = await fetch(`${URL}/notifications`);
+                const data = await response.json();
+                setNotifications(data);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+
+        fetchNotifications();
+    }, []);
 
     const handleSearch = (event) => {
         const query = event.target.value;
         setSearchQuery(query);
         onSearch(query); // Call the onSearch function passed from AdminLeads
     };
+
+    const handleNotificationClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleNotificationClose = () => {
+        setAnchorEl(null);
+    };
+
+    const handleMarkAsRead = async (id) => {
+        try {
+            const response = await fetch(`${URL}/api/notifications/${id}/leadgen`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (response.ok) {
+                setNotifications(notifications.map(n => n._id === id ? { ...n, isRead: true } : n));
+            } else {
+                console.error('Failed to mark notification as read');
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const unreadCount = notifications.filter(n => !n.isRead).length;
 
     return (
         <Box display="flex" justifyContent="space-between" p={2}>
@@ -43,16 +86,26 @@ const LeadGenNavbar = ({ onSearch }) => {
 
             {/* ICONS */}
             <Box display="flex">
-                <IconButton onClick={colorMode.toggleColorMode} sx={{ color: "#111827" }}>
-                    {theme.palette.mode === "dark" ? (
-                        <DarkModeOutlinedIcon />
-                    ) : (
-                            <LightModeOutlinedIcon />
-                        )}
+                <IconButton sx={{ color: "#111827" }} onClick={handleNotificationClick}>
+                    <Badge badgeContent={unreadCount} color="error">
+                        <NotificationsOutlinedIcon />
+                    </Badge>
                 </IconButton>
-                <IconButton sx={{ color: "#111827" }}>
-                    <NotificationsOutlinedIcon />
-                </IconButton>
+                <Menu
+                    anchorEl={anchorEl}
+                    open={Boolean(anchorEl)}
+                    onClose={handleNotificationClose}
+                >
+                    {notifications.map((notification) => (
+                        <MenuItem
+                            key={notification._id}
+                            onClick={() => handleMarkAsRead(notification._id)}
+                            sx={{ backgroundColor: notification.isRead ? 'inherit' : '#f0f0f0' }}
+                        >
+                            {notification.message}
+                        </MenuItem>
+                    ))}
+                </Menu>
                 <IconButton sx={{ color: "#111827" }}>
                     <SettingsOutlinedIcon />
                 </IconButton>
