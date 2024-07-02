@@ -4,6 +4,7 @@ const RecentBooking = require('../models/recentBookingModel')
 const mongoose = require('mongoose')
 const { updateLeadGenPerformance } = require('../services/leadGenService'); // Import the service
 const { updateBookedUnits } = require('../services/TelemarketerService'); // Import the service
+const Notification = require('../models/notificationModel');
 
 /** --- GET ALL LEADS FOR LEAD GENERATION --- */
 const getLeads = async (req, res) => {
@@ -46,22 +47,22 @@ const getUnassignedLeads = async (req, res) => {
             };
 
             // Fetch high-priority leads first
-            const highPriorityLeads = await fetchLeads(highPriorityTypes, 20);
+            const highPriorityLeads = await fetchLeads(highPriorityTypes, 10);
 
-            if (highPriorityLeads.length < 20) {
+            if (highPriorityLeads.length < 10) {
                 // Fetch low-priority leads if high-priority leads are not enough
-                const remainingCount = 20 - highPriorityLeads.length;
+                const remainingCount = 10 - highPriorityLeads.length;
                 const lowPriorityLeads = await fetchLeads(lowPriorityTypes, remainingCount);
 
                 // Combine high-priority and low-priority leads
                 newLeads = highPriorityLeads.concat(lowPriorityLeads);
             } else {
-                newLeads = highPriorityLeads.slice(0, 20); // Ensure exactly 10 leads if high-priority leads are sufficient
+                newLeads = highPriorityLeads.slice(0, 10); // Ensure exactly 10 leads if high-priority leads are sufficient
             }
 
             // If we still don't have enough leads, fetch additional leads to make up the difference
-            if (newLeads.length < 20) {
-                const remainingCount = 20 - newLeads.length;
+            if (newLeads.length < 10) {
+                const remainingCount = 10 - newLeads.length;
                 const additionalLeads = await Lead.find({ assignedTo: { $exists: false }, _id: { $nin: newLeads.map(lead => lead._id) } })
                     .limit(remainingCount)
                     .sort({ Distributed: -1 })
@@ -220,7 +221,7 @@ const updateLead = async (req, res) => {
         // Parallelize non-dependent operations
         const tasks = [updateInventoryCounts(), updateLeadGenPerformance(), updateBookedUnits(req.userLG.name)];
 
-        // Add recent booking if callDisposition is 'Booked'
+        // Add recent booking and notification if callDisposition is 'Booked'
         if (callDisposition === 'Booked') {
             const recentBooking = new RecentBooking({
                 telemarketerName: req.userLG.name,
@@ -230,6 +231,11 @@ const updateLead = async (req, res) => {
                 team: req.userLG.team
             });
             tasks.push(recentBooking.save());
+
+            const notification = new Notification({
+                message: `Lead: ${lead.name} has been booked by ${req.userLG.name}.`
+            });
+            tasks.push(notification.save());
         }
 
         // Wait for all tasks to complete
