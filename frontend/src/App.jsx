@@ -122,7 +122,7 @@ function App() {
 
             {/* PASSWORD ROUTE */}
             <Route path="/forgot-password" element={!userLG ? <ForgotPassword /> : <Navigate to="/" />} />
-            <Route path="/reset/:id/:token" element={!userLG ? <ResetPassword /> : <Navigate to="/" />} />
+            <Route path="/reset-password" element={!userLG ? <ResetPassword /> : <Navigate to="/" />} />
           </Routes>
         </div>
       </BrowserRouter>
