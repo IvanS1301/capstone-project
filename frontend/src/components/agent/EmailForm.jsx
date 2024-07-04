@@ -139,7 +139,8 @@ const EmailForm = () => {
                             error={emptyFields.includes('text')}
                             InputProps={{
                                 sx: {
-                                    padding: 15, // Increase padding
+                                    padding: '0.5rem 1rem', // Adjust padding to align text properly
+                                    lineHeight: '4rem' // Adjust line height if necessary
                                 }
                             }}
                         />
