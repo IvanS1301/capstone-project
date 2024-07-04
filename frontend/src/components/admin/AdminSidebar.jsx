@@ -155,9 +155,16 @@ const AdminSidebar = () => {
 
         {!isCollapsed && (
           <div className="text-[#a3a3a3] m-3 ml-7">
-            <Typography sx={{ fontSize: '14px', m: "15px 0 5px 20px" }}>Data</Typography>
+            <Typography sx={{ fontSize: '14px', m: "15px 0 5px 20px" }}>User</Typography>
           </div>
         )}
+        <Item
+          title="Add New User"
+          to="/AdminSignup"
+          icon={<GroupAddIcon />}
+          selected={selected}
+          setSelected={setSelected}
+        />
         <Item
           title="Users"
           to="/AdminUsers"
@@ -165,6 +172,12 @@ const AdminSidebar = () => {
           selected={selected}
           setSelected={setSelected}
         />
+
+        {!isCollapsed && (
+          <div className="text-[#a3a3a3] m-3 ml-7">
+            <Typography sx={{ fontSize: '14px', m: "15px 0 5px 20px" }}>Data</Typography>
+          </div>
+        )}
         <Item
           title="Leads"
           to="/AdminLeads"
@@ -182,23 +195,9 @@ const AdminSidebar = () => {
 
         {!isCollapsed && (
           <div className="text-[#a3a3a3] m-3 ml-7">
-            <Typography sx={{ fontSize: '14px', m: "15px 0 5px 20px" }}>Pages</Typography>
+            <Typography sx={{ fontSize: '14px', m: "15px 0 5px 20px" }}>Analytics</Typography>
           </div>
         )}
-        <Item
-          title="Add User"
-          to="/AdminSignup"
-          icon={<GroupAddIcon />}
-          selected={selected}
-          setSelected={setSelected}
-        />
-        <Item
-          title="Profile"
-          to={`/viewprofile/${userLG._id}`}
-          icon={<AccountCircleIcon />}
-          selected={selected}
-          setSelected={setSelected}
-        />
         <Item
           title="Recent Bookings"
           to="/RecentBookings"
@@ -216,16 +215,22 @@ const AdminSidebar = () => {
 
         {!isCollapsed && (
           <div className="text-[#a3a3a3] m-3 ml-7">
-            <Typography sx={{ fontSize: '14px', m: "15px 0 5px 20px" }}>Settings</Typography>
+            <Typography sx={{ fontSize: '14px', m: "15px 0 5px 20px" }}>Profile</Typography>
           </div>
         )}
         <Item
-          title="Settings"
-          to="/Settings"
-          icon={<SettingsIcon />}
+          title="Personal Info"
+          to={`/viewprofile/${userLG._id}`}
+          icon={<AccountCircleIcon />}
           selected={selected}
           setSelected={setSelected}
         />
+
+        {!isCollapsed && (
+          <div className="text-[#a3a3a3] m-3 ml-7">
+            <Typography sx={{ fontSize: '14px', m: "15px 0 5px 20px" }}>Settings</Typography>
+          </div>
+        )}
         <MenuItem
           title="Sign Out"
           icon={<ExitToAppIcon />}
