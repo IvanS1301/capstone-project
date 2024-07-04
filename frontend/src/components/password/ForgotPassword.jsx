@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import { URL } from "../../utils/URL";
 import { Box, Button, TextField, CircularProgress, Modal } from "@mui/material";
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import { useNavigate } from 'react-router-dom';
 
 const ForgotPassword = () => {
+    const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -29,6 +31,9 @@ const ForgotPassword = () => {
                 setError(json.error);
             } else {
                 setOpenSuccessModal(true);
+                setTimeout(() => {
+                    navigate('/reset-password');
+                }, 3000); // Redirect to login page after 3 seconds
             }
         } catch (error) {
             setError('Something went wrong');
