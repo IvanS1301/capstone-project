@@ -71,7 +71,7 @@ const AgentLeadDetails = ({ unassignedLeads, userlgs, onLeadUpdate }) => {
       field: "_id",
       headerName: "ID",
       flex: 1,
-      minWidth: 50,
+      minWidth: 100,
       renderCell: (params) => params.value.slice(20, 26),
       cellClassName: "name-column--cell",
     },
