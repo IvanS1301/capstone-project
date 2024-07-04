@@ -5,9 +5,10 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { useParams, useNavigate } from 'react-router-dom';
 
 const ResetPassword = () => {
-    const { id, token } = useParams();
     const navigate = useNavigate();
+    const { id } = useParams();
 
+    const [code, setCode] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [loading, setLoading] = useState(false);
@@ -26,9 +27,9 @@ const ResetPassword = () => {
         setError(null);
 
         try {
-            const response = await fetch(`${URL}/api/password/reset/${id}/${token}`, {
+            const response = await fetch(`${URL}/api/password/reset-password`, {
                 method: 'POST',
-                body: JSON.stringify({ password }),
+                body: JSON.stringify({ id, password, token: code }),
                 headers: {
                     'Content-Type': 'application/json'
                 }
@@ -90,6 +91,16 @@ const ResetPassword = () => {
                     label="Confirm Password"
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     value={confirmPassword}
+                    required
+                    sx={{ backgroundColor: "#c2c2c2", marginBottom: '20px' }}
+                />
+                <TextField
+                    fullWidth
+                    variant="filled"
+                    type="text"
+                    label="Verification Code"
+                    onChange={(e) => setCode(e.target.value)}
+                    value={code}
                     required
                     sx={{ backgroundColor: "#c2c2c2", marginBottom: '20px' }}
                 />
