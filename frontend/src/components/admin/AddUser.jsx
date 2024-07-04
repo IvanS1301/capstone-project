@@ -156,7 +156,7 @@ const AddUser = () => {
                             }}
                         />
                     </div>
-                    <div className='mb-9'>
+                    <div className='mb-10'>
                         <label className="block text-white text-sm font-semibold mb-2" htmlFor="password">Password</label>
                         <TextField
                             fullWidth
