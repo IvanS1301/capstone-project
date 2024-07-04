@@ -149,13 +149,26 @@ const AgentSidebar = () => {
 
                 {!isCollapsed && (
                     <div className="text-[#a3a3a3] m-3 ml-7">
-                        <Typography sx={{ fontSize: '14px', m: "15px 0 5px 20px" }}>Data</Typography>
+                        <Typography sx={{ fontSize: '14px', m: "15px 0 5px 20px" }}>Lead</Typography>
                     </div>
                 )}
                 <Item
                     title="Leads"
                     to="/AgentLeads"
                     icon={<ContactsOutlined />}
+                    selected={selected}
+                    setSelected={setSelected}
+                />
+
+                {!isCollapsed && (
+                    <div className="text-[#a3a3a3] m-3 ml-7">
+                        <Typography sx={{ fontSize: '14px', m: "15px 0 5px 20px" }}>Email</Typography>
+                    </div>
+                )}
+                <Item
+                    title="Add New Email"
+                    to="/AgentAdd"
+                    icon={<ContactMailIcon />}
                     selected={selected}
                     setSelected={setSelected}
                 />
@@ -169,25 +182,24 @@ const AgentSidebar = () => {
 
                 {!isCollapsed && (
                     <div className="text-[#a3a3a3] m-3 ml-7">
-                        <Typography sx={{ fontSize: '14px', m: "15px 0 5px 20px" }}>Pages</Typography>
+                        <Typography sx={{ fontSize: '14px', m: "15px 0 5px 20px" }}>Analytics</Typography>
                     </div>
                 )}
                 <Item
-                    title="Add Email"
-                    to="/AgentAdd"
-                    icon={<ContactMailIcon />}
-                    selected={selected}
-                    setSelected={setSelected}
-                />
-                <Item
-                    title="Analytics"
+                    title="Statistics"
                     to="/AgentService"
                     icon={<AnalyticsIcon />}
                     selected={selected}
                     setSelected={setSelected}
                 />
+
+                {!isCollapsed && (
+                    <div className="text-[#a3a3a3] m-3 ml-7">
+                        <Typography sx={{ fontSize: '14px', m: "15px 0 5px 20px" }}>Profile</Typography>
+                    </div>
+                )}
                 <Item
-                    title="Profile"
+                    title="Personal Info"
                     to={`/viewuser/${userLG._id}`}
                     icon={<AccountCircleIcon />}
                     selected={selected}
@@ -199,13 +211,6 @@ const AgentSidebar = () => {
                         <Typography sx={{ fontSize: '14px', m: "15px 0 5px 20px" }}>Settings</Typography>
                     </div>
                 )}
-                <Item
-                    title="Settings"
-                    to="/Settings"
-                    icon={<SettingsIcon />}
-                    selected={selected}
-                    setSelected={setSelected}
-                />
                 <MenuItem
                     title="Sign Out"
                     icon={<ExitToAppIcon />}
