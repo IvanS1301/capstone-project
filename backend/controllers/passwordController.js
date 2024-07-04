@@ -1,7 +1,9 @@
 require('dotenv').config()
 const UserLG = require('../models/userLGModel')
+const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
+const crypto = require('crypto');
 
 // forgot password
 const forgotPassword = async (req, res) => {
@@ -14,11 +16,12 @@ const forgotPassword = async (req, res) => {
         }
 
         // Generate a token
-        const token = jwt.sign({ _id: userLG._id }, process.env.SECRET, { expiresIn: '1h' });
+        const resetToken = crypto.randomBytes(3).toString('hex');
+        const resetTokenExpiration = Date.now() + 1800000 // 30 minutes
 
         // Set token and expiration on user
-        userLG.resetPasswordToken = token;
-        userLG.resetPasswordExpires = Date.now() + 3600000; // 1 hour
+        userLG.resetPasswordToken = resetToken;
+        userLG.resetPasswordExpires = resetTokenExpiration;
         await userLG.save();
 
         // Send email with the token
@@ -34,11 +37,13 @@ const forgotPassword = async (req, res) => {
             to: userLG.email,
             from: process.env.EMAIL,
             subject: 'Password Reset',
-            text: `You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n
-          Please click on the following link, or paste this into your browser to complete the process:\n\n
-          http://${req.headers.host}/reset/${userLG._id}/${token}\n\n
-          If you did not request this, please ignore this email and your password will remain unchanged.\n`,
+            text: `You are receiving this because you requested a password reset for your account. Please use this verification code to reset your password within the next 30 minutes: ${resetToken}`,
+            html: `
+                <p>You are receiving this because you requested a password reset for your account.<br>
+                Please use this verification code to reset your password within the next 30 minutes: <strong>${resetToken}</strong></p>
+            `,
         };
+
 
         await transporter.sendMail(mailOptions);
 
@@ -50,13 +55,10 @@ const forgotPassword = async (req, res) => {
 
 // reset password
 const resetPassword = async (req, res) => {
-    const { token } = req.params;
-    const { password } = req.body;
+    const { token, password } = req.body;
 
     try {
-        const decoded = jwt.verify(token, process.env.SECRET);
         const userLG = await UserLG.findOne({
-            _id: decoded._id,
             resetPasswordToken: token,
             resetPasswordExpires: { $gt: Date.now() },
         });
