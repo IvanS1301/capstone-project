@@ -11,11 +11,6 @@ const router = express.Router();
 const requireAuth = require('../middleware/requireAuth')
 
 router.post('/forgot-password', forgotPassword);
-router.post('/reset/:id/:token', resetPassword);
-
-// Server-side rendering route
-router.get('/reset/:id/:token', (req, res) => {
-    res.render('reset-password', { token: req.params.token });
-});
+router.post('/reset-password', resetPassword);
 
 module.exports = router;
