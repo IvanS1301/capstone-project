@@ -8,7 +8,6 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { AiOutlineMenu } from "react-icons/ai";
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import PostAddIcon from '@mui/icons-material/PostAdd';
-import SettingsIcon from '@mui/icons-material/Settings';
 import { Typography } from "@mui/material";
 
 /** --- IMPORT HOOKS --- */
@@ -51,9 +50,6 @@ const LeadGenSidebar = () => {
                 break;
             case `/viewuser/${userLG._id}`:
                 setSelected("Personal Info");
-                break;
-            case "/Settings":
-                setSelected("Settings");
                 break;
             default:
                 setSelected("");
@@ -177,13 +173,6 @@ const LeadGenSidebar = () => {
                         <Typography sx={{ fontSize: '14px', m: "15px 0 5px 20px" }}>Settings</Typography>
                     </div>
                 )}
-                <Item
-                    title="Settings"
-                    to="/Settings"
-                    icon={<SettingsIcon />}
-                    selected={selected}
-                    setSelected={setSelected}
-                />
                 <MenuItem
                     title="Sign Out"
                     icon={<ExitToAppIcon />}
