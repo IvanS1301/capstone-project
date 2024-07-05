@@ -115,7 +115,7 @@ const LeadList = ({ tlLeads, userlgs, onLeadUpdate }) => {
         case 'Email':
           return 'bg-cyan-800';
         default:
-          return 'text-gray-950'; // Default color for unrecognized statuses
+          return 'text-gray-900'; // Default color for unrecognized statuses
       }
     };
 
@@ -177,6 +177,7 @@ const LeadList = ({ tlLeads, userlgs, onLeadUpdate }) => {
       flex: 1,
       minWidth: 150,
       renderCell: (params) => userIdToNameMap[params.value] || params.value,
+      cellClassName: "name-column--cell",
     },
     {
       field: "Distributed",
