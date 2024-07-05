@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
 import { URL } from "../../utils/URL";
+import { useParams, useNavigate } from 'react-router-dom';
+
+/** --- MATERIAL UI --- */
 import { Box, Button, TextField, CircularProgress, Modal } from "@mui/material";
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import { useParams, useNavigate } from 'react-router-dom';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 
 const ResetPassword = () => {
     const navigate = useNavigate();
@@ -14,6 +18,8 @@ const ResetPassword = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [openSuccessModal, setOpenSuccessModal] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -57,43 +63,77 @@ const ResetPassword = () => {
         setOpenSuccessModal(false);
     };
 
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
+    };
+
+    const toggleConfirmPasswordVisibility = () => {
+        setShowConfirmPassword(!showConfirmPassword);
+    };
+
     return (
         <Box
             sx={{
                 position: 'absolute',
-                top: '40%',
+                top: '50%',
                 left: '50%',
                 transform: 'translate(-50%, -50%)',
                 width: 700,
                 bgcolor: '#f1f1f1',
                 border: '2px solid #000',
                 boxShadow: 24,
-                p: 5,
+                p: 6,
                 borderRadius: '30px'
             }}
         >
             <form onSubmit={handleSubmit}>
                 <div className="text-[#D22B2B] text-2xl mb-3 font-medium">Reset Password</div>
-                <TextField
-                    fullWidth
-                    variant="filled"
-                    type="password"
-                    label="New Password"
-                    onChange={(e) => setPassword(e.target.value)}
-                    value={password}
-                    required
-                    sx={{ backgroundColor: "#c2c2c2", marginBottom: '20px' }}
-                />
-                <TextField
-                    fullWidth
-                    variant="filled"
-                    type="password"
-                    label="Confirm Password"
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    value={confirmPassword}
-                    required
-                    sx={{ backgroundColor: "#c2c2c2", marginBottom: '20px' }}
-                />
+                <Box position="relative" marginBottom="20px">
+                    <TextField
+                        fullWidth
+                        variant="filled"
+                        type={showPassword ? "text" : "password"}
+                        label="New Password"
+                        onChange={(e) => setPassword(e.target.value)}
+                        value={password}
+                        required
+                        sx={{ backgroundColor: "#c2c2c2" }}
+                    />
+                    {showPassword ? (
+                        <VisibilityOffIcon
+                            className="absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer"
+                            onClick={togglePasswordVisibility}
+                        />
+                    ) : (
+                            <VisibilityIcon
+                                className="absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer"
+                                onClick={togglePasswordVisibility}
+                            />
+                        )}
+                </Box>
+                <Box position="relative" marginBottom="20px">
+                    <TextField
+                        fullWidth
+                        variant="filled"
+                        type={showConfirmPassword ? "text" : "password"}
+                        label="Confirm Password"
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        value={confirmPassword}
+                        required
+                        sx={{ backgroundColor: "#c2c2c2" }}
+                    />
+                    {showConfirmPassword ? (
+                        <VisibilityOffIcon
+                            className="absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer"
+                            onClick={toggleConfirmPasswordVisibility}
+                        />
+                    ) : (
+                            <VisibilityIcon
+                                className="absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer"
+                                onClick={toggleConfirmPasswordVisibility}
+                            />
+                        )}
+                </Box>
                 <TextField
                     fullWidth
                     variant="filled"
