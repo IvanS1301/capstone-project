@@ -61,7 +61,7 @@ const LeadGenStats = ({ leadGenStats }) => {
                     LEAD GENERATION PERFORMANCE
             </Typography>
                 <Typography variant="h5" color="#111827">
-                    LEAD SUMMARY
+                    Lead Summary
             </Typography>
             </Box>
             <Box
