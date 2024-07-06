@@ -4,6 +4,8 @@ import { URL } from "../../utils/URL";
 /** --- MATERIAL UI --- */
 import { Box, Button, TextField, FormControl, InputLabel, Select as MuiSelect, MenuItem, Modal, CircularProgress } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 
 /** --- IMPORT CONTEXT --- */
 import { useUsersContext } from "../../hooks/useUsersContext";
@@ -82,8 +84,8 @@ const AddUser = () => {
     };
 
     return (
-        <Box display="flex" justifyContent="center" mt={6} sx={{ width: '100%', height: '70vh', padding: '10px', maxWidth: '1200px', mx: 'auto' }}>
-            <Box className="w-full max-w-xl mx-auto p-12 bg-[#062438] rounded-lg shadow-md">
+        <Box display="flex" justifyContent="center" mt={6} sx={{ width: '100%', padding: '10px', maxWidth: '1200px', mx: 'auto' }}>
+            <Box className="w-full max-w-xl mx-auto p-12 bg-[#1f2937] rounded-lg shadow-md">
                 <div className="flex items-center justify-center mb-6">
                     <img
                         src={process.env.PUBLIC_URL + '/logo.png'}
@@ -186,14 +188,17 @@ const AddUser = () => {
                                 },
                             }}
                             InputProps={{
-                                endAdornment: (
-                                    <img
-                                        src={process.env.PUBLIC_URL + '/eye.svg'}
-                                        alt="eye"
+                                endAdornment: showPassword ? (
+                                    <VisibilityOffIcon
                                         className="cursor-pointer"
                                         onClick={togglePasswordVisibility}
                                     />
-                                ),
+                                ) : (
+                                        <VisibilityIcon
+                                            className="cursor-pointer"
+                                            onClick={togglePasswordVisibility}
+                                        />
+                                    )
                             }}
                         />
                     </div>
