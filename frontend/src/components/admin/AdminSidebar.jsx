@@ -155,26 +155,6 @@ const AdminSidebar = () => {
 
         {!isCollapsed && (
           <div className="text-[#a3a3a3] m-3 ml-7">
-            <Typography sx={{ fontSize: '14px', m: "15px 0 5px 20px" }}>User</Typography>
-          </div>
-        )}
-        <Item
-          title="Add New User"
-          to="/AdminSignup"
-          icon={<GroupAddIcon />}
-          selected={selected}
-          setSelected={setSelected}
-        />
-        <Item
-          title="Users"
-          to="/AdminUsers"
-          icon={<PeopleOutlined />}
-          selected={selected}
-          setSelected={setSelected}
-        />
-
-        {!isCollapsed && (
-          <div className="text-[#a3a3a3] m-3 ml-7">
             <Typography sx={{ fontSize: '14px', m: "15px 0 5px 20px" }}>Data</Typography>
           </div>
         )}
@@ -193,6 +173,26 @@ const AdminSidebar = () => {
           setSelected={setSelected}
         />
 
+        {!isCollapsed && (
+          <div className="text-[#a3a3a3] m-3 ml-7">
+            <Typography sx={{ fontSize: '14px', m: "15px 0 5px 20px" }}>User</Typography>
+          </div>
+        )}
+        <Item
+          title="Users"
+          to="/AdminUsers"
+          icon={<PeopleOutlined />}
+          selected={selected}
+          setSelected={setSelected}
+        />
+        <Item
+          title="Add New User"
+          to="/AdminSignup"
+          icon={<GroupAddIcon />}
+          selected={selected}
+          setSelected={setSelected}
+        />
+        
         {!isCollapsed && (
           <div className="text-[#a3a3a3] m-3 ml-7">
             <Typography sx={{ fontSize: '14px', m: "15px 0 5px 20px" }}>Analytics</Typography>
