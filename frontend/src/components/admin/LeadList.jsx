@@ -115,25 +115,25 @@ const LeadList = ({ tlLeads, userlgs, onLeadUpdate }) => {
         case 'Email':
           return 'bg-cyan-800';
         case 'Not Eligible':
-          return 'text-stone-950';
+          return 'text-[#0c0a09]';
         case 'Already Installed':
-          return 'text-stone-950';
+          return 'text-[#0c0a09]';
         case 'Wrong/Not Working':
-          return 'text-stone-950';
+          return 'text-[#0c0a09]';
         case 'Residential':
-          return 'text-stone-950';
+          return 'text-[#0c0a09]';
         case 'Callback':
-          return 'text-stone-950';
+          return 'text-[#0c0a09]';
         case 'Do Not Call':
-          return 'text-stone-950';
+          return 'text-[#0c0a09]';
         case 'No Answer':
-          return 'text-stone-950';
+          return 'text-[#0c0a09]';
         case 'Not Interested':
-          return 'text-stone-950';
+          return 'text-[#0c0a09]';
         case 'Voicemail':
-          return 'text-stone-950';
+          return 'text-[#0c0a09]';
         default:
-          return 'none'; // Default color for unrecognized statuses
+          return 'text-[#0c0a09]'; // Default color for unrecognized statuses
       }
     };
 
