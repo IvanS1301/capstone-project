@@ -12,8 +12,6 @@ const UpdateUserTL = ({ userId, onUserUpdate }) => {
 
     const [userData, setUserData] = useState({
         name: '',
-        email: '',
-        role: '',
         birthday: '',
         number: '',
         homeaddress: '',
@@ -28,8 +26,6 @@ const UpdateUserTL = ({ userId, onUserUpdate }) => {
         if (userlg) {
             setUserData({
                 name: userlg.name || '',
-                email: userlg.email || '',
-                role: userlg.role || '',
                 birthday: userlg.birthday ? moment(userlg.birthday).format('YYYY-MM-DD') : '',
                 number: userlg.number || '',
                 homeaddress: userlg.homeaddress || '',
@@ -112,28 +108,6 @@ const UpdateUserTL = ({ userId, onUserUpdate }) => {
                 onChange={handleChange}
                 margin="normal"
             />
-            <TextField
-                fullWidth
-                label="Email"
-                name="email"
-                value={userData.email}
-                onChange={handleChange}
-                margin="normal"
-            />
-            <FormControl fullWidth margin="normal">
-                <InputLabel id="role-label">Role</InputLabel>
-                <Select
-                    labelId="role-label"
-                    name="role"
-                    value={userData.role}
-                    onChange={handleChange}
-                >
-                    <MenuItem value=""><em>Choose One</em></MenuItem>
-                    <MenuItem value="Lead Generation">Lead Generation</MenuItem>
-                    <MenuItem value="Telemarketer">Telemarketer</MenuItem>
-                    <MenuItem value="Team Leader">Team Leader</MenuItem>
-                </Select>
-            </FormControl>
             <TextField
                 fullWidth
                 label="Birthday"
