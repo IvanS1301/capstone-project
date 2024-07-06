@@ -41,48 +41,30 @@ const AgentLeadDetails = ({ unassignedLeads, userlgs, onLeadUpdate }) => {
   const iconButtonStyle = { color: "#111827" };
 
   // Custom rendering function for status
-  const renderStatusCell = (params) => {
-    const getStatusColor = (callDisposition) => {
-      switch (callDisposition) {
-        case 'Booked':
-          return 'bg-emerald-700';
-        case 'Warm Lead':
-          return 'bg-rose-900';
-        case 'Email':
-          return 'bg-cyan-800';
-        case 'Not Eligible':
-          return 'text-[#0c0a09]';
-        case 'Already Installed':
-          return 'text-[#0c0a09]';
-        case 'Wrong/Not Working':
-          return 'text-[#0c0a09]';
-        case 'Residential':
-          return 'text-[#0c0a09]';
-        case 'Callback':
-          return 'text-[#0c0a09]';
-        case 'Do Not Call':
-          return 'text-[#0c0a09]';
-        case 'No Answer':
-          return 'text-[#0c0a09]';
-        case 'Not Interested':
-          return 'text-[#0c0a09]';
-        case 'Voicemail':
-          return 'text-[#0c0a09]';
-        default:
-          return 'text-[#0c0a09]'; // Default color for unrecognized statuses
-      }
-    };
+    const renderStatusCell = (params) => {
+      const getStatusColor = (callDisposition) => {
+        switch (callDisposition) {
+          case 'Booked':
+            return { backgroundColor: '#065f46', color: 'white' }; // bg-emerald-700
+          case 'Warm Lead':
+            return { backgroundColor: '#7f1d1d', color: 'white' }; // bg-rose-900
+          case 'Email':
+            return { backgroundColor: '#164e63', color: 'white' }; // bg-cyan-800
+          default:
+            return { color: '#0c0a09' }; // Default color for other statuses
+        }
+      };
     
-    const statusColorClass = getStatusColor(params.value);
-
-    return (
-      <div className="flex items-center h-full mr-3 mb-4">
-        <div className={`flex items-center justify-center text-white rounded-full w-40 h-7 ${statusColorClass}`}>
-          {params.value}
+      const statusStyle = getStatusColor(params.value);
+    
+      return (
+        <div style={{ display: 'flex', alignItems: 'center', height: '100%', marginRight: '12px', marginBottom: '16px' }}>
+          <div style={{ ...statusStyle, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '9999px', width: '160px', height: '28px' }}>
+            {params.value}
+          </div>
         </div>
-      </div>
-    );
-  };
+      );
+    };
 
   const columns = [
     {
