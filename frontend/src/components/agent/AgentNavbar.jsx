@@ -61,7 +61,7 @@ const AgentNavbar = ({ onSearch }) => {
             });
 
             if (response.ok) {
-                setNotifications(notifications.map(n => n._id === id ? { ...n, isRead: true } : n));
+                setNotifications(notifications.map(n => n._id === id ? { ...n, readByAgent: true } : n));
             } else {
                 console.error('Failed to mark notification as read');
             }
@@ -78,7 +78,7 @@ const AgentNavbar = ({ onSearch }) => {
         setProfileAnchorEl(null);
     };
 
-    const unreadCount = notifications.filter(n => !n.isRead).length;
+    const unreadCount = notifications.filter(n => !n.readByAgent).length;
 
     return (
         <Box display="flex" justifyContent="space-between" p={2}>
@@ -116,7 +116,7 @@ const AgentNavbar = ({ onSearch }) => {
                         <MenuItem
                             key={notification._id}
                             onClick={() => handleMarkAsRead(notification._id)}
-                            sx={{ backgroundColor: notification.isRead ? 'inherit' : '#f0f0f0' }}
+                            sx={{ backgroundColor: notification.readByAgent ? 'inherit' : '#f0f0f0' }}
                         >
                             {notification.message}
                         </MenuItem>
