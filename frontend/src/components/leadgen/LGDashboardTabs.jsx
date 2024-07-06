@@ -17,6 +17,59 @@ const LGDashboardTabs = ({ leadGenStats, leads }) => {
     /** --- HEADER SUBTITLE FORMAT --- */
     const formattedDate = moment(leadGenStats.updatedAt).format('MMMM Do YYYY, h:mm:ss a');
 
+    /** --- DOWNLOAD REPORTS AS CSV FILE --- */
+    const handleDownloadReports = () => {
+        const csvHeaders = [
+            'Leads Today',
+            'Total Leads',
+            'Leads Assigned',
+            'Leads Available',
+            'Recent Leads',
+            'Suburb',
+            'Type',
+            'Lead Gen Date',
+        ];
+
+        // Report header row
+        const reportHeader = [
+            'DASHBOARD REPORT',
+            `As of ${formattedDate}`
+        ];
+
+        const totalRow = [
+            `"${leadGenStats.leadsCreatedToday || 0}"`,
+            `"${leadGenStats.leadsCreated || 0}"`,
+            `"${leadGenStats.leadsAssigned || 0}"`,
+            `"${leadGenStats.leadsAvailable || 0}"`,
+            '', '', '', '', // Empty fields for leadName, leadCity, leadType, and Date
+        ];
+
+        const leadRows = leads.map(lead => [
+            '', '', '', '', // Empty fields for the total values
+            `"${lead.name || ''}"`,
+            `"${lead.city || ''}"`,
+            `"${lead.type || ''}"`,
+            `"${lead.createdAt || ''}"`,
+            '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''
+        ]);
+
+        const csvContent = [
+            reportHeader.join(','), // Add the report header row
+            csvHeaders.join(','),
+            totalRow.join(','),
+            ...leadRows.map(row => row.join(','))
+        ].join('\n');
+
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.setAttribute('href', url);
+        link.setAttribute('download', `dashboard_report_${formattedDate}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+
     return (
         <Box m="20px">
             {/* HEADER */}
@@ -25,6 +78,7 @@ const LGDashboardTabs = ({ leadGenStats, leads }) => {
 
                 <Box>
                     <Button
+                        onClick={handleDownloadReports}
                         sx={{
                             backgroundColor: "#3e4396",
                             color: "#e0e0e0",
