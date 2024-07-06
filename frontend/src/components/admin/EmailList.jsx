@@ -142,7 +142,7 @@ const EmailList = ({ emails, userlgs, onEmailDelete }) => {
             flex: 1,
             minWidth: 180,
             renderCell: (params) =>
-                moment(params.row.createdAt).startOf('hour').fromNow()
+                moment(params.row.createdAt).startOf('minute').fromNow()
         },
         {
             field: "actions",
