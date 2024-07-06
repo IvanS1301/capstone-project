@@ -230,7 +230,7 @@ const AgentAnalyticsTabs = ({ bookedUnits, recentBookings }) => {
                     backgroundColor="#d1d5db"
                     borderRadius="8px"
                     p="3px"
-                    marginTop="20px"
+                    marginTop="10px"
                 >
                     <Box
                         backgroundColor="#111827"
