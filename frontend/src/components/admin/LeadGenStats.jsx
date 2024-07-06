@@ -68,42 +68,49 @@ const LeadGenStats = ({ leadGenStats }) => {
                 m="30px 0 0 0"
                 height="39vh"
                 sx={{
-                    "& .MuiDataGrid-root": {
-                        border: "none",
-                    },
-                    "& .MuiDataGrid-cell": {
-                        borderBottom: "none",
-                        color: "#111827",
-                        borderTop: `1px solid #525252 !important`,
-                        fontWeight: "600"
-                    },
-                    "& .name-column--cell": {
-                        color: "#1d4ed8",
-                    },
-                    "& .MuiDataGrid-columnHeader": {
-                        backgroundColor: "#111827",
-                        borderBottom: "none",
-                        color: "#e0e0e0",
-                        fontSize: "18px",
-                    },
-                    "& .MuiDataGrid-virtualScroller": {
-                        backgroundColor: "#d1d5db",
-                        fontSize: "17px",
-                    },
-                    "& .MuiDataGrid-headerContainer": {
-                        borderTop: "none",
-                    },
-                    "& .MuiDataGrid-footerContainer": {
-                        borderTop: "none",
-                        backgroundColor: "#111827",
-                    },
-                    "& .MuiCheckbox-root": {
-                        color: `#111827 !important`,
-                    },
-                    "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
-                        color: `#111827 !important`,
-                        fontWeight: "800"
-                    },
+                  "& .MuiDataGrid-root": {
+                    border: "none",
+                  },
+                  "& .MuiDataGrid-cell": {
+                    borderBottom: "none",
+                    color: "#111827",
+                    borderTop: `1px solid #525252 !important`,
+                    fontWeight: "600"
+                  },
+                  "& .name-column--cell": {
+                    color: "#1d4ed8",
+                  },
+                  "& .MuiDataGrid-columnHeader": {
+                    backgroundColor: "#111827",
+                    borderBottom: "none",
+                    color: "#e0e0e0",
+                    fontSize: "18px",
+                  },
+                  "& .MuiDataGrid-virtualScroller": {
+                    backgroundColor: "#d1d5db",
+                    fontSize: "17px",
+                  },
+                  "& .MuiDataGrid-headerContainer": {
+                    borderTop: "none",
+                  },
+                  "& .MuiDataGrid-footerContainer": {
+                    borderTop: "none",
+                    backgroundColor: "#111827",
+                    color: "#ffffff",
+                  },
+                  "& .MuiTablePagination-root": {
+                    color: "#ffffff !important", // Ensure the pagination text is white
+                  },
+                  "& .MuiTablePagination-actions .MuiButtonBase-root": {
+                    color: "#ffffff !important", // Ensure the pagination buttons are white
+                  },
+                  "& .MuiCheckbox-root": {
+                    color: `#111827 !important`,
+                  },
+                  "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
+                    color: `#111827 !important`,
+                    fontWeight: "800"
+                  },
                 }}
             >
                 <DataGrid
