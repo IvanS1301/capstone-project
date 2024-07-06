@@ -144,7 +144,7 @@ const LeadDetails = ({ leads, userlgs, onLeadUpdate }) => {
             backgroundColor: "#111827",
             borderBottom: "none",
             color: "#e0e0e0",
-            fontSize: "18px"
+            fontSize: "18px",
           },
           "& .MuiDataGrid-virtualScroller": {
             backgroundColor: "#d1d5db",
@@ -156,6 +156,13 @@ const LeadDetails = ({ leads, userlgs, onLeadUpdate }) => {
           "& .MuiDataGrid-footerContainer": {
             borderTop: "none",
             backgroundColor: "#111827",
+            color: "#ffffff",
+          },
+          "& .MuiTablePagination-root": {
+            color: "#ffffff !important", // Ensure the pagination text is white
+          },
+          "& .MuiTablePagination-actions .MuiButtonBase-root": {
+            color: "#ffffff !important", // Ensure the pagination buttons are white
           },
           "& .MuiCheckbox-root": {
             color: `#111827 !important`,
