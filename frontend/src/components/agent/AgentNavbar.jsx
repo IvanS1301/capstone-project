@@ -19,6 +19,9 @@ const AgentNavbar = ({ onSearch }) => {
     const [searchQuery, setSearchQuery] = useState("");
     const [notifications, setNotifications] = useState([]);
     const [anchorEl, setAnchorEl] = useState(null);
+    const [profileAnchorEl, setProfileAnchorEl] = useState(null);
+
+    const { userLG } = useAuthContext();
 
     useEffect(() => {
         const fetchNotifications = async () => {
