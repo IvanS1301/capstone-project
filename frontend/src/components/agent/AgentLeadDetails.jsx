@@ -42,19 +42,36 @@ const AgentLeadDetails = ({ unassignedLeads, userlgs, onLeadUpdate }) => {
 
   // Custom rendering function for status
   const renderStatusCell = (params) => {
-    const getStatusColor = (status) => {
-      switch (status) {
+    const getStatusColor = (callDisposition) => {
+      switch (callDisposition) {
         case 'Booked':
           return 'bg-emerald-700';
         case 'Warm Lead':
-          return 'bg-rose-700';
+          return 'bg-rose-900';
         case 'Email':
           return 'bg-cyan-800';
+        case 'Not Eligible':
+          return 'text-stone-950';
+        case 'Already Installed':
+          return 'text-stone-950';
+        case 'Wrong/Not Working':
+          return 'text-stone-950';
+        case 'Residential':
+          return 'text-stone-950';
+        case 'Callback':
+          return 'text-stone-950';
+        case 'Do Not Call':
+          return 'text-stone-950';
+        case 'No Answer':
+          return 'text-stone-950';
+        case 'Not Interested':
+          return 'text-stone-950';
+        case 'Voicemail':
+          return 'text-stone-950';
         default:
-          return 'text-gray-950'; // Default color for unrecognized statuses
+          return 'none'; // Default color for unrecognized statuses
       }
     };
-
     const statusColorClass = getStatusColor(params.value);
 
     return (
