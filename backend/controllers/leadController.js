@@ -35,7 +35,7 @@ const getUnassignedLeads = async (req, res) => {
         let unassignedLeads = await Lead.find({ assignedTo: userLG_id }).exec();
 
         // If there are no assigned leads or all assigned leads have been updated, fetch new unassigned leads and assign them to the Telemarketer
-        if (unassignedLeads.length === 0 || unassignedLeads.every(lead => lead.callDisposition && lead.remarks)) {
+        if (unassignedLeads.length === 0 || unassignedLeads.every(lead => lead.callDisposition)) {
             let newLeads = [];
 
             const fetchLeads = async (types, limit) => {
