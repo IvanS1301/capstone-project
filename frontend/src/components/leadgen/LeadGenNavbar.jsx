@@ -26,7 +26,7 @@ const LeadGenNavbar = ({ onSearch }) => {
     useEffect(() => {
         const fetchNotifications = async () => {
             try {
-                const response = await fetch(`${URL}/notifications`);
+                const response = await fetch(`${URL}/api/notifications`);
                 const data = await response.json();
                 setNotifications(data);
             } catch (error) {
