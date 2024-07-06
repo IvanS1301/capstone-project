@@ -69,7 +69,7 @@ const LoginLG = () => {
             >
               Log In
             </button>
-            {error && <div className="error">{error}</div>}
+            {error && <div className="error text-rose-600">{error}</div>}
           </form>
 
           <div className="mt-6 grid grid-cols-3 items-center text-gray-400">
