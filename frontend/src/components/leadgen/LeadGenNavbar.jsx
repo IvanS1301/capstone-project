@@ -135,7 +135,7 @@ const LeadGenNavbar = ({ onSearch }) => {
                 >
                     <MenuItem>
                         <Typography>
-                            <Link to={`/viewprofile/${userLG._id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                            <Link to={`/viewuser/${userLG._id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                                 Update Status
                             </Link>
                         </Typography>
