@@ -1,26 +1,25 @@
-import { useState } from "react"
-import { Link } from 'react-router-dom'
-import { useLoginLG } from "../../hooks/useLoginLG"
+import { useState } from "react";
+import { Link } from 'react-router-dom';
+import { useLoginLG } from "../../hooks/useLoginLG";
 
 /** --- MATERIAL UI --- */
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 
 const LoginLG = () => {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [showPassword, setShowPassword] = useState(false) // State for password visibility
-  const { loginLG, error, isLoading } = useLoginLG()
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false); // State for password visibility
+  const { loginLG, error, isLoading } = useLoginLG();
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-
-    await loginLG(email, password)
-  }
+    e.preventDefault();
+    await loginLG(email, password);
+  };
 
   const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword)
-  }
+    setShowPassword(!showPassword);
+  };
 
   return (
     <section className="bg-[#b1b4ba] min-h-screen flex items-center justify-center">
@@ -100,4 +99,4 @@ const LoginLG = () => {
   );
 };
 
-export default LoginLG
+export default LoginLG;
