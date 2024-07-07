@@ -194,6 +194,7 @@ const UpdateLeadForm = ({ leadId, onLeadUpdate }) => {
                     value={leadData.emailaddress}
                     onChange={handleChange}
                     margin="normal"
+                    type="email"
                 />
                 <Box mt={2}>
                     <Button variant="contained" type="submit" fullWidth sx={{ backgroundColor: '#3e4396' }}>
