@@ -1,9 +1,10 @@
 /** --- MATERIAL UI --- */
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, Button } from "@mui/material";
 import BookIcon from '@mui/icons-material/Book';
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 import CollectionsBookmarkIcon from '@mui/icons-material/CollectionsBookmark';
 import BeenhereIcon from '@mui/icons-material/Beenhere';
+import DownloadOutlinedIcon from "@mui/icons-material/DownloadOutlined";
 
 /** --- IMPORT CHART --- */
 import Header from '../Chart/Header';
@@ -16,11 +17,88 @@ const AgentAnalyticsTabs = ({ bookedUnits, recentBookings }) => {
         return <Typography variant="h6" color="error">No data available</Typography>;
     }
 
+    /** --- DOWNLOAD REPORTS AS CSV FILE --- */
+    const handleDownloadReports = () => {
+        const csvHeaders = [
+            'Assigned Leads Daily',
+            'Booked Daily',
+            'Booked Month-to-Date',
+            'All Time',
+            'Types Received Today',
+            'Count',
+            'Call Dispositions Today',
+            'Count'
+        ];
+
+        // Report header row
+        const reportHeader = [
+            'ANALYTICS REPORT',
+            `Statistics for Today`
+        ];
+
+        const totalRow = [
+            `"${bookedUnits.assignedDaily || 0}"`,
+            `"${bookedUnits.bookedDaily || 0}"`,
+            `"${bookedUnits.bookedMonth || 0}"`,
+            `"${bookedUnits.totalBooked || 0}"`,
+            '', '', // Empty fields for type, and count
+            '', '', // Empty fields for callDisposition, and count
+        ];
+
+        const typesReceivedRows = Object.entries(bookedUnits.typesReceivedDaily || {}).map(([type, count]) => [
+            '', '', '', '', // Empty fields for the total values
+            `"${type}"`,
+            `"${count}"`,
+            '', '' // Empty fields for callDisposition, and count
+        ]);
+
+        const callDispositionsRows = Object.entries(bookedUnits.callDispositionDaily || {}).map(([disposition, count]) => [
+            '', '', '', '', // Empty fields for the total values
+            '', '', // Empty fields for type, and count
+            `"${disposition}"`,
+            `"${count}"`
+        ]);
+
+        const csvContent = [
+            reportHeader.join(','), // Add the report header row
+            csvHeaders.join(','),
+            totalRow.join(','),
+            ...typesReceivedRows.map(row => row.join(',')),
+            ...callDispositionsRows.map(row => row.join(','))
+        ].join('\n');
+
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.setAttribute('href', url);
+        link.setAttribute('download', `analytics_report_${moment().format('YYYYMMDD')}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+
     return (
         <Box m="20px">
             {/* HEADER */}
             <Box display="flex" justifyContent="space-between" alignItems="center" sx={{ backgroundColor: "#111827", padding: "1px 5px", borderRadius: "8px", marginBottom: "20px" }}>
                 <Header title="Booked Summary" subtitle="Statistics for Today" />
+
+                <Box>
+                    <Button
+                        onClick={handleDownloadReports}
+                        sx={{
+                            backgroundColor: "#3e4396",
+                            color: "#e0e0e0",
+                            fontSize: "14px",
+                            fontWeight: "bold",
+                            padding: "10px 20px",
+                            mr: "30px"
+                        }}
+                    >
+                        <DownloadOutlinedIcon sx={{ mr: "10px" }} />
+                        Download Reports
+                    </Button>
+                </Box>
             </Box>
 
             {/* GRID & CHARTS */}
