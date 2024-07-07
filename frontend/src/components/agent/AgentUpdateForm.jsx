@@ -127,6 +127,15 @@ const AgentUpdateForm = ({ unassignedId, onLeadUpdate }) => {
                                 name="type"
                                 value={leadData.type}
                                 onChange={handleChange}
+                                label="Type"
+                                MenuProps={{
+                                    PaperProps: {
+                                        style: {
+                                            maxHeight: 240, // Adjust the maximum height
+                                            width: 250 // Adjust the width
+                                        }
+                                    }
+                                }}
                             >
                                 <MenuItem value=""><em>Choose One</em></MenuItem>
                                 <MenuItem value="Warehouse">Warehouse</MenuItem>
@@ -213,6 +222,15 @@ const AgentUpdateForm = ({ unassignedId, onLeadUpdate }) => {
                                 name="callDisposition"
                                 value={leadData.callDisposition}
                                 onChange={handleChange}
+                                label="Call Disposition"
+                                MenuProps={{
+                                    PaperProps: {
+                                        style: {
+                                            maxHeight: 240, // Adjust the maximum height
+                                            width: 250 // Adjust the width
+                                        }
+                                    }
+                                }}
                             >
                                 <MenuItem value=""><em>Choose One</em></MenuItem>
                                 <MenuItem value="Not Eligible">Not Eligible</MenuItem>
