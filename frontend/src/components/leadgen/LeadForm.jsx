@@ -208,6 +208,7 @@ const LeadForm = () => {
               onChange={handleChange}
               margin="normal"
               error={emptyFields.includes('emailaddress')}
+              type="email"
             />
           </Grid>
           <Grid item xs={12}>
