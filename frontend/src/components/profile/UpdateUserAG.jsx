@@ -128,6 +128,7 @@ const UpdateUserAG = ({ userId, onUserUpdate }) => {
             name="gender"
             value={userData.gender}
             onChange={handleChange}
+            label="Gender"
           >
             <MenuItem value=""><em>Choose One</em></MenuItem>
             <MenuItem value="Male">Male</MenuItem>
