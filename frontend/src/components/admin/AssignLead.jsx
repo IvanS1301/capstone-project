@@ -102,6 +102,7 @@ const AssignLead = ({ userlgs, leadId, onLeadUpdate }) => {
               name="assignedTo"
               value={leadData.assignedTo}
               onChange={handleChange}
+              label="Assign To"
               required
             >
               <MenuItem value="">
