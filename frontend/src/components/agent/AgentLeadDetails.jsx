@@ -73,7 +73,6 @@ const AgentLeadDetails = ({ unassignedLeads, userlgs, onLeadUpdate }) => {
       flex: 1,
       minWidth: 100,
       renderCell: (params) => params.value.slice(20, 26),
-      cellClassName: "name-column--cell",
     },
     {
       field: "name",
@@ -110,7 +109,8 @@ const AgentLeadDetails = ({ unassignedLeads, userlgs, onLeadUpdate }) => {
       field: "remarks",
       headerName: "Remarks",
       flex: 1,
-      minWidth: 180
+      minWidth: 180,
+      cellClassName: "name-column--cell",
     },
     {
       field: "Distributed",
