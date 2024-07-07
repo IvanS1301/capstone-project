@@ -212,6 +212,7 @@ const AgentUpdateForm = ({ unassignedId, onLeadUpdate }) => {
                             value={leadData.emailaddress}
                             onChange={handleChange}
                             margin="normal"
+                            type="email"
                         />
                     </Grid>
                     <Grid item xs={12}>
