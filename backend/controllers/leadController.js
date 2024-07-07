@@ -119,9 +119,6 @@ const createLead = async (req, res) => {
     if (!type) {
         emptyFields.push('type')
     }
-    if (!phonenumber) {
-        emptyFields.push('phonenumber')
-    }
     if (!streetaddress) {
         emptyFields.push('streetaddress')
     }
@@ -130,9 +127,6 @@ const createLead = async (req, res) => {
     }
     if (!postcode) {
         emptyFields.push('postcode')
-    }
-    if (!emailaddress) {
-        emptyFields.push('emailaddress')
     }
     if (emptyFields.length > 0) {
         return res.status(400).json({ error: 'Please fill in all the fields', emptyFields })
