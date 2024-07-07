@@ -137,7 +137,6 @@ const LeadList = ({ tlLeads, userlgs, onLeadUpdate }) => {
       flex: 1,
       minWidth: 90,
       renderCell: (params) => params.value.slice(20, 26),
-      cellClassName: "name-column--cell",
     },
     {
       field: "name",
