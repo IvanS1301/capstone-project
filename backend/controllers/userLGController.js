@@ -4,7 +4,7 @@ const mongoose = require('mongoose')
 const { updateInventoryCounts } = require('./inventoryController')
 
 const createToken = (_id) => {
-  return jwt.sign({ _id }, process.env.SECRET, { expiresIn: '3d' })
+  return jwt.sign({ _id }, process.env.SECRET, { expiresIn: '10d' })
 }
 
 // login user
