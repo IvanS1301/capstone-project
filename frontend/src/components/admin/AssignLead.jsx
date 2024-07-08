@@ -103,6 +103,14 @@ const AssignLead = ({ userlgs, leadId, onLeadUpdate }) => {
               value={leadData.assignedTo}
               onChange={handleChange}
               label="Assign To"
+              MenuProps={{
+                PaperProps: {
+                    style: {
+                        maxHeight: 240, // Adjust the maximum height
+                        width: 250 // Adjust the width
+                    }
+                }
+            }}
               required
             >
               <MenuItem value="">
