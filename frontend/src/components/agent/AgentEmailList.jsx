@@ -190,6 +190,9 @@ const AgentEmailList = ({ emails, userlgs, onEmailDelete }) => {
                     color: "#e0e0e0",
                     fontSize: "18px",
                   },
+                  "& .MuiDataGrid-sortIcon": {
+                    color: "#ffffff !important", // Change sort icon color to white
+                  },
                   "& .MuiDataGrid-virtualScroller": {
                     backgroundColor: "#d1d5db",
                     fontSize: "17px",
