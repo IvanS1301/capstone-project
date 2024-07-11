@@ -213,13 +213,13 @@ const UserLists = ({ userlgs, onUserUpdate }) => {
       field: "email",
       headerName: "Email",
       flex: 1,
-      minWidth: 270,
+      minWidth: 300,
     },
     {
       field: "role",
       headerName: "Role",
       flex: 1,
-      minWidth: 280,
+      minWidth: 250,
       renderCell: renderRoleCell,
     },
     {
@@ -240,7 +240,7 @@ const UserLists = ({ userlgs, onUserUpdate }) => {
       field: "status",
       headerName: "Status",
       flex: 1,
-      minWidth: 200,
+      minWidth: 220,
       renderCell: renderStatusCell,
     },
     {
@@ -304,6 +304,9 @@ const UserLists = ({ userlgs, onUserUpdate }) => {
             borderBottom: "none",
             color: "#e0e0e0",
             fontSize: "18px",
+          },
+          "& .MuiDataGrid-sortIcon": {
+            color: "#ffffff !important", // Change sort icon color to white
           },
           "& .MuiDataGrid-virtualScroller": {
             backgroundColor: "#d1d5db",
