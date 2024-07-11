@@ -84,6 +84,9 @@ const BookedUnits = ({ bookedUnits }) => {
                     backgroundColor: "#d1d5db",
                     fontSize: "17px",
                   },
+                  "& .MuiDataGrid-sortIcon": {
+                    color: "#ffffff !important", // Change sort icon color to white
+                  },
                   "& .MuiDataGrid-headerContainer": {
                     borderTop: "none",
                   },
