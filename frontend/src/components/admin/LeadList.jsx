@@ -190,7 +190,7 @@ const LeadList = ({ tlLeads, userlgs, onLeadUpdate }) => {
     },
     {
       field: "updatedAt",
-      headerName: "Last Touch",
+      headerName: "Updated At",
       flex: 1,
       minWidth: 150,
       renderCell: (params) => {
