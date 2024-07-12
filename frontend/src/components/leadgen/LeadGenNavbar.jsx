@@ -8,7 +8,6 @@ import { Box, IconButton, Badge, Menu, MenuItem, Typography } from "@mui/materia
 /** --- MATERIAL UI ICONS --- */
 import InputBase from "@mui/material/InputBase";
 import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
-import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import SearchIcon from "@mui/icons-material/Search";
 
@@ -122,9 +121,6 @@ const LeadGenNavbar = ({ onSearch }) => {
                         </MenuItem>
                     ))}
                 </Menu>
-                <IconButton sx={{ color: "#111827" }}>
-                    <SettingsOutlinedIcon />
-                </IconButton>
                 <IconButton sx={{ color: "#111827" }} onClick={handleProfileMenuOpen}>
                     <PersonOutlinedIcon />
                 </IconButton>
