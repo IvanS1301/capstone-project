@@ -70,7 +70,7 @@ const AgentViewForm = ({ unassignedId }) => {
             <Typography variant="body1" component="p" fontSize="20px" style={{ color: 'white' }}>{formattedDistributed}</Typography>
           </Grid>
           <Grid item xs={12} sm={6}>
-            <Typography variant="body1" component="p" fontSize="20px" style={{ color: '#94e2cd' }}><strong>Last Touch: </strong></Typography>
+            <Typography variant="body1" component="p" fontSize="20px" style={{ color: '#94e2cd' }}><strong>Updated At: </strong></Typography>
             {lead.callDisposition && (
               <Typography variant="body1" component="p" fontSize="20px" style={{ color: 'white' }}>{formattedUpdatedAt}</Typography>
             )}
