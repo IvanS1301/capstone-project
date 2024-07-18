@@ -7,9 +7,7 @@ import { HomeOutlined, ContactsOutlined } from "@mui/icons-material";
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { AiOutlineMenu } from "react-icons/ai";
 import AnalyticsIcon from '@mui/icons-material/Analytics';
-import ContactMailIcon from '@mui/icons-material/ContactMail';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
-import SettingsIcon from '@mui/icons-material/Settings';
 import MarkEmailReadIcon from '@mui/icons-material/MarkEmailRead';
 import { Typography } from "@mui/material";
 
@@ -52,13 +50,10 @@ const AgentSidebar = () => {
                 setSelected("Emails");
                 break;
             case "/AgentService":
-                setSelected("Analytics");
-                break;
-            case "/AgentAdd":
-                setSelected("Add Email");
+                setSelected("Statistics");
                 break;
             case `/viewuser/${userLG._id}`:
-                setSelected("Profile");
+                setSelected("Personal Info");
                 break;
             case "/Settings":
                 setSelected("Settings");
@@ -165,13 +160,6 @@ const AgentSidebar = () => {
                         <Typography sx={{ fontSize: '14px', m: "15px 0 5px 20px" }}>Email</Typography>
                     </div>
                 )}
-                <Item
-                    title="Add New Email"
-                    to="/AgentAdd"
-                    icon={<ContactMailIcon />}
-                    selected={selected}
-                    setSelected={setSelected}
-                />
                 <Item
                     title="Emails"
                     to="/AgentEmails"
