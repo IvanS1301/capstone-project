@@ -21,14 +21,15 @@ const AdminDashboard = () => {
     const [recentBookings, setRecentBookings] = useState(null);
     const [searchQuery, setSearchQuery] = useState('');
     const [filteredBookings, setFilteredBookings] = useState([]);
+    const [timePeriod, setTimePeriod] = useState('');
 
-    const fetchData = useCallback(async () => {
+    const fetchData = useCallback(async (period = 'annually') => {
         try {
             const [inventoryRes, bookingsRes] = await Promise.all([
-                fetch(`${URL}/api/inventories/inventory`, {
+                fetch(`${URL}/api/inventories/inventory?range=${period}`, {
                     headers: { 'Authorization': `Bearer ${userLG.token}` },
                 }),
-                fetch(`${URL}/api/bookings/recent-bookings`, {
+                fetch(`${URL}/api/bookings/recent-bookings?range=${period}`, {
                     headers: { 'Authorization': `Bearer ${userLG.token}` },
                 })
             ]);
@@ -54,9 +55,13 @@ const AdminDashboard = () => {
         }
     }, [dispatch, userLG]);
 
-    useEffect(() => {
-        fetchData();
-    }, [fetchData]);
+   useEffect(() => {
+        fetchData(timePeriod);
+    }, [fetchData, timePeriod]);
+
+    const handleTimePeriodChange = (newPeriod) => {
+        setTimePeriod(newPeriod);
+    };
 
     const handleSearch = useCallback((query) => {
         const lowerCaseQuery = query.toLowerCase();
@@ -101,7 +106,7 @@ const AdminDashboard = () => {
                 <div className="p-1 flex-grow flex justify-center items-center">
                     <div className="flex flex-col w-full items-center overflow-y-hidden">
                         <div className="w-full">
-                            <DashboardTabs inventory={inventory} recentBookings={searchQuery ? filteredBookings : recentBookings} />
+                            <DashboardTabs inventory={inventory} recentBookings={searchQuery ? filteredBookings : recentBookings} timePeriod={timePeriod} onTimePeriodChange={handleTimePeriodChange}/>
                         </div>
                     </div>
                 </div>
