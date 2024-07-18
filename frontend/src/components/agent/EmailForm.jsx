@@ -9,13 +9,13 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { useEmailsContext } from "../../hooks/useEmailsContext";
 import { useAuthContext } from "../../hooks/useAuthContext";
 
-const EmailForm = () => {
+const EmailForm = ({ unassignedId, email, onLeadUpdate }) => {
     const { dispatch } = useEmailsContext();
     const { userLG } = useAuthContext();
 
     const [emailData, setEmailData] = useState({
-        from: '',
-        to: '',
+        from: userLG.email || '',
+        to: email || '',
         subject: '',
         text: ''
     });
@@ -24,9 +24,17 @@ const EmailForm = () => {
     const [emptyFields, setEmptyFields] = useState([]);
     const [openSuccessModal, setOpenSuccessModal] = useState(false);
 
+    useEffect(() => {
+        setEmailData((prevData) => ({
+            ...prevData,
+            from: userLG.email || '',
+            to: email || ''
+        }));
+    }, [email, userLG.email]);
+
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setEmailData(prevData => ({
+        setEmailData((prevData) => ({
             ...prevData,
             [name]: value
         }));
@@ -68,6 +76,10 @@ const EmailForm = () => {
             setEmptyFields([]);
             setOpenSuccessModal(true);
             dispatch({ type: 'CREATE_EMAIL', payload: json });
+            setTimeout(() => {
+                setOpenSuccessModal(false);
+                onLeadUpdate();
+            }, 2000);
         }
     };
 
@@ -80,7 +92,7 @@ const EmailForm = () => {
             sx={{
                 position: 'absolute',
                 top: '50%',
-                left: '55%',
+                left: '50%',
                 transform: 'translate(-50%, -50%)',
                 width: 900,
                 bgcolor: '#f1f1f1',
@@ -91,7 +103,7 @@ const EmailForm = () => {
             }}
         >
             <form onSubmit={handleSubmit}>
-                <div className="text-[#D22B2B] text-2xl mb-3 font-medium">Add New Email</div>
+                <div className="text-[#D22B2B] text-2xl mb-3 font-medium">Send An Email</div>
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
                         <TextField
@@ -102,6 +114,7 @@ const EmailForm = () => {
                             onChange={handleChange}
                             margin="normal"
                             error={emptyFields.includes('from')}
+                            helperText={emptyFields.includes('from') && 'This field is required'}
                         />
                     </Grid>
                     <Grid item xs={12}>
@@ -113,6 +126,7 @@ const EmailForm = () => {
                             onChange={handleChange}
                             margin="normal"
                             error={emptyFields.includes('to')}
+                            helperText={emptyFields.includes('to') && 'This field is required'}
                         />
                     </Grid>
                     <Grid item xs={12}>
@@ -124,6 +138,7 @@ const EmailForm = () => {
                             onChange={handleChange}
                             margin="normal"
                             error={emptyFields.includes('subject')}
+                            helperText={emptyFields.includes('subject') && 'This field is required'}
                         />
                     </Grid>
                     <Grid item xs={12}>
@@ -137,6 +152,7 @@ const EmailForm = () => {
                             onChange={handleChange}
                             margin="normal"
                             error={emptyFields.includes('text')}
+                            helperText={emptyFields.includes('text') && 'This field is required'}
                             InputProps={{
                                 sx: {
                                     padding: '0.5rem 1rem', // Adjust padding to align text properly
@@ -145,7 +161,6 @@ const EmailForm = () => {
                             }}
                         />
                     </Grid>
-
                     <Grid item xs={12}>
                         <Box mt={2}>
                             <Button variant="contained" type="submit" fullWidth sx={{ backgroundColor: '#3e4396' }}>
@@ -165,7 +180,7 @@ const EmailForm = () => {
                     sx={{
                         position: 'absolute',
                         top: '50%',
-                        left: '55%',
+                        left: '50%',
                         transform: 'translate(-50%, -50%)',
                         width: 400,
                         bgcolor: '#f1f1f1',
@@ -177,7 +192,7 @@ const EmailForm = () => {
                     }}
                 >
                     <CircularProgress sx={{ fontSize: 60 }} />
-                    <div style={{ fontSize: '20px', marginTop: '10px' }}>Sending, please wait...</div>
+                    <Typography variant="h6" sx={{ mt: 2 }}>Sending, please wait...</Typography>
                 </Box>
             </Modal>
             <Modal
@@ -190,7 +205,7 @@ const EmailForm = () => {
                     sx={{
                         position: 'absolute',
                         top: '50%',
-                        left: '55%',
+                        left: '50%',
                         transform: 'translate(-50%, -50%)',
                         width: 400,
                         bgcolor: '#f1f1f1',
@@ -202,7 +217,7 @@ const EmailForm = () => {
                     }}
                 >
                     <CheckCircleIcon sx={{ color: '#94e2cd', fontSize: 60 }} />
-                    <div style={{ fontSize: '20px', marginTop: '10px' }}>New email sent!</div>
+                    <Typography variant="h6" sx={{ mt: 2 }}>New email sent!</Typography>
                 </Box>
             </Modal>
         </Box>
