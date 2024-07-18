@@ -1,9 +1,11 @@
 import { Box, Button, Typography } from "@mui/material";
+import React, { useState } from 'react';
 
 /** --- OTHER MATERIAL UI ICONS --- */
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import { PeopleOutlined, ContactsOutlined } from "@mui/icons-material";
+import SaveAsSharpIcon from '@mui/icons-material/SaveAsSharp';
 import DownloadOutlinedIcon from "@mui/icons-material/DownloadOutlined";
 
 /** --- CALL DISPOSITION ICONS --- */
@@ -15,15 +17,24 @@ import PhoneMissedRoundedIcon from '@mui/icons-material/PhoneMissedRounded';
 import PhoneDisabledRoundedIcon from '@mui/icons-material/PhoneDisabledRounded';
 import VoicemailIcon from '@mui/icons-material/Voicemail';
 import ThumbDownIcon from '@mui/icons-material/ThumbDown';
+import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
+import FireplaceIcon from '@mui/icons-material/Fireplace';
+import MarkEmailReadIcon from '@mui/icons-material/MarkEmailRead';
 
 /** --- IMPORT CHART --- */
 import Header from '../Chart/Header';
-import ProgressCircle from "../Chart/ProgressCircle";
 
 /** --- TIME AND DATE FORMAT --- */
 import moment from 'moment';
 
-const DashboardTabs = ({ inventory, recentBookings }) => {
+const DashboardTabs = ({ inventory, recentBookings, timePeriod, onTimePeriodChange }) => {
+    const [activeTimePeriod, setActiveTimePeriod] = useState(timePeriod);
+
+    // Handle time period change
+    const handleTimePeriodClick = (period) => {
+        setActiveTimePeriod(period);
+        onTimePeriodChange(period);
+    };
 
     /** --- CALL DISPOSITION COUNTS --- */
     const bookedCount = inventory.callDispositionCounts ? inventory.callDispositionCounts["Booked"] || 0 : 0;
@@ -47,7 +58,8 @@ const DashboardTabs = ({ inventory, recentBookings }) => {
             'Total Leads',
             'Total Users',
             'Assigned Leads',
-            'Unassigned Leads',
+            'Available Leads',
+            'Updated Leads',
             'Telemarketer Name',
             'Lead Name',
             'Call Disposition',
@@ -76,7 +88,8 @@ const DashboardTabs = ({ inventory, recentBookings }) => {
             `"${inventory.numberOfUsers || 0}"`,
             `"${inventory.numberOfAssignedLeads || 0}"`,
             `"${inventory.numberOfUnassignedLeads || 0}"`,
-            '', '', '', // Empty fields for telemarketerName, leadName, and callDisposition
+            `"${inventory.numberOfUpdatedLeads || 0}"`,
+            '', '', '', '', // Empty fields for telemarketerName, leadName, and callDisposition
             `"${inventory.numberOfEmails || 0}"`,
             `"${bookedCount || 0}"`,
             `"${warmLeadCount || 0}"`,
@@ -92,7 +105,7 @@ const DashboardTabs = ({ inventory, recentBookings }) => {
         ];
 
         const bookingRows = recentBookings.map(booking => [
-            '', '', '', '', // Empty fields for the total values
+            '', '', '', '', '', // Empty fields for the total values
             `"${booking.telemarketerName || ''}"`,
             `"${booking.leadName || ''}"`,
             `"${booking.callDisposition || ''}"`,
@@ -150,7 +163,41 @@ const DashboardTabs = ({ inventory, recentBookings }) => {
                 {/* ROW 1 */}
 
                 <Box
-                    gridColumn="span 8"
+                    gridColumn="span 12"
+                    display="flex"
+                    gap="20px"
+                    backgroundColor="#212e4a"
+                    p="20px"
+                    borderRadius="8px"
+                >
+                    <Box flex="1" display="flex" alignItems="center" justifyContent="center" backgroundColor="#111827" p="10px" borderRadius="8px">
+                        <MonetizationOnIcon sx={{ color: "#f1f1f1", fontSize: "40px", mr: "50px" }} />
+                        <Box>
+                            <Typography variant="h3" color="#e0e0e0">{bookedCount}</Typography>
+                            <Typography variant="body1" color="#4cceac">Booked</Typography>
+                        </Box>
+                    </Box>
+                    <Box flex="1" display="flex" alignItems="center" justifyContent="center" backgroundColor="#111827" p="10px" borderRadius="8px">
+                        <FireplaceIcon sx={{ color: "#f1f1f1", fontSize: "40px", mr: "50px" }} />
+                        <Box>
+                            <Typography variant="h3" color="#e0e0e0">{warmLeadCount}</Typography>
+                            <Typography variant="body1" color="#4cceac">Warm Lead</Typography>
+                        </Box>
+                    </Box>
+                    <Box flex="1" display="flex" alignItems="center" justifyContent="center" backgroundColor="#111827" p="10px" borderRadius="8px">
+                        <MarkEmailReadIcon sx={{ color: "#f1f1f1", fontSize: "40px", mr: "50px" }} />
+                        <Box>
+                            <Typography variant="h3" color="#e0e0e0">{inventory.numberOfEmails}</Typography>
+                            <Typography variant="body1" color="#4cceac">Emails Sent</Typography>
+                        </Box>
+                    </Box>
+                </Box>
+
+
+                {/* ROW 2 */}
+
+                <Box
+                    gridColumn="span 12"
                     display="flex"
                     gap="20px"
                     backgroundColor="#212e4a"
@@ -172,6 +219,13 @@ const DashboardTabs = ({ inventory, recentBookings }) => {
                         </Box>
                     </Box>
                     <Box flex="1" display="flex" alignItems="center" justifyContent="center" backgroundColor="#111827" p="10px" borderRadius="8px">
+                        <SaveAsSharpIcon sx={{ color: "#f1f1f1", fontSize: "40px", mr: "50px" }} />
+                        <Box>
+                            <Typography variant="h3" color="#e0e0e0">{inventory.numberOfUpdatedLeads}</Typography>
+                            <Typography variant="body1" color="#e0e0e0">Updated Leads</Typography>
+                        </Box>
+                    </Box>
+                    <Box flex="1" display="flex" alignItems="center" justifyContent="center" backgroundColor="#111827" p="10px" borderRadius="8px">
                         <AssignmentTurnedInIcon sx={{ color: "#f1f1f1", fontSize: "40px", mr: "50px" }} />
                         <Box>
                             <Typography variant="h3" color="#e0e0e0">{inventory.numberOfAssignedLeads}</Typography>
@@ -187,47 +241,129 @@ const DashboardTabs = ({ inventory, recentBookings }) => {
                     </Box>
                 </Box>
 
-                <Box
-                    gridColumn="span 4"
-                    gridRow="span 2"
-                    backgroundColor="#111827"
-                    p="30px"
-                    borderRadius="8px"
-                >
-                    <Typography variant="h5" fontWeight="600" color="#e0e0e0">
-                        Booked
-                    </Typography>
-                    <Box
-                        display="flex"
-                        flexDirection="column"
-                        alignItems="center"
-                        mt="25px"
-                    >
-                        <ProgressCircle size="125" progress={bookedCount} showText={true} text={bookedCount} />
-                        <Typography
-                            variant="h5"
-                            color="#4cceac"
-                            sx={{ mt: "15px" }}
+                {/* Period Buttons */}
+                <Box m="10px">
+                    <Box display="flex" flexDirection="row" gap="5px" mt="30px">
+                        <Button
+                            variant={activeTimePeriod === 'daily' ? 'contained' : 'outlined'}
+                            onClick={() => handleTimePeriodClick('daily')}
+                            sx={{
+                                backgroundColor: activeTimePeriod === 'daily' ? '#111827' : '#111827',
+                                padding: '17px 40px',
+                                borderRadius: '8px',
+                                cursor: 'pointer',
+                                border: 0,
+                                color: '#e0e0e0',
+                                boxShadow: '0 0 8px rgba(0, 0, 0, 0.05)',
+                                letterSpacing: '1.5px',
+                                textTransform: 'uppercase',
+                                fontSize: '15px',
+                                transition: 'all 0.5s ease',
+                                '&:hover': {
+                                    letterSpacing: '3px',
+                                    backgroundColor: 'hsl(261deg 80% 48%)',
+                                    color: 'hsl(0, 0%, 100%)',
+                                    boxShadow: '0px 7px 29px 0px rgb(93 24 220)',
+                                }
+                            }}
                         >
-                            booked generated
-                        </Typography>
+                            Daily
+                </Button>
+                        <Button
+                            variant={activeTimePeriod === 'weekly' ? 'contained' : 'outlined'}
+                            onClick={() => handleTimePeriodClick('weekly')}
+                            sx={{
+                                backgroundColor: activeTimePeriod === 'weekly' ? '#111827' : '#111827',
+                                padding: '17px 40px',
+                                borderRadius: '8px',
+                                cursor: 'pointer',
+                                border: 0,
+                                color: '#e0e0e0',
+                                boxShadow: '0 0 8px rgba(0, 0, 0, 0.05)',
+                                letterSpacing: '1.5px',
+                                textTransform: 'uppercase',
+                                fontSize: '15px',
+                                transition: 'all 0.5s ease',
+                                '&:hover': {
+                                    letterSpacing: '3px',
+                                    backgroundColor: 'hsl(261deg 80% 48%)',
+                                    color: 'hsl(0, 0%, 100%)',
+                                    boxShadow: '0px 7px 29px 0px rgb(93 24 220)',
+                                }
+                            }}
+                        >
+                            Weekly
+                </Button>
+                        <Button
+                            variant={activeTimePeriod === 'monthly' ? 'contained' : 'outlined'}
+                            onClick={() => handleTimePeriodClick('monthly')}
+                            sx={{
+                                backgroundColor: activeTimePeriod === 'monthly' ? '#111827' : '#111827',
+                                padding: '17px 40px',
+                                borderRadius: '8px',
+                                cursor: 'pointer',
+                                border: 0,
+                                color: '#e0e0e0',
+                                boxShadow: '0 0 8px rgba(0, 0, 0, 0.05)',
+                                letterSpacing: '1.5px',
+                                textTransform: 'uppercase',
+                                fontSize: '15px',
+                                transition: 'all 0.5s ease',
+                                '&:hover': {
+                                    letterSpacing: '3px',
+                                    backgroundColor: 'hsl(261deg 80% 48%)',
+                                    color: 'hsl(0, 0%, 100%)',
+                                    boxShadow: '0px 7px 29px 0px rgb(93 24 220)',
+                                }
+                            }}
+                        >
+                            Monthly
+                </Button>
+                        <Button
+                            variant={activeTimePeriod === 'annually' ? 'contained' : 'outlined'}
+                            onClick={() => handleTimePeriodClick('annually')}
+                            sx={{
+                                backgroundColor: activeTimePeriod === 'annually' ? '#111827' : '#111827',
+                                padding: '17px 40px',
+                                borderRadius: '8px',
+                                cursor: 'pointer',
+                                border: 0,
+                                color: '#e0e0e0',
+                                boxShadow: '0 0 8px rgba(0, 0, 0, 0.05)',
+                                letterSpacing: '1.5px',
+                                textTransform: 'uppercase',
+                                fontSize: '15px',
+                                transition: 'all 0.5s ease',
+                                '&:hover': {
+                                    letterSpacing: '3px',
+                                    backgroundColor: 'hsl(261deg 80% 48%)',
+                                    color: 'hsl(0, 0%, 100%)',
+                                    boxShadow: '0px 7px 29px 0px rgb(93 24 220)',
+                                }
+                            }}
+                        >
+                            Annually
+                </Button>
                     </Box>
                 </Box>
 
-                {/* ROW 2 */}
+                {/* ROW 3 */}
 
                 <Box
-                    gridColumn="span 8"
+                    gridColumn="span 12"
                     gridRow="span 3"
                     backgroundColor="#d1d5db"
                     borderRadius="8px"
-                    p="20px"
+                    p="5px"
                 >
                     <Box
                         backgroundColor="#111827"
                         borderRadius="8px"
                         overflow="hidden"
-                        minHeight="100%"
+                        m="20px" // Add margin to ensure proper alignment
+                        height="91%" // Ensure it takes the full height of the parent container
+                        display="flex"
+                        flexDirection="column"
                     >
                         <Box
                             display="flex"
@@ -314,37 +450,10 @@ const DashboardTabs = ({ inventory, recentBookings }) => {
                     </Box>
                 </Box>
 
-                <Box
-                    gridColumn="span 4"
-                    gridRow="span 2"
-                    backgroundColor="#111827"
-                    p="30px"
-                    borderRadius="8px"
-                >
-                    <Typography variant="h5" fontWeight="600" color="#e0e0e0">
-                        Warm Lead
-                    </Typography>
-                    <Box
-                        display="flex"
-                        flexDirection="column"
-                        alignItems="center"
-                        mt="25px"
-                    >
-                        <ProgressCircle size="125" progress={warmLeadCount} showText={true} text={warmLeadCount} />
-                        <Typography
-                            variant="h5"
-                            color="#4cceac"
-                            sx={{ mt: "15px" }}
-                        >
-                            warm lead generated
-                        </Typography>
-                    </Box>
-                </Box>
-
-                {/* ROW 3 */}
+                {/* ROW 4 */}
 
                 <Box
-                    gridColumn="span 8"
+                    gridColumn="span 12"
                     display="flex"
                     gap="20px"
                     backgroundColor="#d1d5db"
@@ -382,36 +491,7 @@ const DashboardTabs = ({ inventory, recentBookings }) => {
                 </Box>
 
                 <Box
-                    gridColumn="span 4"
-                    gridRow="span 2"
-                    backgroundColor="#111827"
-                    p="30px"
-                    borderRadius="8px"
-                >
-                    <Typography variant="h5" fontWeight="600" color="#e0e0e0">
-                        Emails Sent
-                    </Typography>
-                    <Box
-                        display="flex"
-                        flexDirection="column"
-                        alignItems="center"
-                        mt="25px"
-                    >
-                        <ProgressCircle size="125" progress={inventory.numberOfEmails} showText={true} text={inventory.numberOfEmails} />
-                        <Typography
-                            variant="h5"
-                            color="#4cceac"
-                            sx={{ mt: "15px" }}
-                        >
-                            emails sent generated
-                        </Typography>
-                    </Box>
-                </Box>
-
-                {/* ROW 4 */}
-
-                <Box
-                    gridColumn="span 8"
+                    gridColumn="span 12"
                     display="flex"
                     gap="20px"
                     backgroundColor="#d1d5db"
