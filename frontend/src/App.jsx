@@ -102,7 +102,7 @@ function App() {
             <Route path="/agentview/:id" element={userLG ? <AgentReadForm /> : <Navigate to="/loginLG" />} />
             <Route path="/AgentLeads" element={userLG ? <AgentLeads /> : <Navigate to="/loginLG" />} />
             <Route path="/AgentEmails" element={userLG ? <AgentEmails /> : <Navigate to="/loginLG" />} />
-            <Route path="/AgentAdd" element={userLG ? <AddEmail /> : <Navigate to="/loginLG" />} />
+            <Route path="/agentadd/:id" element={userLG ? <AddEmail /> : <Navigate to="/loginLG" />} />
             <Route path="/AgentService" element={userLG ? <AgentAnalytics /> : <Navigate to="/loginLG" />} />
             <Route path="/editstatus/:id" element={userLG ? <AgentStatus /> : <Navigate to="/loginLG" />} />
 
