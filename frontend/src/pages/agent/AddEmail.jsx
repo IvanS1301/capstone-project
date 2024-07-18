@@ -1,18 +1,12 @@
 import React from 'react';
 
-/** --- COMPONENTS --- */
+/** --- COMPONENT --- */
 import EmailForm from '../../components/agent/EmailForm'
-import AgentSidebar from '../../components/agent/AgentSidebar';
 
-const AddEmail = () => {
+const AddEmail = ({ unassignedId, email, onLeadUpdate }) => {
     return (
-        <div className="flex">
-            <AgentSidebar />
-            <div className="flex flex-col w-full overflow-y-hidden">
-                <div className="p-2">
-                    <EmailForm />
-                </div>
-            </div>
+        <div>
+            <EmailForm unassignedId={unassignedId} email={email} onLeadUpdate={onLeadUpdate} />
         </div>
     );
 }
