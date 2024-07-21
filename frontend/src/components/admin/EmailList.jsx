@@ -151,6 +151,9 @@ const EmailList = ({ emails, userlgs, onEmailDelete }) => {
         },
     ];
 
+    /** --- HEADER SUBTITLE FORMAT --- */
+    const formattedDate = moment(emails.updatedAt).format('MMMM Do YYYY, h:mm:ss a');
+
     return (
         <Box m="20px">
             <Box mb="20px">
@@ -163,8 +166,8 @@ const EmailList = ({ emails, userlgs, onEmailDelete }) => {
                     EMAILS
             </Typography>
                 <Typography variant="h5" color="#111827">
-                    List of Emails Sent
-            </Typography>
+                    {`as of ${formattedDate}`}
+                </Typography>
             </Box>
             <Box
                 m="40px 0 0 0"
@@ -177,7 +180,7 @@ const EmailList = ({ emails, userlgs, onEmailDelete }) => {
                         borderBottom: "none",
                         color: "#111827",
                         borderTop: `1px solid #525252 !important`,
-                        fontWeight: "600"
+                        fontWeight: "400"
                     },
                     "& .name-column--cell": {
                         color: "#1d4ed8",
@@ -214,7 +217,7 @@ const EmailList = ({ emails, userlgs, onEmailDelete }) => {
                     },
                     "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
                         color: `#111827 !important`,
-                        fontWeight: "800"
+                        fontWeight: "500"
                     },
                 }}
             >
