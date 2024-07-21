@@ -1,5 +1,9 @@
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, Typography, Modal } from "@mui/material";
 import React, { useState } from 'react';
+
+import { DateRangePicker } from 'react-date-range';
+import 'react-date-range/dist/styles.css'; // Main style file
+import 'react-date-range/dist/theme/default.css'; // Theme CSS file
 
 /** --- OTHER MATERIAL UI ICONS --- */
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
@@ -7,6 +11,7 @@ import AssignmentIcon from '@mui/icons-material/Assignment';
 import { PeopleOutlined, ContactsOutlined } from "@mui/icons-material";
 import SaveAsSharpIcon from '@mui/icons-material/SaveAsSharp';
 import DownloadOutlinedIcon from "@mui/icons-material/DownloadOutlined";
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 
 /** --- CALL DISPOSITION ICONS --- */
 import DoneAllRoundedIcon from '@mui/icons-material/DoneAllRounded';
@@ -27,13 +32,30 @@ import Header from '../Chart/Header';
 /** --- TIME AND DATE FORMAT --- */
 import moment from 'moment';
 
-const DashboardTabs = ({ inventory, recentBookings, timePeriod, onTimePeriodChange }) => {
+const DashboardTabs = ({ inventory, recentBookings, timePeriod, onTimePeriodChange, onDateRangeChange }) => {
     const [activeTimePeriod, setActiveTimePeriod] = useState(timePeriod);
+    const [showCalendar, setShowCalendar] = useState(false);
+    const [dateRange, setDateRange] = useState([
+        {
+            startDate: new Date(),
+            endDate: new Date(),
+            key: 'selection'
+        }
+    ]);
 
     // Handle time period change
     const handleTimePeriodClick = (period) => {
         setActiveTimePeriod(period);
         onTimePeriodChange(period);
+    };
+
+    const handleToggleCalendar = () => {
+        setShowCalendar(!showCalendar);
+    };
+
+    const handleSelect = (ranges) => {
+        setDateRange([ranges.selection]);
+        onDateRangeChange(ranges.selection);
     };
 
     /** --- CALL DISPOSITION COUNTS --- */
@@ -135,23 +157,81 @@ const DashboardTabs = ({ inventory, recentBookings, timePeriod, onTimePeriodChan
             <Box display="flex" justifyContent="space-between" alignItems="center" sx={{ backgroundColor: "#111827", padding: "1px 5px", borderRadius: "8px", marginBottom: "20px" }}>
                 <Header title="DASHBOARD" subtitle={`as of ${formattedDate}`} />
 
-                <Box>
+                <Box display="flex" alignItems="center" gap="15px">
+                    <Button
+                        variant="contained"
+                        onClick={handleToggleCalendar}
+                        sx={{
+                            backgroundColor: '#3e4396',
+                            padding: '17px 40px',
+                            borderRadius: '8px',
+                            cursor: 'pointer',
+                            border: 0,
+                            color: '#e0e0e0',
+                            boxShadow: '0 0 8px rgba(0, 0, 0, 0.05)',
+                            letterSpacing: '1.5px',
+                            textTransform: 'uppercase',
+                            fontSize: '15px',
+                            transition: 'all 0.5s ease',
+                            '&:hover': {
+                                letterSpacing: '3px',
+                                backgroundColor: 'hsl(261deg 80% 48%)',
+                                color: 'hsl(0, 0%, 100%)',
+                                boxShadow: '0px 7px 29px 0px rgb(93 24 220)',
+                            }
+                        }}
+                    >
+                        <CalendarMonthIcon sx={{ mr: "10px", mb: "5px" }} />
+                        Open Calendar
+            </Button>
+
                     <Button
                         onClick={handleDownloadReports}
                         sx={{
-                            backgroundColor: "#3e4396",
-                            color: "#e0e0e0",
-                            fontSize: "14px",
-                            fontWeight: "bold",
-                            padding: "10px 20px",
-                            mr: "30px"
+                            backgroundColor: '#3e4396',
+                            padding: '17px 40px',
+                            marginRight: '25px',
+                            borderRadius: '8px',
+                            cursor: 'pointer',
+                            border: 0,
+                            color: '#e0e0e0',
+                            boxShadow: '0 0 8px rgba(0, 0, 0, 0.05)',
+                            letterSpacing: '1.5px',
+                            textTransform: 'uppercase',
+                            fontSize: '15px',
+                            transition: 'all 0.5s ease',
+                            '&:hover': {
+                                letterSpacing: '3px',
+                                backgroundColor: 'hsl(261deg 80% 48%)',
+                                color: 'hsl(0, 0%, 100%)',
+                                boxShadow: '0px 7px 29px 0px rgb(93 24 220)',
+                            }
                         }}
                     >
-                        <DownloadOutlinedIcon sx={{ mr: "10px" }} />
+                        <DownloadOutlinedIcon sx={{ mr: "10px", mb: "5px" }} />
                         Download Reports
-                    </Button>
+            </Button>
                 </Box>
             </Box>
+
+            {/* Modal for DateRangePicker */}
+            <Modal
+                open={showCalendar}
+                onClose={handleToggleCalendar}
+                aria-labelledby="calendar-modal-title"
+                aria-describedby="calendar-modal-description"
+                style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+            >
+                <Box sx={{ backgroundColor: 'white', boxShadow: 24, p: 5, borderRadius: 8 }}>
+                    <Typography id="calendar-modal-title" variant="h6" component="h2" sx={{ marginBottom: 2 }}>
+                        Select Date Range
+                    </Typography>
+                    <DateRangePicker
+                        ranges={dateRange}
+                        onChange={handleSelect}
+                    />
+                </Box>
+            </Modal>
 
             {/* GRID & CHARTS */}
             <Box
@@ -174,21 +254,21 @@ const DashboardTabs = ({ inventory, recentBookings, timePeriod, onTimePeriodChan
                         <MonetizationOnIcon sx={{ color: "#f1f1f1", fontSize: "40px", mr: "50px" }} />
                         <Box>
                             <Typography variant="h3" color="#e0e0e0">{bookedCount}</Typography>
-                            <Typography variant="body1" color="#4cceac">Booked</Typography>
+                            <Typography variant="body1" color="#4cceac" fontSize="20px" fontWeight="600">Booked</Typography>
                         </Box>
                     </Box>
                     <Box flex="1" display="flex" alignItems="center" justifyContent="center" backgroundColor="#111827" p="10px" borderRadius="8px">
                         <FireplaceIcon sx={{ color: "#f1f1f1", fontSize: "40px", mr: "50px" }} />
                         <Box>
                             <Typography variant="h3" color="#e0e0e0">{warmLeadCount}</Typography>
-                            <Typography variant="body1" color="#4cceac">Warm Lead</Typography>
+                            <Typography variant="body1" color="#4cceac" fontSize="20px" fontWeight="600">Warm Lead</Typography>
                         </Box>
                     </Box>
                     <Box flex="1" display="flex" alignItems="center" justifyContent="center" backgroundColor="#111827" p="10px" borderRadius="8px">
                         <MarkEmailReadIcon sx={{ color: "#f1f1f1", fontSize: "40px", mr: "50px" }} />
                         <Box>
                             <Typography variant="h3" color="#e0e0e0">{inventory.numberOfEmails}</Typography>
-                            <Typography variant="body1" color="#4cceac">Emails Sent</Typography>
+                            <Typography variant="body1" color="#4cceac" fontSize="20px" fontWeight="600">Emails Sent</Typography>
                         </Box>
                     </Box>
                 </Box>
@@ -242,14 +322,14 @@ const DashboardTabs = ({ inventory, recentBookings, timePeriod, onTimePeriodChan
                 </Box>
 
                 {/* Period Buttons */}
-                <Box m="10px">
-                    <Box display="flex" flexDirection="row" gap="5px" mt="30px">
+                <Box mb="20px">
+                    <Box display="flex" gap="5px" mt="20px">
                         <Button
                             variant={activeTimePeriod === 'daily' ? 'contained' : 'outlined'}
                             onClick={() => handleTimePeriodClick('daily')}
                             sx={{
                                 backgroundColor: activeTimePeriod === 'daily' ? '#111827' : '#111827',
-                                padding: '17px 40px',
+                                padding: '19px 70px',
                                 borderRadius: '8px',
                                 cursor: 'pointer',
                                 border: 0,
@@ -274,7 +354,7 @@ const DashboardTabs = ({ inventory, recentBookings, timePeriod, onTimePeriodChan
                             onClick={() => handleTimePeriodClick('weekly')}
                             sx={{
                                 backgroundColor: activeTimePeriod === 'weekly' ? '#111827' : '#111827',
-                                padding: '17px 40px',
+                                padding: '19px 60px',
                                 borderRadius: '8px',
                                 cursor: 'pointer',
                                 border: 0,
@@ -299,7 +379,7 @@ const DashboardTabs = ({ inventory, recentBookings, timePeriod, onTimePeriodChan
                             onClick={() => handleTimePeriodClick('monthly')}
                             sx={{
                                 backgroundColor: activeTimePeriod === 'monthly' ? '#111827' : '#111827',
-                                padding: '17px 40px',
+                                padding: '19px 60px',
                                 borderRadius: '8px',
                                 cursor: 'pointer',
                                 border: 0,
@@ -324,7 +404,7 @@ const DashboardTabs = ({ inventory, recentBookings, timePeriod, onTimePeriodChan
                             onClick={() => handleTimePeriodClick('annually')}
                             sx={{
                                 backgroundColor: activeTimePeriod === 'annually' ? '#111827' : '#111827',
-                                padding: '17px 40px',
+                                padding: '19px 60px',
                                 borderRadius: '8px',
                                 cursor: 'pointer',
                                 border: 0,
@@ -355,6 +435,7 @@ const DashboardTabs = ({ inventory, recentBookings, timePeriod, onTimePeriodChan
                     backgroundColor="#d1d5db"
                     borderRadius="8px"
                     p="5px"
+                    mt="-50px"
                 >
                     <Box
                         backgroundColor="#111827"
@@ -374,7 +455,7 @@ const DashboardTabs = ({ inventory, recentBookings, timePeriod, onTimePeriodChan
                             py="10px"
                             backgroundColor="#192231"
                         >
-                            <Typography color="#e0e0e0" variant="h5" fontWeight="600" flex={1} textAlign="left">
+                            <Typography color="#e0e0e0" variant="h5" fontSize="25px" fontWeight="600" flex={1} textAlign="left">
                                 Recent Bookings
                             </Typography>
                         </Box>
@@ -388,19 +469,19 @@ const DashboardTabs = ({ inventory, recentBookings, timePeriod, onTimePeriodChan
                                 py="10px"
                                 backgroundColor="#192231"
                             >
-                                <Typography color="#e0e0e0" variant="subtitle1" fontWeight="600" flex={1} textAlign="left">
+                                <Typography color="#e0e0e0" variant="subtitle1" fontSize="19px" fontWeight="600" flex={1} textAlign="left">
                                     Telemarketer Name
                                 </Typography>
-                                <Typography color="#e0e0e0" variant="subtitle1" fontWeight="600" flex={1} textAlign="left">
+                                <Typography color="#e0e0e0" variant="subtitle1" fontSize="19px" fontWeight="600" flex={1} textAlign="left">
                                     Team
                                 </Typography>
-                                <Typography color="#e0e0e0" variant="subtitle1" fontWeight="600" flex={1} textAlign="left">
+                                <Typography color="#e0e0e0" variant="subtitle1" fontSize="19px" fontWeight="600" flex={1} textAlign="left">
                                     Lead Name
                                 </Typography>
-                                <Typography color="#e0e0e0" variant="subtitle1" fontWeight="600" flex={1} textAlign="left">
+                                <Typography color="#e0e0e0" variant="subtitle1" fontSize="19px" fontWeight="600" flex={1} textAlign="left">
                                     Call Disposition
                                 </Typography>
-                                <Typography color="#e0e0e0" variant="subtitle1" fontWeight="600" flex={1} textAlign="left">
+                                <Typography color="#e0e0e0" variant="subtitle1" fontSize="19px" fontWeight="600" flex={1} textAlign="left">
                                     Date
                                 </Typography>
                             </Box>
@@ -416,13 +497,13 @@ const DashboardTabs = ({ inventory, recentBookings, timePeriod, onTimePeriodChan
                                         py="10px"
                                         backgroundColor="#111827"
                                     >
-                                        <Typography color="#e0e0e0" fontSize="17px" flex={1} textAlign="left">
+                                        <Typography color="#e0e0e0" fontSize="19px" flex={1} textAlign="left">
                                             {booking.telemarketerName}
                                         </Typography>
-                                        <Typography color="#4cceac" fontSize="17px" flex={1} textAlign="left">
+                                        <Typography color="#4cceac" fontSize="19px" flex={1} textAlign="left">
                                             {booking.team}
                                         </Typography>
-                                        <Typography color="#e0e0e0" fontSize="17px" flex={1} textAlign="left">
+                                        <Typography color="#e0e0e0" fontSize="19px" flex={1} textAlign="left">
                                             {booking.leadName}
                                         </Typography>
                                         <Box
@@ -432,7 +513,7 @@ const DashboardTabs = ({ inventory, recentBookings, timePeriod, onTimePeriodChan
                                             borderRadius="4px"
                                             textAlign="left"
                                         >
-                                            <Typography color="#4cceac" fontSize="17px">
+                                            <Typography color="#4cceac" fontSize="19px">
                                                 {booking.callDisposition}
                                             </Typography>
                                         </Box>
@@ -464,28 +545,28 @@ const DashboardTabs = ({ inventory, recentBookings, timePeriod, onTimePeriodChan
                         <ThumbDownIcon sx={{ color: "#f1f1f1", fontSize: "40px", mr: "50px" }} />
                         <Box>
                             <Typography variant="h3" color="#e0e0e0">{notInterested}</Typography>
-                            <Typography variant="body1" color="#e0e0e0">Not Interested</Typography>
+                            <Typography variant="body1" color="#e0e0e0" fontSize="20px" fontWeight="200">Not Interested</Typography>
                         </Box>
                     </Box>
                     <Box flex="1" display="flex" alignItems="center" justifyContent="center" backgroundColor="#111827" p="10px" borderRadius="8px">
                         <DoneAllRoundedIcon sx={{ color: "#f1f1f1", fontSize: "40px", mr: "50px" }} />
                         <Box>
                             <Typography variant="h3" color="#e0e0e0">{alreadyInstalledCount}</Typography>
-                            <Typography variant="body1" color="#e0e0e0">Already Installed</Typography>
+                            <Typography variant="body1" color="#e0e0e0" fontSize="20px" fontWeight="200">Already Installed</Typography>
                         </Box>
                     </Box>
                     <Box flex="1" display="flex" alignItems="center" justifyContent="center" backgroundColor="#111827" p="10px" borderRadius="8px">
                         <ErrorRoundedIcon sx={{ color: "#f1f1f1", fontSize: "40px", mr: "50px" }} />
                         <Box>
                             <Typography variant="h3" color="#e0e0e0">{notWorkingCount}</Typography>
-                            <Typography variant="body1" color="#e0e0e0">Wrong / Not Working</Typography>
+                            <Typography variant="body1" color="#e0e0e0" fontSize="20px" fontWeight="200">Wrong / Not Working</Typography>
                         </Box>
                     </Box>
                     <Box flex="1" display="flex" alignItems="center" justifyContent="center" backgroundColor="#111827" p="10px" borderRadius="8px">
                         <PhoneCallbackRoundedIcon sx={{ color: "#f1f1f1", fontSize: "40px", mr: "50px" }} />
                         <Box>
                             <Typography variant="h3" color="#e0e0e0">{callbackCount}</Typography>
-                            <Typography variant="body1" color="#e0e0e0">Callback</Typography>
+                            <Typography variant="body1" color="#e0e0e0" fontSize="20px" fontWeight="200">Callback</Typography>
                         </Box>
                     </Box>
                 </Box>
@@ -502,28 +583,28 @@ const DashboardTabs = ({ inventory, recentBookings, timePeriod, onTimePeriodChan
                         <PhoneMissedRoundedIcon sx={{ color: "#f1f1f1", fontSize: "40px", mr: "50px" }} />
                         <Box>
                             <Typography variant="h3" color="#e0e0e0">{doNotCallCount}</Typography>
-                            <Typography variant="body1" color="#e0e0e0">Do Not Call</Typography>
+                            <Typography variant="body1" color="#e0e0e0" fontSize="20px" fontWeight="200">Do Not Call</Typography>
                         </Box>
                     </Box>
                     <Box flex="1" display="flex" alignItems="center" justifyContent="center" backgroundColor="#111827" p="10px" borderRadius="8px">
                         <PhoneDisabledRoundedIcon sx={{ color: "#f1f1f1", fontSize: "40px", mr: "50px" }} />
                         <Box>
                             <Typography variant="h3" color="#e0e0e0">{noAnswerCount}</Typography>
-                            <Typography variant="body1" color="#e0e0e0">No Answer</Typography>
+                            <Typography variant="body1" color="#e0e0e0" fontSize="20px" fontWeight="200">No Answer</Typography>
                         </Box>
                     </Box>
                     <Box flex="1" display="flex" alignItems="center" justifyContent="center" backgroundColor="#111827" p="10px" borderRadius="8px">
                         <VoicemailIcon sx={{ color: "#f1f1f1", fontSize: "40px", mr: "50px" }} />
                         <Box>
                             <Typography variant="h3" color="#e0e0e0">{voicemailCount}</Typography>
-                            <Typography variant="body1" color="#e0e0e0">Voicemail</Typography>
+                            <Typography variant="body1" color="#e0e0e0" fontSize="20px" fontWeight="200">Voicemail</Typography>
                         </Box>
                     </Box>
                     <Box flex="1" display="flex" alignItems="center" justifyContent="center" backgroundColor="#111827" p="10px" borderRadius="8px">
                         <HouseIcon sx={{ color: "#f1f1f1", fontSize: "40px", mr: "50px" }} />
                         <Box>
                             <Typography variant="h3" color="#e0e0e0">{residentialCount}</Typography>
-                            <Typography variant="body1" color="#e0e0e0">Residential</Typography>
+                            <Typography variant="body1" color="#e0e0e0" fontSize="20px" fontWeight="200">Residential</Typography>
                         </Box>
                     </Box>
                 </Box>
