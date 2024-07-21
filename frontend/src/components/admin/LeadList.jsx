@@ -132,13 +132,6 @@ const LeadList = ({ tlLeads, userlgs, onLeadUpdate }) => {
 
   const columns = [
     {
-      field: "_id",
-      headerName: "ID",
-      flex: 1,
-      minWidth: 90,
-      renderCell: (params) => params.value.slice(20, 26),
-    },
-    {
       field: "name",
       headerName: "Name",
       flex: 1,
@@ -162,6 +155,14 @@ const LeadList = ({ tlLeads, userlgs, onLeadUpdate }) => {
       flex: 1,
       minWidth: 160,
       renderCell: (params) => userIdToNameMap[params.value] || params.value,
+    },
+    {
+      field: "createdAt",
+      headerName: "Lead Gen Date",
+      flex: 1,
+      minWidth: 150,
+      renderCell: (params) =>
+        moment(params.row.createdAt).format('MMM-D-YYYY'),
     },
     {
       field: "callDisposition",
