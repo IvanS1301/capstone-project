@@ -128,12 +128,24 @@ const AGDashboardTabs = ({ bookedUnits, unassignedLeads }) => {
                     <Button
                         onClick={handleDownloadReports}
                         sx={{
-                            backgroundColor: "#3e4396",
-                            color: "#e0e0e0",
-                            fontSize: "14px",
-                            fontWeight: "bold",
-                            padding: "10px 20px",
-                            mr: "30px"
+                            backgroundColor: '#3e4396',
+                            padding: '17px 40px',
+                            marginRight: '25px',
+                            borderRadius: '8px',
+                            cursor: 'pointer',
+                            border: 0,
+                            color: '#e0e0e0',
+                            boxShadow: '0 0 8px rgba(0, 0, 0, 0.05)',
+                            letterSpacing: '1.5px',
+                            textTransform: 'uppercase',
+                            fontSize: '15px',
+                            transition: 'all 0.5s ease',
+                            '&:hover': {
+                                letterSpacing: '3px',
+                                backgroundColor: 'hsl(261deg 80% 48%)',
+                                color: 'hsl(0, 0%, 100%)',
+                                boxShadow: '0px 7px 29px 0px rgb(93 24 220)',
+                            }
                         }}
                     >
                         <DownloadOutlinedIcon sx={{ mr: "10px" }} />
