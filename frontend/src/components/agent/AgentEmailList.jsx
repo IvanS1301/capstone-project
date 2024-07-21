@@ -15,15 +15,14 @@ import { useAuthContext } from "../../hooks/useAuthContext";
 /** --- IMPORT TIME AND DATE FORMAT --- */
 import moment from 'moment'
 
-/** --- FOR MODAL --- */
-import AgentReadEmail from '../../pages/agent/AgentReadEmail';
+/** --- IMPORT REACT ROUTER --- */
+import { Link } from 'react-router-dom';
 
 const AgentEmailList = ({ emails, userlgs, onEmailDelete }) => {
     const { dispatch } = useEmailsContext();
     const { userLG } = useAuthContext();
     const [selectedRows, setSelectedRows] = useState([]);
     const [selectedEmailId, setSelectedEmailId] = useState(null);
-    const [openViewModal, setOpenViewModal] = useState(false); // State for ViewLead modal
 
     /** --- FOR DELETE BUTTON --- */
     const [loadingDelete, setLoadingDelete] = useState(false); // State for delete loading
@@ -77,16 +76,6 @@ const AgentEmailList = ({ emails, userlgs, onEmailDelete }) => {
 
     const handleSnackbarClose = () => {
         setSnackbarOpen(false);
-    };
-
-    const handleOpenViewModal = (emailId) => {
-        setSelectedEmailId(emailId);
-        setOpenViewModal(true);
-    };
-
-    const handleCloseViewModal = () => {
-        setOpenViewModal(false);
-        setSelectedEmailId(null);
     };
 
     const iconButtonStyle = { color: "#111827" };
@@ -146,8 +135,12 @@ const AgentEmailList = ({ emails, userlgs, onEmailDelete }) => {
             minWidth: 200,
             renderCell: (params) => (
                 <Box>
-                    <IconButton onClick={() => handleOpenViewModal(params.row._id)} style={iconButtonStyle}><Visibility /></IconButton>
-                    <IconButton onClick={() => handleClick(params.row._id)} style={iconButtonStyle}><Delete /></IconButton>
+                    <IconButton component={Link} to={`/viewemail/${params.row._id}`} style={iconButtonStyle}>
+                        <Visibility />
+                    </IconButton>
+                    <IconButton onClick={() => handleClick(params.row._id)} style={iconButtonStyle}>
+                        <Delete />
+                    </IconButton>
                 </Box>
             )
         },
@@ -172,52 +165,52 @@ const AgentEmailList = ({ emails, userlgs, onEmailDelete }) => {
                 m="40px 0 0 0"
                 height="75vh"
                 sx={{
-                  "& .MuiDataGrid-root": {
-                    border: "none",
-                  },
-                  "& .MuiDataGrid-cell": {
-                    borderBottom: "none",
-                    color: "#111827",
-                    borderTop: `1px solid #525252 !important`,
-                    fontWeight: "600"
-                  },
-                  "& .name-column--cell": {
-                    color: "#1d4ed8",
-                  },
-                  "& .MuiDataGrid-columnHeader": {
-                    backgroundColor: "#111827",
-                    borderBottom: "none",
-                    color: "#e0e0e0",
-                    fontSize: "18px",
-                  },
-                  "& .MuiDataGrid-sortIcon": {
-                    color: "#ffffff !important", // Change sort icon color to white
-                  },
-                  "& .MuiDataGrid-virtualScroller": {
-                    backgroundColor: "#d1d5db",
-                    fontSize: "17px",
-                  },
-                  "& .MuiDataGrid-headerContainer": {
-                    borderTop: "none",
-                  },
-                  "& .MuiDataGrid-footerContainer": {
-                    borderTop: "none",
-                    backgroundColor: "#111827",
-                    color: "#ffffff",
-                  },
-                  "& .MuiTablePagination-root": {
-                    color: "#ffffff !important", // Ensure the pagination text is white
-                  },
-                  "& .MuiTablePagination-actions .MuiButtonBase-root": {
-                    color: "#ffffff !important", // Ensure the pagination buttons are white
-                  },
-                  "& .MuiCheckbox-root": {
-                    color: `#111827 !important`,
-                  },
-                  "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
-                    color: `#111827 !important`,
-                    fontWeight: "800"
-                  },
+                    "& .MuiDataGrid-root": {
+                        border: "none",
+                    },
+                    "& .MuiDataGrid-cell": {
+                        borderBottom: "none",
+                        color: "#111827",
+                        borderTop: `1px solid #525252 !important`,
+                        fontWeight: "600"
+                    },
+                    "& .name-column--cell": {
+                        color: "#1d4ed8",
+                    },
+                    "& .MuiDataGrid-columnHeader": {
+                        backgroundColor: "#111827",
+                        borderBottom: "none",
+                        color: "#e0e0e0",
+                        fontSize: "18px"
+                    },
+                    "& .MuiDataGrid-sortIcon": {
+                        color: "#ffffff !important", // Change sort icon color to white
+                    },
+                    "& .MuiDataGrid-virtualScroller": {
+                        backgroundColor: "#d1d5db",
+                        fontSize: "18px",
+                    },
+                    "& .MuiDataGrid-headerContainer": {
+                        borderTop: "none",
+                    },
+                    "& .MuiDataGrid-footerContainer": {
+                        borderTop: "none",
+                        backgroundColor: "#111827",
+                        color: "#ffffff",
+                    },
+                    "& .MuiTablePagination-root": {
+                        color: "#ffffff !important", // Ensure the pagination text is white
+                    },
+                    "& .MuiTablePagination-actions .MuiButtonBase-root": {
+                        color: "#ffffff !important", // Ensure the pagination buttons are white
+                    },
+                    "& .MuiCheckbox-root": {
+                        color: `#111827 !important`,
+                    },
+                    "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
+                        color: `#111827 !important`,
+                        fontWeight: "800"
+                    },
                 }}
             >
                 <DataGrid
@@ -293,29 +286,6 @@ const AgentEmailList = ({ emails, userlgs, onEmailDelete }) => {
                     <div style={{ fontSize: '20px', margin: '20px 0' }}>Are you sure you want to delete this email?</div>
                     <Button onClick={handleDeleteConfirmation} variant="contained" color="primary" sx={{ mr: 2 }}>Yes</Button>
                     <Button onClick={handleCloseConfirmation} variant="contained" color="secondary">No</Button>
-                </Box>
-            </Modal>
-
-            <Modal
-                open={openViewModal}
-                onClose={handleCloseViewModal}
-                aria-labelledby="view-lead-modal-title"
-                aria-describedby="view-lead-modal-description"
-            >
-                <Box
-                    sx={{
-                        position: 'absolute',
-                        top: '50%',
-                        left: '50%',
-                        transform: 'translate(-50%, -50%)',
-                        width: '80%',
-                        maxHeight: '80%',
-                        overflow: 'auto',
-
-
-                    }}
-                >
-                    {selectedEmailId && <AgentReadEmail emailId={selectedEmailId} />}
                 </Box>
             </Modal>
 
