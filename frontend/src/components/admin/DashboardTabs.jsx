@@ -455,7 +455,7 @@ const DashboardTabs = ({ inventory, recentBookings, timePeriod, onTimePeriodChan
                             py="10px"
                             backgroundColor="#192231"
                         >
-                            <Typography color="#e0e0e0" variant="h5" fontSize="25px" fontWeight="600" flex={1} textAlign="left">
+                            <Typography color="#e0e0e0" variant="h5" fontSize="25px" fontWeight="600">
                                 Recent Bookings
                             </Typography>
                         </Box>
@@ -485,7 +485,7 @@ const DashboardTabs = ({ inventory, recentBookings, timePeriod, onTimePeriodChan
                                     Date
                                 </Typography>
                             </Box>
-                            <Box flexGrow={1} display="flex" flexDirection="column">
+                            <Box flexGrow={1} display="flex" flexDirection="column" overflow="auto">
                                 {recentBookings.map((booking) => (
                                     <Box
                                         key={booking._id}
