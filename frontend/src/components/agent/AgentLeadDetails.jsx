@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 /** --- MATERIAL UI --- */
 import { Box, IconButton, Modal, Typography } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
-import { Visibility, Edit } from '@mui/icons-material';
+import { Visibility, Edit, Call as CallIcon } from '@mui/icons-material';
 import AttachEmailIcon from '@mui/icons-material/AttachEmail';
 
 /** --- IMPORT TIME AND DATE FORMAT --- */
@@ -84,13 +84,6 @@ const AgentLeadDetails = ({ unassignedLeads, userlgs, onLeadUpdate }) => {
 
   const columns = [
     {
-      field: "_id",
-      headerName: "ID",
-      flex: 1,
-      minWidth: 80,
-      renderCell: (params) => params.value.slice(20, 26),
-    },
-    {
       field: "name",
       headerName: "Name",
       flex: 1,
@@ -100,7 +93,7 @@ const AgentLeadDetails = ({ unassignedLeads, userlgs, onLeadUpdate }) => {
       field: "type",
       headerName: "Type",
       flex: 1,
-      minWidth: 160,
+      minWidth: 120,
     },
     {
       field: "phonenumber",
@@ -125,36 +118,27 @@ const AgentLeadDetails = ({ unassignedLeads, userlgs, onLeadUpdate }) => {
       field: "remarks",
       headerName: "Remarks",
       flex: 1,
-      minWidth: 180,
+      minWidth: 220,
       cellClassName: "name-column--cell",
     },
     {
       field: "Distributed",
       headerName: "Distributed",
       flex: 1,
-      minWidth: 150,
+      minWidth: 100,
       renderCell: (params) =>
         moment(params.row.Distributed).startOf('minute').fromNow()
-    },
-    {
-      field: "updatedAt",
-      headerName: "Updated At",
-      flex: 1,
-      minWidth: 140,
-      renderCell: (params) => {
-        const callDisposition = params.row.callDisposition;
-        return callDisposition ? moment(params.row.updatedAt).startOf('minute').fromNow() : '';
-      }
     },
     {
       field: "actions",
       headerName: "Actions",
       flex: 1,
-      minWidth: 180,
+      minWidth: 220,
       renderCell: (params) => (
         <Box>
           <IconButton onClick={() => handleOpenViewModal(params.row._id)} style={iconButtonStyle}><Visibility /></IconButton>
           <IconButton onClick={() => handleOpenAssignModal(params.row._id)} style={iconButtonStyle}><Edit /></IconButton>
+          <IconButton href={`skype:${params.row.phonenumber}?call`} style={iconButtonStyle}><CallIcon /></IconButton>
           <IconButton onClick={() => handleOpenEmailModal(params.row._id, params.row.emailaddress)} style={iconButtonStyle}><AttachEmailIcon /></IconButton>
         </Box>
       )
