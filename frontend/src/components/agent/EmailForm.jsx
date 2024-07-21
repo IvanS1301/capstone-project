@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { URL } from "../../utils/URL";
 
 /** --- MATERIAL UI --- */
-import { Box, Button, TextField, Typography, CircularProgress, Modal, Grid } from '@mui/material';
+import { Box, Button, Typography, TextField, CircularProgress, Modal, Grid, MenuItem } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
 /** --- IMPORT CONTEXT --- */
@@ -12,6 +12,91 @@ import { useAuthContext } from "../../hooks/useAuthContext";
 const EmailForm = ({ unassignedId, email, onLeadUpdate }) => {
     const { dispatch } = useEmailsContext();
     const { userLG } = useAuthContext();
+
+    const subjectOptions = [
+        "Introducing Our New Energy - Efficient Hot Water System!",
+        "Congratulations! You're Eligible for a Free Hot Water System Upgrade",
+        "Upgrade Your Hot Water System with State and Federal Rebates"
+    ];
+
+    const textTemplates = {
+        "Introducing Our New Energy - Efficient Hot Water System!": `Dear [Customer's Name],
+
+        We are excited to introduce our latest range of energy-efficient hot water systems, designed to provide you with reliable and cost-effective hot water solutions for your home.
+
+        Why Choose Our Hot Water Systems?
+
+        Energy Efficiency: Our new systems are designed to significantly reduce energy consumption, helping you save on your energy bills while minimizing your environmental footprint.
+        Advanced Technology: Featuring the latest advancements in hot water technology, our systems ensure a consistent and dependable hot water supply.
+        Durability and Reliability: Built with high-quality materials, our hot water systems are engineered for long-lasting performance and reliability.
+        Professional Installation: Our team of certified professionals will ensure a seamless installation process, providing you with peace of mind and optimal performance.
+        Rebates and Incentives: Take advantage of State and Federal rebates to make your upgrade even more affordable.
+
+        Product Features:
+
+        High Efficiency: Designed to meet and exceed energy efficiency standards.
+        Smart Controls: Easily monitor and manage your hot water usage with our intuitive smart controls.
+        Compact Design: Space-saving designs that fit seamlessly into any home.
+
+        Special Offer:
+
+        For a limited time, we are offering exclusive discounts and financing options to help you upgrade to our new hot water systems. Don’t miss out on this opportunity to enhance your home’s comfort and efficiency.
+
+        We look forward to helping you enjoy the benefits of our advanced hot water solutions.
+
+        Best regards,
+
+        [Telemarketer Name]  
+        Customer Service Representative
+        Chromagen`,
+
+        "Congratulations! You're Eligible for a Free Hot Water System Upgrade": `Dear [Customer's Name],
+
+        We are thrilled to inform you that you have been deemed eligible for a FREE hot water system upgrade under our exclusive offer, supported by State and Federal rebates.
+        
+        As part of our commitment to improving energy efficiency and providing cost-effective solutions, we have successfully installed thousands of hot water systems across Australia. Now, it’s your turn to benefit from this amazing opportunity!
+        Benefits of Your Free Upgrade:
+        
+        No Cost to You: Take advantage of the State and Federal rebates to receive your new hot water system at no charge.
+        Professional Installation: Our team of experts will handle the installation process, ensuring a smooth and hassle-free experience.
+        Enhanced Efficiency: Upgrade to a modern, energy-efficient hot water system that can reduce your energy bills.
+        Reliable Service: Enjoy a dependable and consistent hot water supply for your home.
+        
+        To proceed with your free upgrade, please contact us at your earliest convenience to schedule an installation appointment. You can reach us at [Your Contact Information] or visit our website at [Your Website URL] to learn more.
+        
+        Don’t miss out on this incredible opportunity to enhance your home’s hot water system with zero cost to you. We look forward to helping you enjoy the benefits of a new, efficient hot water system.
+        
+        Thank you for being a valued customer.
+        
+        Best regards,
+        
+        [Telemarketer Name]  
+        Customer Service Representative
+        Chromagen `,
+
+        "Upgrade Your Hot Water System with State and Federal Rebates": `Dear [Customer's Name],
+
+        We are excited to inform you about an exceptional opportunity to upgrade your hot water system through our exclusive offer, supported by State and Federal rebates.
+        
+        As part of this program, we have successfully installed thousands of hot water systems across Australia, helping households enjoy efficient and reliable hot water while benefiting from significant savings.
+        
+        Is your current unit in need of an upgrade? With our offer, you can take advantage of the following benefits:
+        
+        Substantial Rebates: Reduce your out-of-pocket expenses through generous State and Federal rebates.
+        Expert Installation: Our team of professionals will handle the installation, ensuring a seamless and hassle-free experience.
+        Energy Efficiency: Upgrade to a modern, energy-efficient hot water system that can lower your energy bills.
+        Increased Reliability: Enjoy a consistent and dependable hot water supply for your home.
+        
+        Don’t miss out on this fantastic opportunity to enhance your home’s hot water system with significant savings and expert installation.
+        
+        Thank you for considering our offer. We look forward to helping you upgrade your hot water system and improve your home’s efficiency.
+        
+        Best regards,
+        
+        [Telemarketer Name]  
+        Customer Service Representative
+        Chromagen`
+    };
 
     const [emailData, setEmailData] = useState({
         from: userLG.email || '',
@@ -34,10 +119,18 @@ const EmailForm = ({ unassignedId, email, onLeadUpdate }) => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setEmailData((prevData) => ({
-            ...prevData,
-            [name]: value
-        }));
+        if (name === 'subject') {
+            setEmailData((prevData) => ({
+                ...prevData,
+                [name]: value,
+                text: textTemplates[value] || prevData.text
+            }));
+        } else {
+            setEmailData((prevData) => ({
+                ...prevData,
+                [name]: value
+            }));
+        }
     };
 
     const handleSubmit = async (e) => {
@@ -67,12 +160,7 @@ const EmailForm = ({ unassignedId, email, onLeadUpdate }) => {
             setEmptyFields(json.emptyFields || []);
         } else {
             setError(null);
-            setEmailData({
-                from: '',
-                to: '',
-                subject: '',
-                text: ''
-            });
+
             setEmptyFields([]);
             setOpenSuccessModal(true);
             dispatch({ type: 'CREATE_EMAIL', payload: json });
@@ -139,13 +227,20 @@ const EmailForm = ({ unassignedId, email, onLeadUpdate }) => {
                             margin="normal"
                             error={emptyFields.includes('subject')}
                             helperText={emptyFields.includes('subject') && 'This field is required'}
-                        />
+                            select
+                        >
+                            {subjectOptions.map((subject) => (
+                                <MenuItem key={subject} value={subject}>
+                                    {subject}
+                                </MenuItem>
+                            ))}
+                        </TextField>
                     </Grid>
                     <Grid item xs={12}>
                         <TextField
                             fullWidth
                             multiline
-                            rows={5}
+                            rows={10}
                             label="Text"
                             name="text"
                             value={emailData.text}
@@ -156,7 +251,7 @@ const EmailForm = ({ unassignedId, email, onLeadUpdate }) => {
                             InputProps={{
                                 sx: {
                                     padding: '0.5rem 1rem', // Adjust padding to align text properly
-                                    lineHeight: '4rem' // Adjust line height if necessary
+                                    lineHeight: '1.5rem' // Adjust line height if necessary
                                 }
                             }}
                         />
