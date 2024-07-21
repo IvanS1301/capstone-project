@@ -130,6 +130,9 @@ const Bookings = ({ recentBookings, onLeadDelete }) => {
         },
     ];
 
+    /** --- HEADER SUBTITLE FORMAT --- */
+    const formattedDate = moment(recentBookings.updatedAt).format('MMMM Do YYYY, h:mm:ss a');
+
     return (
         <Box m="20px">
             <Box mb="20px">
@@ -142,59 +145,59 @@ const Bookings = ({ recentBookings, onLeadDelete }) => {
                     Recent Bookings
             </Typography>
                 <Typography variant="h5" color="#111827">
-                    List of Bookings
-            </Typography>
+                    {`as of ${formattedDate}`}
+                </Typography>
             </Box>
             <Box
                 m="40px 0 0 0"
                 height="75vh"
                 sx={{
-                  "& .MuiDataGrid-root": {
-                    border: "none",
-                  },
-                  "& .MuiDataGrid-cell": {
-                    borderBottom: "none",
-                    color: "#111827",
-                    borderTop: `1px solid #525252 !important`,
-                    fontWeight: "600"
-                  },
-                  "& .name-column--cell": {
-                    color: "#1d4ed8",
-                  },
-                  "& .MuiDataGrid-columnHeader": {
-                    backgroundColor: "#111827",
-                    borderBottom: "none",
-                    color: "#e0e0e0",
-                    fontSize: "18px",
-                  },
-                  "& .MuiDataGrid-sortIcon": {
-                    color: "#ffffff !important", // Change sort icon color to white
-                  },
-                  "& .MuiDataGrid-virtualScroller": {
-                    backgroundColor: "#d1d5db",
-                    fontSize: "17px",
-                  },
-                  "& .MuiDataGrid-headerContainer": {
-                    borderTop: "none",
-                  },
-                  "& .MuiDataGrid-footerContainer": {
-                    borderTop: "none",
-                    backgroundColor: "#111827",
-                    color: "#ffffff",
-                  },
-                  "& .MuiTablePagination-root": {
-                    color: "#ffffff !important", // Ensure the pagination text is white
-                  },
-                  "& .MuiTablePagination-actions .MuiButtonBase-root": {
-                    color: "#ffffff !important", // Ensure the pagination buttons are white
-                  },
-                  "& .MuiCheckbox-root": {
-                    color: `#111827 !important`,
-                  },
-                  "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
-                    color: `#111827 !important`,
-                    fontWeight: "800"
-                  },
+                    "& .MuiDataGrid-root": {
+                        border: "none",
+                    },
+                    "& .MuiDataGrid-cell": {
+                        borderBottom: "none",
+                        color: "#111827",
+                        borderTop: `1px solid #525252 !important`,
+                        fontWeight: "400"
+                    },
+                    "& .name-column--cell": {
+                        color: "#1d4ed8",
+                    },
+                    "& .MuiDataGrid-columnHeader": {
+                        backgroundColor: "#111827",
+                        borderBottom: "none",
+                        color: "#e0e0e0",
+                        fontSize: "18px",
+                    },
+                    "& .MuiDataGrid-sortIcon": {
+                        color: "#ffffff !important", // Change sort icon color to white
+                    },
+                    "& .MuiDataGrid-virtualScroller": {
+                        backgroundColor: "#d1d5db",
+                        fontSize: "17px",
+                    },
+                    "& .MuiDataGrid-headerContainer": {
+                        borderTop: "none",
+                    },
+                    "& .MuiDataGrid-footerContainer": {
+                        borderTop: "none",
+                        backgroundColor: "#111827",
+                        color: "#ffffff",
+                    },
+                    "& .MuiTablePagination-root": {
+                        color: "#ffffff !important", // Ensure the pagination text is white
+                    },
+                    "& .MuiTablePagination-actions .MuiButtonBase-root": {
+                        color: "#ffffff !important", // Ensure the pagination buttons are white
+                    },
+                    "& .MuiCheckbox-root": {
+                        color: `#111827 !important`,
+                    },
+                    "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
+                        color: `#111827 !important`,
+                        fontWeight: "500"
+                    },
                 }}
             >
                 <DataGrid
