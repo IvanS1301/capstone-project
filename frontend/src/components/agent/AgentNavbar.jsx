@@ -85,7 +85,7 @@ const AgentNavbar = ({ onSearch }) => {
             <Box
                 display="flex"
                 backgroundColor="#111827"
-                borderRadius="20px"
+                borderRadius="25px"
                 sx={{ width: "60%", maxWidth: "400px", p: "6px" }}
             >
                 <InputBase
