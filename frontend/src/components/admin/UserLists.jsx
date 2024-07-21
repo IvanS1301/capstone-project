@@ -1,30 +1,31 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 import { URL } from "../../utils/URL";
 
 /** --- MATERIAL UI --- */
 import { Box, IconButton, Modal, CircularProgress, Button, Snackbar, Typography } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
-import { Delete, Visibility, Edit } from '@mui/icons-material';
+import { Delete, Visibility } from '@mui/icons-material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 
 /** --- IMPORT CONTEXT --- */
-import { useUsersContext } from "../../hooks/useUsersContext";
+import { useLeadsContext } from "../../hooks/useLeadsContext";
 import { useAuthContext } from "../../hooks/useAuthContext";
 
 /** --- IMPORT TIME AND DATE FORMAT --- */
-import moment from 'moment'
+import moment from 'moment';
 
 /** --- FOR MODAL --- */
-import EditUserInfo from '../../pages/profile/EditUserInfo';
-import ReadUserInfo from '../../pages/profile/ReadUserInfo';
+import AssignPage from '../../pages/admin/AssignPage';
+import ReadLead from '../../pages/admin/ReadLead';
 
-const UserLists = ({ userlgs, onUserUpdate }) => {
-  const { dispatch } = useUsersContext();
+const LeadList = ({ tlLeads, userlgs, onLeadUpdate }) => {
+  const { dispatch } = useLeadsContext();
   const { userLG } = useAuthContext();
   const [selectedRows, setSelectedRows] = useState([]);
-  const [openUpdateModal, setOpenUpdateModal] = useState(false);
-  const [selectedUserId, setSelectedUserId] = useState(null);
+  const [openAssignModal, setOpenAssignModal] = useState(false);
+  const [selectedLeadId, setSelectedLeadId] = useState(null);
   const [openViewModal, setOpenViewModal] = useState(false); // State for ViewLead modal
 
   /** --- FOR DELETE BUTTON --- */
@@ -34,28 +35,33 @@ const UserLists = ({ userlgs, onUserUpdate }) => {
   const [snackbarOpen, setSnackbarOpen] = useState(false); // State for Snackbar open
   const [snackbarMessage, setSnackbarMessage] = useState(""); // State for Snackbar message
 
-  const handleClick = async (userId) => {
+  const userIdToNameMap = userlgs.reduce((acc, user) => {
+    acc[user._id] = user.name;
+    return acc;
+  }, {});
+
+  const handleClick = async (leadId) => {
     if (!userLG) {
       return;
     }
-    setSelectedUserId(userId);
+    setSelectedLeadId(leadId);
     setShowConfirmation(true);
   };
 
-  const handleOpenUpdateModal = (userId) => {
-    setSelectedUserId(userId);
-    setOpenUpdateModal(true);
+  const handleOpenAssignModal = (leadId) => {
+    setSelectedLeadId(leadId);
+    setOpenAssignModal(true);
   };
 
-  const handleCloseUpdateModal = () => {
-    setOpenUpdateModal(false);
-    setSelectedUserId(null);
+  const handleCloseAssignModal = () => {
+    setOpenAssignModal(false);
+    setSelectedLeadId(null);
   };
 
   const handleDeleteConfirmation = async () => {
     try {
       setLoadingDelete(true); // Start delete loading
-      const response = await fetch(`${URL}/api/userLG/${selectedUserId}`, {
+      const response = await fetch(`${URL}/api/leads/${selectedLeadId}`, {
         method: "DELETE",
         headers: {
           'Authorization': `Bearer ${userLG.token}`
@@ -64,14 +70,14 @@ const UserLists = ({ userlgs, onUserUpdate }) => {
       const json = await response.json();
 
       if (response.ok) {
-        dispatch({ type: "DELETE_USER", payload: json });
-        setSnackbarMessage("User Deleted Successfully!");
+        dispatch({ type: "DELETE_TL_LEAD", payload: json });
+        setSnackbarMessage("Lead Deleted Successfully!");
         setSnackbarOpen(true);
-        onUserUpdate();
+        onLeadUpdate();
       }
     } catch (error) {
-      setErrorDelete('Error deleting user.'); // Set delete error
-      console.error('Error deleting user:', error);
+      setErrorDelete('Error deleting lead.'); // Set delete error
+      console.error('Error deleting lead:', error);
     } finally {
       setLoadingDelete(false); // Stop delete loading
       setShowConfirmation(false); // Close confirmation dialog
@@ -86,122 +92,51 @@ const UserLists = ({ userlgs, onUserUpdate }) => {
     setSnackbarOpen(false);
   };
 
-  const handleOpenViewModal = (userId) => {
-    setSelectedUserId(userId);
+  const handleOpenViewModal = (leadId) => {
+    setSelectedLeadId(leadId);
     setOpenViewModal(true);
   };
 
   const handleCloseViewModal = () => {
     setOpenViewModal(false);
-    setSelectedUserId(null);
+    setSelectedLeadId(null);
   };
 
   const iconButtonStyle = { color: "#111827" };
 
-  // Custom rendering function for boolean values
-  const renderBooleanCell = (params) => {
-    return (
-      <div className="flex items-center h-full ml-4">
-        {params.value ? (
-          <div className="w-3 h-3 rounded-full bg-green-800"></div> // Green circle for true
-        ) : (
-            <div className="w-3 h-3 rounded-full bg-red-500"></div> // Red circle for false
-          )}
-      </div>
-    );
-  };
-
   // Custom rendering function for status
   const renderStatusCell = (params) => {
-    const getStatusColor = (status) => {
-      switch (status) {
-        case 'Start Shift':
-          return 'bg-emerald-700';
-        case 'End Shift':
-          return 'bg-red-500';
-        case 'First Break':
-          return 'bg-fuchsia-800';
-        case 'Lunch':
-          return 'bg-rose-700';
-        case 'Team Meeting':
-          return 'bg-stone-700';
-        case 'Coaching':
-          return 'bg-cyan-800';
+    const getStatusColor = (callDisposition) => {
+      switch (callDisposition) {
+        case 'Booked':
+          return { backgroundColor: '#0d9488', color: 'black' }; // bg-emerald-700
+        case 'Warm Lead':
+          return { backgroundColor: '#818cf8', color: 'black' }; // bg-rose-900
+        case 'Email':
+          return { backgroundColor: '#2563eb', color: 'black' }; // bg-cyan-800
         default:
-          return 'none'; // Default color for unrecognized statuses
+          return { color: '#0c0a09' }; // Default color for other statuses
       }
     };
 
-    const statusColorClass = getStatusColor(params.value);
+    const statusStyle = getStatusColor(params.value);
 
     return (
-      <div className="flex items-center h-full mr-3 mb-4">
-        <div className={`flex items-center justify-center text-white rounded-full w-40 h-7 ${statusColorClass}`}>
+      <div style={{ display: 'flex', alignItems: 'center', height: '100%', marginRight: '12px', marginBottom: '16px' }}>
+        <div style={{ ...statusStyle, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '9999px', width: '160px', height: '28px' }}>
           {params.value}
         </div>
       </div>
     );
   };
 
-  // Custom rendering function for role
-  const renderRoleCell = (params) => {
-    const getRoleColor = (role) => {
-      switch (role) {
-        case 'Lead Generation':
-          return 'bg-teal-800';
-        case 'Telemarketer':
-          return 'bg-blue-900';
-        case 'Team Leader':
-          return 'bg-rose-700';
-        default:
-          return 'none'; // Default color for unrecognized roles
-      }
-    };
-
-    const roleColorClass = getRoleColor(params.value);
-
-    return (
-      <div className="flex items-center h-full mr-3 mb-4">
-        <div className={`flex items-center justify-center text-white rounded-full w-40 h-7 ${roleColorClass}`}>
-          {params.value}
-        </div>
-      </div>
-    );
-  };
-
-  // Custom rendering function for status
-  const renderTeamCell = (params) => {
-    const getTeamColor = (team) => {
-      switch (team) {
-        case 'Team A':
-          return 'bg-amber-900';
-        case 'Team B':
-          return 'bg-purple-950';
-        case 'Team C':
-          return 'bg-pink-950';
-        default:
-          return 'none'; // Default color for unrecognized teams
-      }
-    };
-
-    const teamColorClass = getTeamColor(params.value);
-
-    return (
-      <div className="flex items-center h-full mr-3 mb-4">
-        <div className={`flex items-center justify-center text-white rounded-full w-40 h-7 ${teamColorClass}`}>
-          {params.value}
-        </div>
-      </div>
-    );
-  };
   const columns = [
     {
       field: "_id",
-      headerName: "Employee ID",
+      headerName: "ID",
       flex: 1,
-      minWidth: 120,
-      renderCell: (params) => params.value.slice(17, 26),
-      cellClassName: "name-column--cell",
+      minWidth: 100,
+      renderCell: (params) => params.value.slice(20, 26),
     },
     {
       field: "name",
@@ -210,63 +145,87 @@ const UserLists = ({ userlgs, onUserUpdate }) => {
       minWidth: 200,
     },
     {
-      field: "email",
+      field: "type",
+      headerName: "Type",
+      flex: 1,
+      minWidth: 160,
+    },
+    {
+      field: "emailaddress",
       headerName: "Email",
       flex: 1,
-      minWidth: 300,
-    },
-    {
-      field: "role",
-      headerName: "Role",
-      flex: 1,
       minWidth: 250,
-      renderCell: renderRoleCell,
     },
     {
-      field: "team",
-      headerName: "Team",
+      field: "userLG_id",
+      headerName: "Lead By",
       flex: 1,
-      minWidth: 220,
-      renderCell: renderTeamCell,
+      minWidth: 160,
+      renderCell: (params) => userIdToNameMap[params.value] || params.value,
     },
     {
-      field: "isActive",
-      headerName: "Active",
+      field: "createdAt",
+      headerName: "Lead Gen Date",
       flex: 1,
-      minWidth: 50,
-      renderCell: renderBooleanCell,
+      minWidth: 180,
+      renderCell: (params) =>
+        moment(params.row.createdAt).format('MMM-D-YYYY'),
     },
     {
-      field: "status",
-      headerName: "Status",
+      field: "callDisposition",
+      headerName: "Call Disposition",
       flex: 1,
-      minWidth: 220,
+      minWidth: 200,
       renderCell: renderStatusCell,
+    },
+    {
+      field: "assignedTo",
+      headerName: "Assigned To",
+      flex: 1,
+      minWidth: 150,
+      renderCell: (params) => userIdToNameMap[params.value] || params.value,
+      cellClassName: "name-column--cell",
+    },
+    {
+      field: "Distributed",
+      headerName: "Distributed",
+      flex: 1,
+      minWidth: 150,
+      renderCell: (params) => {
+        const assignedTo = params.row.assignedTo;
+        return assignedTo ? moment(params.row.Distributed).startOf('minute').fromNow() : '';
+      }
     },
     {
       field: "updatedAt",
       headerName: "Updated At",
       flex: 1,
-      minWidth: 180,
+      minWidth: 150,
       renderCell: (params) => {
-        const status = params.row.status;
-        return status ? moment(params.row.updatedAt).startOf('minute').fromNow() : '';
+        const callDisposition = params.row.callDisposition;
+        return callDisposition ? moment(params.row.updatedAt).startOf('minute').fromNow() : '';
       }
     },
     {
       field: "actions",
       headerName: "Actions",
       flex: 1,
-      minWidth: 200,
+      minWidth: 190,
       renderCell: (params) => (
         <Box>
           <IconButton onClick={() => handleOpenViewModal(params.row._id)} style={iconButtonStyle}><Visibility /></IconButton>
           <IconButton onClick={() => handleClick(params.row._id)} style={iconButtonStyle}><Delete /></IconButton>
-          <IconButton onClick={() => handleOpenUpdateModal(params.row._id)} style={iconButtonStyle}><Edit /></IconButton>
+          <IconButton onClick={() => handleOpenAssignModal(params.row._id)} style={iconButtonStyle}><PersonAddAlt1Icon /></IconButton>
         </Box>
       )
     },
   ];
+
+  /** --- HEADER SUBTITLE FORMAT --- */
+  const formattedDate = moment(tlLeads.updatedAt).format('MMMM Do YYYY, h:mm:ss a');
+
+  // Filter out rows where callDisposition is 'Do Not Call'
+  const filteredLeads = tlLeads.filter(lead => lead.callDisposition !== 'Do Not Call');
 
   return (
     <Box m="20px">
@@ -277,11 +236,11 @@ const UserLists = ({ userlgs, onUserUpdate }) => {
           fontWeight="bold"
           sx={{ m: "0 0 5px 0", mt: "25px" }}
         >
-          Chromagen Staffs
+          LEADS
             </Typography>
         <Typography variant="h5" color="#111827">
-          List of Users
-            </Typography>
+          {`as of ${formattedDate}`}
+        </Typography>
       </Box>
       <Box
         m="40px 0 0 0"
@@ -294,7 +253,7 @@ const UserLists = ({ userlgs, onUserUpdate }) => {
             borderBottom: "none",
             color: "#111827",
             borderTop: `1px solid #525252 !important`,
-            fontWeight: "600"
+            fontWeight: "400"
           },
           "& .name-column--cell": {
             color: "#1d4ed8",
@@ -303,7 +262,7 @@ const UserLists = ({ userlgs, onUserUpdate }) => {
             backgroundColor: "#111827",
             borderBottom: "none",
             color: "#e0e0e0",
-            fontSize: "18px",
+            fontSize: "18px"
           },
           "& .MuiDataGrid-sortIcon": {
             color: "#ffffff !important", // Change sort icon color to white
@@ -331,12 +290,12 @@ const UserLists = ({ userlgs, onUserUpdate }) => {
           },
           "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
             color: `#111827 !important`,
-            fontWeight: "800"
+            fontWeight: "500"
           },
         }}
       >
         <DataGrid
-          rows={userlgs}
+          rows={filteredLeads}
           columns={columns}
           initialState={{
             pagination: {
@@ -354,9 +313,10 @@ const UserLists = ({ userlgs, onUserUpdate }) => {
           getRowId={row => row._id}
         />
       </Box>
+
       <Modal
-        open={openUpdateModal}
-        onClose={handleCloseUpdateModal}
+        open={openAssignModal}
+        onClose={handleCloseAssignModal}
         aria-labelledby="assign-lead-modal-title"
         aria-describedby="assign-lead-modal-description"
       >
@@ -373,9 +333,10 @@ const UserLists = ({ userlgs, onUserUpdate }) => {
             p: 4,
           }}
         >
-          {selectedUserId && <EditUserInfo userId={selectedUserId} onUserUpdate={onUserUpdate} />}
+          {selectedLeadId && <AssignPage leadId={selectedLeadId} onLeadUpdate={onLeadUpdate} />}
         </Box>
       </Modal>
+
       <Modal
         open={loadingDelete}
         onClose={() => setLoadingDelete(false)}
@@ -399,10 +360,11 @@ const UserLists = ({ userlgs, onUserUpdate }) => {
           {loadingDelete ? (
             <CircularProgress /> // Show CircularProgress while deleting
           ) : (
-              <div>{errorDelete || 'User Deleted Successfully!'}</div> // Show error or success message
+              <div>{errorDelete || 'Lead Deleted Successfully!'}</div> // Show error or success message
             )}
         </Box>
       </Modal>
+
       <Modal
         open={showConfirmation}
         onClose={handleCloseConfirmation}
@@ -425,11 +387,12 @@ const UserLists = ({ userlgs, onUserUpdate }) => {
           }}
         >
           <WarningAmberIcon sx={{ fontSize: 90, color: 'orange' }} />
-          <div style={{ fontSize: '20px', margin: '20px 0' }}>Are you sure you want to delete this user?</div>
+          <div style={{ fontSize: '20px', margin: '20px 0' }}>Are you sure you want to delete this lead?</div>
           <Button onClick={handleDeleteConfirmation} variant="contained" color="primary" sx={{ mr: 2 }}>Yes</Button>
           <Button onClick={handleCloseConfirmation} variant="contained" color="secondary">No</Button>
         </Box>
       </Modal>
+
       <Modal
         open={openViewModal}
         onClose={handleCloseViewModal}
@@ -445,11 +408,14 @@ const UserLists = ({ userlgs, onUserUpdate }) => {
             width: '80%',
             maxHeight: '80%',
             overflow: 'auto',
+
+
           }}
         >
-          {selectedUserId && <ReadUserInfo userId={selectedUserId} />}
+          {selectedLeadId && <ReadLead leadId={selectedLeadId} />}
         </Box>
       </Modal>
+
       <Snackbar
         anchorOrigin={{
           vertical: 'top',
@@ -465,4 +431,4 @@ const UserLists = ({ userlgs, onUserUpdate }) => {
   );
 };
 
-export default UserLists;
+export default LeadList;
