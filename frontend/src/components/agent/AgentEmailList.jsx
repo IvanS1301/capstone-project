@@ -146,6 +146,9 @@ const AgentEmailList = ({ emails, userlgs, onEmailDelete }) => {
         },
     ];
 
+    /** --- HEADER SUBTITLE FORMAT --- */
+    const formattedDate = moment(emails.updatedAt).format('MMMM Do YYYY, h:mm:ss a');
+
     return (
         <Box m="20px">
             <Box mb="20px">
@@ -158,7 +161,7 @@ const AgentEmailList = ({ emails, userlgs, onEmailDelete }) => {
                     EMAILS
             </Typography>
                 <Typography variant="h5" color="#111827">
-                    List of Emails Sent
+                    {`as of ${formattedDate}`}
             </Typography>
             </Box>
             <Box
