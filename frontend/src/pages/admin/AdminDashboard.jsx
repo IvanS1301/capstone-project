@@ -22,45 +22,87 @@ const AdminDashboard = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [filteredBookings, setFilteredBookings] = useState([]);
     const [timePeriod, setTimePeriod] = useState('');
+    const [dateRange, setDateRange] = useState({
+        startDate: new Date(),
+        endDate: new Date()
+    });
 
-    const fetchData = useCallback(async (period = 'annually') => {
+    const fetchInventoryData = useCallback(async () => {
         try {
-            const [inventoryRes, bookingsRes] = await Promise.all([
-                fetch(`${URL}/api/inventories/inventory?range=${period}`, {
-                    headers: { 'Authorization': `Bearer ${userLG.token}` },
-                }),
-                fetch(`${URL}/api/bookings/recent-bookings?range=${period}`, {
-                    headers: { 'Authorization': `Bearer ${userLG.token}` },
-                })
-            ]);
+            const inventoryRes = await fetch(`${URL}/api/inventories/inventory`, {
+                headers: { 'Authorization': `Bearer ${userLG.token}` },
+            });
 
-            const [inventoryData, bookingsData] = await Promise.all([
-                inventoryRes.json(),
-                bookingsRes.json()
-            ]);
+            const inventoryData = await inventoryRes.json();
 
-            if (inventoryRes.ok && bookingsRes.ok) {
+            if (inventoryRes.ok) {
                 setInventory(inventoryData);
-                setRecentBookings(bookingsData);
-                setFilteredBookings(bookingsData); // Initialize filteredBookings with all bookings
                 dispatch({ type: 'SET_INVENTORY', payload: inventoryData });
-                dispatch({ type: 'SET_BOOKINGS', payload: bookingsData });
             } else {
-                console.error('Failed to fetch data', { inventoryData, bookingsData });
+                console.error('Failed to fetch inventory data', inventoryData);
             }
         } catch (error) {
-            console.error('Error fetching data:', error);
-        } finally {
-            setLoading(false);
+            console.error('Error fetching inventory data:', error);
         }
     }, [dispatch, userLG]);
 
-   useEffect(() => {
-        fetchData(timePeriod);
-    }, [fetchData, timePeriod]);
+    const fetchFilteredInventoryData = useCallback(async (period, startDate, endDate) => {
+        try {
+            const inventoryRes = await fetch(`${URL}/api/inventories/inventory?range=${period}&startDate=${startDate}&endDate=${endDate}`, {
+                headers: { 'Authorization': `Bearer ${userLG.token}` },
+            });
+
+            const inventoryData = await inventoryRes.json();
+
+            if (inventoryRes.ok) {
+                setInventory(inventoryData);
+                dispatch({ type: 'SET_INVENTORY', payload: inventoryData });
+            } else {
+                console.error('Failed to fetch inventory data', inventoryData);
+            }
+        } catch (error) {
+            console.error('Error fetching inventory data:', error);
+        }
+    }, [dispatch, userLG]);
+
+    const fetchBookingsData = useCallback(async (period = 'annually', startDate, endDate) => {
+        try {
+            const bookingsRes = await fetch(`${URL}/api/bookings/recent-bookings?range=${period}&startDate=${startDate}&endDate=${endDate}`, {
+                headers: { 'Authorization': `Bearer ${userLG.token}` },
+            });
+
+            const bookingsData = await bookingsRes.json();
+
+            if (bookingsRes.ok) {
+                setRecentBookings(bookingsData);
+                setFilteredBookings(bookingsData);
+                dispatch({ type: 'SET_BOOKINGS', payload: bookingsData });
+            } else {
+                console.error('Failed to fetch bookings data', bookingsData);
+            }
+        } catch (error) {
+            console.error('Error fetching bookings data:', error);
+        }
+    }, [dispatch, userLG]);
+
+    const fetchAllData = useCallback(async () => {
+        setLoading(true);
+        await Promise.all([fetchInventoryData(), fetchBookingsData()]);
+        setLoading(false);
+    }, [fetchInventoryData, fetchBookingsData]);
+
+    useEffect(() => {
+        fetchAllData();
+    }, [fetchAllData]);
 
     const handleTimePeriodChange = (newPeriod) => {
         setTimePeriod(newPeriod);
+        fetchFilteredInventoryData(newPeriod, dateRange.startDate, dateRange.endDate);
+    };
+
+    const handleDateRangeChange = (range) => {
+        setDateRange({ startDate: range.startDate, endDate: range.endDate });
+        fetchFilteredInventoryData(timePeriod, range.startDate, range.endDate);
     };
 
     const handleSearch = useCallback((query) => {
@@ -106,7 +148,13 @@ const AdminDashboard = () => {
                 <div className="p-1 flex-grow flex justify-center items-center">
                     <div className="flex flex-col w-full items-center overflow-y-hidden">
                         <div className="w-full">
-                            <DashboardTabs inventory={inventory} recentBookings={searchQuery ? filteredBookings : recentBookings} timePeriod={timePeriod} onTimePeriodChange={handleTimePeriodChange}/>
+                            <DashboardTabs
+                                inventory={inventory}
+                                recentBookings={searchQuery ? filteredBookings : recentBookings}
+                                timePeriod={timePeriod}
+                                onTimePeriodChange={handleTimePeriodChange}
+                                onDateRangeChange={handleDateRangeChange}
+                            />
                         </div>
                     </div>
                 </div>
