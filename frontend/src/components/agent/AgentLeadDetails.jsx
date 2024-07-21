@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 
 /** --- MATERIAL UI --- */
-import { Box, IconButton, Modal, Typography } from "@mui/material";
+import { Box, IconButton, Modal, Typography, Snackbar } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { Visibility, Edit, Call as CallIcon } from '@mui/icons-material';
 import AttachEmailIcon from '@mui/icons-material/AttachEmail';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
 /** --- IMPORT TIME AND DATE FORMAT --- */
 import moment from 'moment';
@@ -21,6 +22,7 @@ const AgentLeadDetails = ({ unassignedLeads, userlgs, onLeadUpdate }) => {
   const [openViewModal, setOpenViewModal] = useState(false);
   const [openEmailModal, setOpenEmailModal] = useState(false);
   const [emailaddress, setEmailAddress] = useState('');
+  const [snackbarOpen, setSnackbarOpen] = useState(false); // State for Snackbar
 
   const handleOpenAssignModal = (unassignedId) => {
     setSelectedLeadId(unassignedId);
@@ -61,11 +63,11 @@ const AgentLeadDetails = ({ unassignedLeads, userlgs, onLeadUpdate }) => {
     const getStatusColor = (callDisposition) => {
       switch (callDisposition) {
         case 'Booked':
-          return { backgroundColor: '#065f46', color: 'white' };
+          return { backgroundColor: '#0d9488', color: 'black' };
         case 'Warm Lead':
-          return { backgroundColor: '#7f1d1d', color: 'white' };
+          return { backgroundColor: '#818cf8', color: 'black' };
         case 'Email':
-          return { backgroundColor: '#164e63', color: 'white' };
+          return { backgroundColor: '#2563eb', color: 'black' };
         default:
           return { color: '#0c0a09' };
       }
@@ -82,7 +84,40 @@ const AgentLeadDetails = ({ unassignedLeads, userlgs, onLeadUpdate }) => {
     );
   };
 
+  const copyToClipboard = (text) => {
+    navigator.clipboard.writeText(text);
+    setSnackbarOpen(true); // Open Snackbar to indicate copy
+  };
+
+  const renderPhoneNumberCell = (params) => {
+    return (
+      <Typography
+        variant="body1"
+        component="div"  // Use 'div' instead of 'p' for consistency
+        style={{
+          fontSize: '18px',
+          color: '#111827',
+          cursor: 'pointer',
+          display: 'flex',            // Enable flexbox layout
+          justifyContent: 'center',  // Horizontally center content
+          alignItems: 'center',      // Vertically center content
+          height: '100%',            // Ensure full height
+        }}
+        onClick={() => copyToClipboard(params.value)}
+      >
+        {params.value}
+      </Typography>
+    );
+  };
+
   const columns = [
+    {
+      field: "_id",
+      headerName: "ID",
+      flex: 1,
+      minWidth: 100,
+      renderCell: (params) => params.value.slice(20, 26),
+    },
     {
       field: "name",
       headerName: "Name",
@@ -93,13 +128,14 @@ const AgentLeadDetails = ({ unassignedLeads, userlgs, onLeadUpdate }) => {
       field: "type",
       headerName: "Type",
       flex: 1,
-      minWidth: 120,
+      minWidth: 140,
     },
     {
       field: "phonenumber",
       headerName: "Phone Number",
       flex: 1,
       minWidth: 180,
+      renderCell: renderPhoneNumberCell,
     },
     {
       field: "emailaddress",
@@ -118,22 +154,32 @@ const AgentLeadDetails = ({ unassignedLeads, userlgs, onLeadUpdate }) => {
       field: "remarks",
       headerName: "Remarks",
       flex: 1,
-      minWidth: 220,
+      minWidth: 150,
       cellClassName: "name-column--cell",
     },
     {
       field: "Distributed",
       headerName: "Distributed",
       flex: 1,
-      minWidth: 100,
+      minWidth: 150,
       renderCell: (params) =>
         moment(params.row.Distributed).startOf('minute').fromNow()
+    },
+    {
+      field: "updatedAt",
+      headerName: "Updated At",
+      flex: 1,
+      minWidth: 150,
+      renderCell: (params) => {
+        const callDisposition = params.row.callDisposition;
+        return callDisposition ? moment(params.row.updatedAt).startOf('minute').fromNow() : '';
+      }
     },
     {
       field: "actions",
       headerName: "Actions",
       flex: 1,
-      minWidth: 220,
+      minWidth: 200,
       renderCell: (params) => (
         <Box>
           <IconButton onClick={() => handleOpenViewModal(params.row._id)} style={iconButtonStyle}><Visibility /></IconButton>
@@ -144,6 +190,9 @@ const AgentLeadDetails = ({ unassignedLeads, userlgs, onLeadUpdate }) => {
       )
     },
   ];
+
+  /** --- HEADER SUBTITLE FORMAT --- */
+  const formattedDate = moment(unassignedLeads.updatedAt).format('MMMM Do YYYY, h:mm:ss a');
 
   // Filter out rows where callDisposition is 'Do Not Call'
   const filteredLeads = unassignedLeads.filter(lead => lead.callDisposition !== 'Do Not Call');
@@ -160,7 +209,7 @@ const AgentLeadDetails = ({ unassignedLeads, userlgs, onLeadUpdate }) => {
           ASSIGNED LEADS
         </Typography>
         <Typography variant="h5" color="#111827">
-          List of Assigned Leads
+          {`as of ${formattedDate}`}
         </Typography>
       </Box>
       <Box
@@ -174,7 +223,7 @@ const AgentLeadDetails = ({ unassignedLeads, userlgs, onLeadUpdate }) => {
             borderBottom: "none",
             color: "#111827",
             borderTop: `1px solid #525252 !important`,
-            fontWeight: "600"
+            fontWeight: "400"
           },
           "& .name-column--cell": {
             color: "#1d4ed8",
@@ -211,7 +260,7 @@ const AgentLeadDetails = ({ unassignedLeads, userlgs, onLeadUpdate }) => {
           },
           "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
             color: `#111827 !important`,
-            fontWeight: "800"
+            fontWeight: "500"
           },
         }}
       >
@@ -301,6 +350,20 @@ const AgentLeadDetails = ({ unassignedLeads, userlgs, onLeadUpdate }) => {
           {selectedLeadId && <AgentReadForm unassignedId={selectedLeadId} />}
         </Box>
       </Modal>
+
+      {/* Snackbar for clipboard copy confirmation */}
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={3000}
+        onClose={() => setSnackbarOpen(false)}
+        message={
+          <Box display="flex" alignItems="center">
+            <CheckCircleIcon style={{ color: "#63E6BE", marginRight: '8px' }} />
+            <Typography variant="body1">Phone number copied to clipboard</Typography>
+          </Box>
+        }
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }} // Snackbar position
+      />
     </Box>
   );
 };
