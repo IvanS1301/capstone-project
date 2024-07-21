@@ -172,7 +172,7 @@ const AgentEmailList = ({ emails, userlgs, onEmailDelete }) => {
                         borderBottom: "none",
                         color: "#111827",
                         borderTop: `1px solid #525252 !important`,
-                        fontWeight: "600"
+                        fontWeight: "400"
                     },
                     "& .name-column--cell": {
                         color: "#1d4ed8",
@@ -209,7 +209,7 @@ const AgentEmailList = ({ emails, userlgs, onEmailDelete }) => {
                     },
                     "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
                         color: `#111827 !important`,
-                        fontWeight: "800"
+                        fontWeight: "500"
                     },
                 }}
             >
