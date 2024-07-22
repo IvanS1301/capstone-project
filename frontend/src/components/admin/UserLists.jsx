@@ -222,7 +222,7 @@ const LeadList = ({ tlLeads, userlgs, onLeadUpdate }) => {
   ];
 
   /** --- HEADER SUBTITLE FORMAT --- */
-  const formattedDate = moment(tlLeads.updatedAt).format('MMMM Do YYYY, h:mm:ss a');
+  const formattedDate = moment(userlgs.updatedAt).format('MMMM Do YYYY, h:mm:ss a');
 
   // Filter out rows where callDisposition is 'Do Not Call'
   const filteredLeads = tlLeads.filter(lead => lead.callDisposition !== 'Do Not Call');
