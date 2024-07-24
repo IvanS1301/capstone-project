@@ -103,7 +103,7 @@ const AgentAnalyticsTabs = ({ bookedUnits, recentBookings }) => {
                                 letterSpacing: '3px',
                                 backgroundColor: 'hsl(261deg 80% 48%)',
                                 color: 'hsl(0, 0%, 100%)',
-                                boxShadow: '0px 7px 29px 0px rgb(93 24 220)',
+                                boxShadow: '0px 0px 9px 0px rgb(93 24 220)',
                             }
                         }}
                     >
@@ -192,7 +192,7 @@ const AgentAnalyticsTabs = ({ bookedUnits, recentBookings }) => {
                                 Recent Bookings
                             </Typography>
                         </Box>
-                        <Box display="flex" flexDirection="column" height="100%">
+                        <Box display="flex" flexDirection="column" height="100%" overflow="auto">
                             <Box
                                 display="flex"
                                 justifyContent="space-around"
