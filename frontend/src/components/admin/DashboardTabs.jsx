@@ -180,7 +180,7 @@ const DashboardTabs = ({ inventory, recentBookings, timePeriod, onTimePeriodChan
                                 letterSpacing: '3px',
                                 backgroundColor: 'hsl(261deg 80% 48%)',
                                 color: 'hsl(0, 0%, 100%)',
-                                boxShadow: '0px 7px 29px 0px rgb(93 24 220)',
+                                boxShadow: '0px 0px 9px 0px rgb(93 24 220)',
                             }
                         }}
                     >
@@ -207,7 +207,7 @@ const DashboardTabs = ({ inventory, recentBookings, timePeriod, onTimePeriodChan
                                 letterSpacing: '3px',
                                 backgroundColor: 'hsl(261deg 80% 48%)',
                                 color: 'hsl(0, 0%, 100%)',
-                                boxShadow: '0px 7px 29px 0px rgb(93 24 220)',
+                                boxShadow: '0px 0px 9px 0px rgb(93 24 220)',
                             }
                         }}
                     >
@@ -346,7 +346,7 @@ const DashboardTabs = ({ inventory, recentBookings, timePeriod, onTimePeriodChan
                                     letterSpacing: '3px',
                                     backgroundColor: 'hsl(261deg 80% 48%)',
                                     color: 'hsl(0, 0%, 100%)',
-                                    boxShadow: '0px 7px 29px 0px rgb(93 24 220)',
+                                    boxShadow: '0px 0px 9px 0px rgb(93 24 220)',
                                 }
                             }}
                         >
@@ -371,7 +371,7 @@ const DashboardTabs = ({ inventory, recentBookings, timePeriod, onTimePeriodChan
                                     letterSpacing: '3px',
                                     backgroundColor: 'hsl(261deg 80% 48%)',
                                     color: 'hsl(0, 0%, 100%)',
-                                    boxShadow: '0px 7px 29px 0px rgb(93 24 220)',
+                                    boxShadow: '0px 0px 9px 0px rgb(93 24 220)',
                                 }
                             }}
                         >
@@ -396,7 +396,7 @@ const DashboardTabs = ({ inventory, recentBookings, timePeriod, onTimePeriodChan
                                     letterSpacing: '3px',
                                     backgroundColor: 'hsl(261deg 80% 48%)',
                                     color: 'hsl(0, 0%, 100%)',
-                                    boxShadow: '0px 7px 29px 0px rgb(93 24 220)',
+                                    boxShadow: '0px 0px 9px 0px rgb(93 24 220)',
                                 }
                             }}
                         >
@@ -421,7 +421,7 @@ const DashboardTabs = ({ inventory, recentBookings, timePeriod, onTimePeriodChan
                                     letterSpacing: '3px',
                                     backgroundColor: 'hsl(261deg 80% 48%)',
                                     color: 'hsl(0, 0%, 100%)',
-                                    boxShadow: '0px 7px 29px 0px rgb(93 24 220)',
+                                    boxShadow: '0px 0px 9px 0px rgb(93 24 220)',
                                 }
                             }}
                         >
@@ -454,15 +454,14 @@ const DashboardTabs = ({ inventory, recentBookings, timePeriod, onTimePeriodChan
                             justifyContent="space-between"
                             alignItems="center"
                             borderBottom="2px solid #1F2A40"
-                            px="15px"
-                            py="10px"
+                            p="15px"
                             backgroundColor="#192231"
                         >
                             <Typography color="#e0e0e0" variant="h5" fontSize="25px" fontWeight="600">
                                 Recent Bookings
                             </Typography>
                         </Box>
-                        <Box display="flex" flexDirection="column" height="100%">
+                        <Box display="flex" flexDirection="column" height="100%" overflow="auto">
                             <Box
                                 display="flex"
                                 justifyContent="space-around"
