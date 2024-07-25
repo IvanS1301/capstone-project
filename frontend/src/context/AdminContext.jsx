@@ -14,10 +14,20 @@ export const leadsReducer = (state, action) => {
                 ...state,
                 recentBookings: action.payload
             }
+        case 'SET_STATUS':
+            return {
+                ...state,
+                status: action.payload
+            }
         case 'DELETE_BOOKING':
             return {
                 ...state,
                 recentBookings: state.recentBookings.filter((l) => l._id !== action.payload._id)
+            }
+        case 'DELETE_STATUS':
+            return {
+                ...state,
+                status: state.status.filter((l) => l._id !== action.payload._id)
             }
         default:
             return state
@@ -27,7 +37,8 @@ export const leadsReducer = (state, action) => {
 export const AdminContextProvider = ({ children }) => {
     const [state, dispatch] = useReducer(leadsReducer, {
         inventory: [],
-        recentBookings: []
+        recentBookings: [],
+        status: []
     })
 
     return (
