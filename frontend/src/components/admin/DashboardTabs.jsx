@@ -363,7 +363,7 @@ const DashboardTabs = ({ inventory, recentBookings, timePeriod, onTimePeriodChan
                     <Box flex="1" display="flex" alignItems="center" justifyContent="center" backgroundColor="#111827" p="10px" borderRadius="8px">
                         <SaveAsSharpIcon sx={{ color: "#f1f1f1", fontSize: "40px", mr: "50px" }} />
                         <Box>
-                            <Typography variant="h3" color="#e0e0e0">{inventory.numberOfUpdatedLeads}</Typography>
+                            <Typography variant="h3" color="#e0e0e0">{inventory.numberOfUpdatedLeads || 0}</Typography>
                             <Typography variant="body1" color="#e0e0e0">Call Disposition</Typography>
                         </Box>
                     </Box>
