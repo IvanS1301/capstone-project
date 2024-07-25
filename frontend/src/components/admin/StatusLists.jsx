@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { URL } from "../../utils/URL";
 
 /** --- MATERIAL UI --- */
 import { Box, Button, Typography, Paper, Avatar, IconButton, Modal, CircularProgress, Snackbar, Alert } from "@mui/material";
@@ -55,7 +56,7 @@ const StatusLists = ({ statuses, onStatusUpdate, onFilter }) => {
         setErrorDelete(null);
 
         try {
-            const response = await fetch(`http://localhost:4000/api/status/${statusToDelete}`, {
+            const response = await fetch(`${URL}/api/status/${statusToDelete}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${userLG.token}`
