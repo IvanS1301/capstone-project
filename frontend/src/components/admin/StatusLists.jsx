@@ -101,37 +101,40 @@ const StatusLists = ({ statuses, onStatusUpdate, onFilter }) => {
 
     /** --- DOWNLOAD REPORTS AS CSV FILE --- */
     const handleDownloadReports = () => {
-        // Define CSV headers
-        const csvHeaders = [
-            'Employee Name',
-            'Status',
-            'Role',
-            'Date'
-        ];
+    // Define CSV headers
+    const csvHeaders = [
+        'Employee Name',
+        'Status',
+        'Role',
+        'Date'
+    ];
 
-        // Report header row
-        const reportHeader = [
-            'STATUS REPORT',
-            `As of ${moment().format('MMMM Do YYYY, h:mm:ss a')}`
-        ];
+    // Report header row
+    const reportHeader = [
+        'STATUS REPORT',
+        `As of ${moment().format('MMMM Do YYYY, h:mm:ss a')}`
+    ];
 
-        // Prepare report rows
-        const statusRows = statuses.map(status => [
-            `"${status.employeeName || ''}"`,
-            `"${status.status || ''}"`,
-            `"${status.role || ''}"`,
-            `"${moment(status.createdAt).format('MMM D, YYYY h:mm A') || ''}"`
-        ]);
+    // Prepare report rows
+    const statusRows = statuses.map(status => [
+        `"${status.employeeName || ''}"`,
+        `"${status.status || ''}"`,
+        `"${status.role || ''}"`,
+        `"${moment(status.createdAt).format('MMM D, YYYY h:mm A') || ''}"`
+    ]);
 
-        // Convert data to CSV format
-        const csvContent = [
-            reportHeader.join(','), // Add the report header row
-            csvHeaders.join(','),
-            ...statusRows.map(row => row.join(','))
-        ].join('\n');
+    // Convert data to CSV format
+    const csvContent = [
+        reportHeader.join(','), // Add the report header row
+        csvHeaders.join(','),
+        ...statusRows.map(row => row.join(','))
+    ].join('\n');
 
-        // Create and download CSV file
-        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    // Create and download CSV file
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+
+    // Check if URL.createObjectURL is available
+    if (typeof URL.createObjectURL === 'function') {
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.setAttribute('href', url);
@@ -139,7 +142,12 @@ const StatusLists = ({ statuses, onStatusUpdate, onFilter }) => {
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
-    };
+        // Revoke the object URL after usage
+        URL.revokeObjectURL(url);
+    } else {
+        console.error('URL.createObjectURL is not supported in this environment.');
+    }
+};
 
     return (
         <Box m="40px">
