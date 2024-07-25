@@ -169,30 +169,30 @@ const createLead = async (req, res) => {
 
 /** --- DELETE LEAD --- */
 const deleteLead = async (req, res) => {
-    const { id } = req.params
+    const { id } = req.params;
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
-        return res.status(404).json({ error: 'No lead found' })
+        return res.status(404).json({ error: 'No lead found' });
     }
 
-    const lead = await Lead.findOneAndDelete({ _id: id })
+    const lead = await Lead.findOneAndDelete({ _id: id });
 
     if (!lead) {
-        return res.status(400).json({ error: 'No lead found' })
+        return res.status(400).json({ error: 'No lead found' });
     }
 
-    // Update inventory after deleting lead
-    await updateInventoryCounts()
+    // Parallelize non-dependent operations
+    const tasks = [updateInventoryCounts(), updateLeadGenPerformance(), updateBookedUnits(req.userLG.name)];
 
-    // Update lead generation performance
-    await updateLeadGenPerformance();
+    try {
+        // Wait for all tasks to complete
+        await Promise.all(tasks);
 
-    // Update BookedUnits
-    await updateBookedUnits(req.userLG.name);
-
-    res.status(200).json(lead)
-
-}
+        res.status(200).json(lead);
+    } catch (error) {
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
 
 /** --- UPDATE LEAD --- */
 const updateLead = async (req, res) => {
