@@ -14,6 +14,7 @@ const serviceRoutes = require('./routes/services')
 const passwordRoutes = require('./routes/password')
 const notificationRoutes = require('./routes/notifications');
 const templateRoutes = require('./routes/templates');
+const statusRoutes = require('./routes/status');
 
 // express app
 const app = express()
@@ -56,6 +57,7 @@ app.use('/api/services', serviceRoutes)
 app.use('/api/password', passwordRoutes)
 app.use('/api/notifications', notificationRoutes)
 app.use('/api/templates', templateRoutes)
+app.use('/api/status', statusRoutes)
 
 // connect to db
 mongoose.connect(process.env.MONGO_URI)
