@@ -125,8 +125,8 @@ const getInventory = async (req, res) => {
             filterStartDate = moment().startOf('year');
             filterEndDate = today;
         } else if (startDate && endDate) {
-            filterStartDate = moment(startDate).startOf('day');
-            filterEndDate = moment(endDate).endOf('day');
+            filterStartDate = moment(startDate, 'YYYY-MM-DD').startOf('day');
+            filterEndDate = moment(endDate, 'YYYY-MM-DD').endOf('day');
         } else {
             filterStartDate = null;
             filterEndDate = null;
