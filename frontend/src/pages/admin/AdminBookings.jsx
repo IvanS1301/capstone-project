@@ -11,6 +11,8 @@ import AdminSidebar from "../../components/admin/AdminSidebar"
 import { useAdminContext } from "../../hooks/useAdminContext"
 import { useAuthContext } from "../../hooks/useAuthContext"
 
+import moment from 'moment';
+
 const AdminBookings = () => {
   const { recentBookings, dispatch } = useAdminContext();
   const { userLG } = useAuthContext();
@@ -56,8 +58,11 @@ const AdminBookings = () => {
       const filtered = recentBookings.filter((booking) => {
         const telemarketerName = booking.telemarketerName ? booking.telemarketerName.toLowerCase() : '';
         const leadName = booking.leadName ? booking.leadName.toLowerCase() : '';
+        const createdAtFormatted = booking.createdAt
+          ? moment(booking.createdAt).format('MMMM Do YYYY').toLowerCase()
+          : '';
 
-        return telemarketerName.includes(lowerCaseQuery) || leadName.includes(lowerCaseQuery);
+        return telemarketerName.includes(lowerCaseQuery) || leadName.includes(lowerCaseQuery) || createdAtFormatted.includes(lowerCaseQuery);
       });
       setFilteredBookings(filtered);
     }
