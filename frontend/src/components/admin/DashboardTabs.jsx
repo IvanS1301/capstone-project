@@ -45,6 +45,7 @@ const DashboardTabs = ({ inventory, recentBookings, timePeriod, onTimePeriodChan
             key: 'selection'
         }
     ]);
+    const [tempDateRange, setTempDateRange] = useState(dateRange);
 
     // Handle time period change
     const handleTimePeriodClick = (period) => {
@@ -57,8 +58,13 @@ const DashboardTabs = ({ inventory, recentBookings, timePeriod, onTimePeriodChan
     };
 
     const handleSelect = (ranges) => {
-        setDateRange([ranges.selection]);
-        onDateRangeChange(ranges.selection);
+        setTempDateRange([ranges.selection]);
+    };
+
+    const handleApplyDateRange = () => {
+        setDateRange(tempDateRange);
+        onDateRangeChange(tempDateRange[0]);
+        handleToggleCalendar();
     };
 
     /** --- CALL DISPOSITION COUNTS --- */
@@ -248,7 +254,7 @@ const DashboardTabs = ({ inventory, recentBookings, timePeriod, onTimePeriodChan
                         Select Date Range
                     </Typography>
                     <DateRangePicker
-                        ranges={dateRange}
+                        ranges={tempDateRange}
                         onChange={handleSelect}
                         showSelectionPreview={true}
                         moveRangeOnFirstSelection={false}
@@ -272,7 +278,7 @@ const DashboardTabs = ({ inventory, recentBookings, timePeriod, onTimePeriodChan
                             Close
                         </Button>
                         <Button
-                            onClick={() => { onDateRangeChange(dateRange[0]); handleToggleCalendar(); }}
+                            onClick={handleApplyDateRange}
                             sx={{
                                 backgroundColor: "#e1306c",
                                 color: "#fff",
