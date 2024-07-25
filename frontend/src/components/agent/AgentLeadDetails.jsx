@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 
 /** --- MATERIAL UI --- */
-import { Box, IconButton, Modal, Typography, Snackbar } from "@mui/material";
-import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+import { Box, IconButton, Modal, Typography, Snackbar, Button } from "@mui/material";
+import { DataGrid } from "@mui/x-data-grid";
 import { Visibility, Edit, Call as CallIcon } from '@mui/icons-material';
 import AttachEmailIcon from '@mui/icons-material/AttachEmail';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import ArchiveIcon from '@mui/icons-material/Archive';
 
 /** --- IMPORT TIME AND DATE FORMAT --- */
 import moment from 'moment';
@@ -15,6 +16,9 @@ import AgentEditForm from '../../pages/agent/AgentEditForm';
 import AgentReadForm from '../../pages/agent/AgentReadForm';
 import AddEmail from '../../pages/agent/AddEmail';
 
+/** --- IMPORT CHART --- */
+import CustomToolbar from '../Chart/CustomToolbar';
+
 const AgentLeadDetails = ({ unassignedLeads, userlgs, onLeadUpdate }) => {
   const [selectedRows, setSelectedRows] = useState([]);
   const [openAssignModal, setOpenAssignModal] = useState(false);
@@ -22,7 +26,8 @@ const AgentLeadDetails = ({ unassignedLeads, userlgs, onLeadUpdate }) => {
   const [openViewModal, setOpenViewModal] = useState(false);
   const [openEmailModal, setOpenEmailModal] = useState(false);
   const [emailaddress, setEmailAddress] = useState('');
-  const [snackbarOpen, setSnackbarOpen] = useState(false); // State for Snackbar
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [showArchived, setShowArchived] = useState(false);
 
   const handleOpenAssignModal = (unassignedId) => {
     setSelectedLeadId(unassignedId);
@@ -194,8 +199,10 @@ const AgentLeadDetails = ({ unassignedLeads, userlgs, onLeadUpdate }) => {
   /** --- HEADER SUBTITLE FORMAT --- */
   const formattedDate = moment(unassignedLeads.updatedAt).format('MMMM Do YYYY, h:mm:ss a');
 
-  // Filter out rows where callDisposition is 'Do Not Call'
-  const filteredLeads = unassignedLeads.filter(lead => lead.callDisposition !== 'Do Not Call');
+  // Filter rows based on callDisposition
+  const filteredLeads = showArchived
+    ? unassignedLeads.filter(lead => lead.callDisposition === 'Do Not Call')
+    : unassignedLeads.filter(lead => lead.callDisposition !== 'Do Not Call');
 
   return (
     <Box m="20px">
@@ -206,15 +213,33 @@ const AgentLeadDetails = ({ unassignedLeads, userlgs, onLeadUpdate }) => {
           fontWeight="bold"
           sx={{ m: "0 0 5px 0", mt: "25px" }}
         >
-          ASSIGNED LEADS
+          {showArchived ? "ARCHIVED LEADS" : "ASSIGNED LEADS"}
         </Typography>
-        <Typography variant="h5" color="#111827">
+        <Typography variant="h5" color="#111827" marginBottom="30px">
           {`as of ${formattedDate}`}
         </Typography>
+        <Button
+          variant="contained"
+          onClick={() => setShowArchived(!showArchived)}
+          sx={{
+            mt: '3px',
+            padding: '10px 20px',
+            fontSize: '15px',
+            backgroundColor: '#3e4396',
+            '&:hover': {
+              backgroundColor: 'hsl(261deg 80% 48%)',
+              color: 'hsl(0, 0%, 100%)',
+            }
+          }}
+        >
+          <ArchiveIcon sx={{ mr: "10px" }} />
+          {showArchived ? "Assigned Leads" : "Archived Leads"}
+        </Button>
       </Box>
+
       <Box
         m="40px 0 0 0"
-        height="75vh"
+        height="69vh"
         sx={{
           "& .MuiDataGrid-root": {
             border: "none",
@@ -259,7 +284,7 @@ const AgentLeadDetails = ({ unassignedLeads, userlgs, onLeadUpdate }) => {
             color: `#111827 !important`,
           },
           "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
-            color: `#111827 !important`,
+            color: `#e0e0e0 !important`,
             fontWeight: "500"
           },
         }}
@@ -278,7 +303,7 @@ const AgentLeadDetails = ({ unassignedLeads, userlgs, onLeadUpdate }) => {
           }}
           selectionModel={selectedRows}
           slots={{
-            toolbar: GridToolbar,
+            toolbar: CustomToolbar,
           }}
           getRowId={row => row._id}
         />
