@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 /** --- MATERIAL UI --- */
 import { Box, IconButton, Modal, Typography } from "@mui/material";
-import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+import { DataGrid } from "@mui/x-data-grid";
 import { Visibility, Edit } from '@mui/icons-material';
 
 /** --- IMPORT TIME AND DATE FORMAT --- */
@@ -11,6 +11,9 @@ import moment from 'moment';
 /** --- FOR MODAL --- */
 import EditForm from '../../pages/leadgen/EditForm';
 import ReadForm from '../../pages/leadgen/ReadForm';
+
+/** --- IMPORT CHART --- */
+import CustomToolbar from '../Chart/CustomToolbar';
 
 const LeadDetails = ({ leads, userlgs, onLeadUpdate }) => {
   const [selectedRows, setSelectedRows] = useState([]);
@@ -135,7 +138,7 @@ const LeadDetails = ({ leads, userlgs, onLeadUpdate }) => {
             borderBottom: "none",
             color: "#111827",
             borderTop: `1px solid #525252 !important`,
-            fontWeight: "600"
+            fontWeight: "400"
           },
           "& .name-column--cell": {
             color: "#1d4ed8",
@@ -144,7 +147,7 @@ const LeadDetails = ({ leads, userlgs, onLeadUpdate }) => {
             backgroundColor: "#111827",
             borderBottom: "none",
             color: "#e0e0e0",
-            fontSize: "18px",
+            fontSize: "18px"
           },
           "& .MuiDataGrid-sortIcon": {
             color: "#ffffff !important", // Change sort icon color to white
@@ -159,7 +162,7 @@ const LeadDetails = ({ leads, userlgs, onLeadUpdate }) => {
           "& .MuiDataGrid-footerContainer": {
             borderTop: "none",
             backgroundColor: "#111827",
-            color: "#ffffff",
+            color: "#ffffff", // Added to set the color of the footer container
           },
           "& .MuiTablePagination-root": {
             color: "#ffffff !important", // Ensure the pagination text is white
@@ -171,8 +174,8 @@ const LeadDetails = ({ leads, userlgs, onLeadUpdate }) => {
             color: `#111827 !important`,
           },
           "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
-            color: `#111827 !important`,
-            fontWeight: "800"
+            color: `#e0e0e0 !important`,
+            fontWeight: "500"
           },
         }}
       >
@@ -190,7 +193,7 @@ const LeadDetails = ({ leads, userlgs, onLeadUpdate }) => {
           }}
           selectionModel={selectedRows}
           slots={{
-            toolbar: GridToolbar,
+            toolbar: CustomToolbar,
           }}
           getRowId={row => row._id}
         />
