@@ -3,11 +3,12 @@ import { URL } from "../../utils/URL";
 
 /** --- MATERIAL UI --- */
 import { Box, IconButton, Modal, CircularProgress, Button, Snackbar, Typography } from "@mui/material";
-import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+import { DataGrid } from "@mui/x-data-grid";
 import { Delete, Visibility } from '@mui/icons-material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
+import ArchiveIcon from '@mui/icons-material/Archive';
 
 /** --- IMPORT CONTEXT --- */
 import { useLeadsContext } from "../../hooks/useLeadsContext";
@@ -20,13 +21,17 @@ import moment from 'moment';
 import AssignPage from '../../pages/admin/AssignPage';
 import ReadLead from '../../pages/admin/ReadLead';
 
+/** --- IMPORT CHART --- */
+import CustomToolbar from '../Chart/CustomToolbar';
+
 const LeadList = ({ tlLeads, userlgs, onLeadUpdate }) => {
   const { dispatch } = useLeadsContext();
   const { userLG } = useAuthContext();
   const [selectedRows, setSelectedRows] = useState([]);
   const [openAssignModal, setOpenAssignModal] = useState(false);
   const [selectedLeadId, setSelectedLeadId] = useState(null);
-  const [openViewModal, setOpenViewModal] = useState(false); // State for ViewLead modal
+  const [openViewModal, setOpenViewModal] = useState(false);
+  const [showArchived, setShowArchived] = useState(false);
 
   /** --- FOR DELETE BUTTON --- */
   const [loadingDelete, setLoadingDelete] = useState(false); // State for delete loading
@@ -224,8 +229,9 @@ const LeadList = ({ tlLeads, userlgs, onLeadUpdate }) => {
   /** --- HEADER SUBTITLE FORMAT --- */
   const formattedDate = moment(tlLeads.updatedAt).format('MMMM Do YYYY, h:mm:ss a');
 
-  // Filter out rows where callDisposition is 'Do Not Call'
-  const filteredLeads = tlLeads.filter(lead => lead.callDisposition !== 'Do Not Call');
+  const filteredLeads = showArchived
+    ? tlLeads.filter(lead => lead.callDisposition === 'Do Not Call')
+    : tlLeads.filter(lead => lead.callDisposition !== 'Do Not Call');
 
   return (
     <Box m="20px">
@@ -236,15 +242,33 @@ const LeadList = ({ tlLeads, userlgs, onLeadUpdate }) => {
           fontWeight="bold"
           sx={{ m: "0 0 5px 0", mt: "25px" }}
         >
-          LEADS
-            </Typography>
-        <Typography variant="h5" color="#111827">
+          {showArchived ? "ARCHIVED LEADS" : "ASSIGNED LEADS"}
+        </Typography>
+        <Typography variant="h5" color="#111827" marginBottom="30px">
           {`as of ${formattedDate}`}
         </Typography>
+        <Button
+          variant="contained"
+          onClick={() => setShowArchived(!showArchived)}
+          sx={{
+            mt: '3px',
+            padding: '10px 20px',
+            fontSize: '15px',
+            backgroundColor: '#3e4396',
+            '&:hover': {
+              backgroundColor: 'hsl(261deg 80% 48%)',
+              color: 'hsl(0, 0%, 100%)',
+            }
+          }}
+        >
+          <ArchiveIcon sx={{ mr: "10px" }} />
+          {showArchived ? "Assigned Leads" : "Archived Leads"}
+        </Button>
       </Box>
+
       <Box
         m="40px 0 0 0"
-        height="75vh"
+        height="69vh"
         sx={{
           "& .MuiDataGrid-root": {
             border: "none",
@@ -289,7 +313,7 @@ const LeadList = ({ tlLeads, userlgs, onLeadUpdate }) => {
             color: `#111827 !important`,
           },
           "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
-            color: `#111827 !important`,
+            color: `#e0e0e0 !important`,
             fontWeight: "500"
           },
         }}
@@ -308,7 +332,7 @@ const LeadList = ({ tlLeads, userlgs, onLeadUpdate }) => {
           }}
           selectionModel={selectedRows}
           slots={{
-            toolbar: GridToolbar,
+            toolbar: CustomToolbar,
           }}
           getRowId={row => row._id}
         />
