@@ -46,9 +46,28 @@ const AdminDashboard = () => {
         }
     }, [dispatch, userLG]);
 
-    const fetchFilteredInventoryData = useCallback(async (period, startDate, endDate) => {
+    const fetchFilteredInventoryData = useCallback(async (period) => {
         try {
-            const inventoryRes = await fetch(`${URL}/api/inventories/inventory?range=${period}&startDate=${startDate}&endDate=${endDate}`, {
+            const inventoryRes = await fetch(`${URL}/api/inventories/inventory?range=${period}`, {
+                headers: { 'Authorization': `Bearer ${userLG.token}` },
+            });
+
+            const inventoryData = await inventoryRes.json();
+
+            if (inventoryRes.ok) {
+                setInventory(inventoryData);
+                dispatch({ type: 'SET_INVENTORY', payload: inventoryData });
+            } else {
+                console.error('Failed to fetch inventory data', inventoryData);
+            }
+        } catch (error) {
+            console.error('Error fetching inventory data:', error);
+        }
+    }, [dispatch, userLG]);
+
+    const fetchDateRangeData = useCallback(async (startDate, endDate) => {
+        try {
+            const inventoryRes = await fetch(`${URL}/api/inventories/inventory?startDate=${startDate}&endDate=${endDate}`, {
                 headers: { 'Authorization': `Bearer ${userLG.token}` },
             });
 
@@ -97,12 +116,14 @@ const AdminDashboard = () => {
 
     const handleTimePeriodChange = (newPeriod) => {
         setTimePeriod(newPeriod);
-        fetchFilteredInventoryData(newPeriod, dateRange.startDate, dateRange.endDate);
+        fetchFilteredInventoryData(newPeriod);
+        fetchBookingsData(newPeriod, dateRange.startDate, dateRange.endDate);
     };
 
     const handleDateRangeChange = (range) => {
         setDateRange({ startDate: range.startDate, endDate: range.endDate });
-        fetchFilteredInventoryData(timePeriod, range.startDate, range.endDate);
+        fetchDateRangeData(range.startDate, range.endDate);
+        fetchBookingsData(timePeriod, range.startDate, range.endDate);
     };
 
     const handleSearch = useCallback((query) => {
