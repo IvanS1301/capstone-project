@@ -1,7 +1,6 @@
 import { Box, Button, Typography, Modal } from "@mui/material";
 import React, { useState } from 'react';
 
-/** --- REACT DATE RANGE --- */
 import { DateRangePicker } from 'react-date-range';
 import 'react-date-range/dist/styles.css'; // Main style file
 import 'react-date-range/dist/theme/default.css'; // Theme CSS file
@@ -45,7 +44,6 @@ const DashboardTabs = ({ inventory, recentBookings, timePeriod, onTimePeriodChan
             key: 'selection'
         }
     ]);
-    const [tempDateRange, setTempDateRange] = useState(dateRange);
 
     // Handle time period change
     const handleTimePeriodClick = (period) => {
@@ -58,13 +56,8 @@ const DashboardTabs = ({ inventory, recentBookings, timePeriod, onTimePeriodChan
     };
 
     const handleSelect = (ranges) => {
-        setTempDateRange([ranges.selection]);
-    };
-
-    const handleApplyDateRange = () => {
-        setDateRange(tempDateRange);
-        onDateRangeChange(tempDateRange[0]);
-        handleToggleCalendar();
+        setDateRange([ranges.selection]);
+        onDateRangeChange(ranges.selection);
     };
 
     /** --- CALL DISPOSITION COUNTS --- */
@@ -232,66 +225,14 @@ const DashboardTabs = ({ inventory, recentBookings, timePeriod, onTimePeriodChan
                 aria-describedby="calendar-modal-description"
                 style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
             >
-                <Box
-                    display="flex"
-                    flexDirection="column"
-                    alignItems="center"
-                    justifyContent="center"
-                    bgcolor="background.paper"
-                    boxShadow={24}
-                    p={4}
-                    style={{
-                        position: 'absolute',
-                        top: '50%',
-                        left: '50%',
-                        transform: 'translate(-50%, -50%)',
-                        width: '80%',
-                        maxWidth: '600px',
-                        borderRadius: '12px'
-                    }}
-                >
-                    <Typography id="calendar-modal-title" variant="h6" component="h2" sx={{ mb: '20px' }}>
+                <Box sx={{ backgroundColor: 'white', boxShadow: 24, p: 5, borderRadius: 8 }}>
+                    <Typography id="calendar-modal-title" variant="h6" component="h2" sx={{ marginBottom: 2 }}>
                         Select Date Range
                     </Typography>
                     <DateRangePicker
-                        ranges={tempDateRange}
+                        ranges={dateRange}
                         onChange={handleSelect}
-                        showSelectionPreview={true}
-                        moveRangeOnFirstSelection={false}
-                        months={1}
-                        direction="horizontal"
                     />
-                    <Box display="flex" justifyContent="space-between" width="100%" mt={2}>
-                        <Button
-                            onClick={handleToggleCalendar}
-                            sx={{
-                                backgroundColor: "#3e4396",
-                                color: "#fff",
-                                fontWeight: "bold",
-                                '&:hover': {
-                                    backgroundColor: "#2c3173"
-                                },
-                                flex: 1,
-                                marginRight: '10px'
-                            }}
-                        >
-                            Close
-                        </Button>
-                        <Button
-                            onClick={handleApplyDateRange}
-                            sx={{
-                                backgroundColor: "#e1306c",
-                                color: "#fff",
-                                fontWeight: "bold",
-                                '&:hover': {
-                                    backgroundColor: "#c13584"
-                                },
-                                flex: 1
-                            }}
-                        >
-                            Apply
-                        </Button>
-                    </Box>
                 </Box>
             </Modal>
 
