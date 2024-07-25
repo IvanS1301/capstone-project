@@ -69,6 +69,8 @@ const updateInventoryCounts = async (dateFilter) => {
             return acc;
         }, { 'Team A': 0, 'Team B': 0, 'Team C': 0 });
 
+        console.log("Creating or updating inventory document...");
+
         let inventory = await Inventory.findOne();
 
         if (!inventory) {
@@ -84,6 +86,8 @@ const updateInventoryCounts = async (dateFilter) => {
                 teamBookedCounts
             });
         } else {
+            console.log("Existing inventory found. Updating...");
+
             inventory.numberOfLeads = totalLeads;
             inventory.numberOfUsers = totalUsers;
             inventory.numberOfAssignedLeads = totalAssignedLeads;
@@ -98,6 +102,9 @@ const updateInventoryCounts = async (dateFilter) => {
         console.log("Saving inventory:", inventory);
 
         await inventory.save();
+
+        console.log("Inventory saved. Returning inventory:", inventory);
+
         return inventory;
 
     } catch (error) {
