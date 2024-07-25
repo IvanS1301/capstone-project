@@ -86,6 +86,7 @@ const updateInventoryCounts = async (dateFilter) => {
 
     } catch (error) {
         console.error('Error updating inventory counts:', error);
+        throw new Error('Failed to update inventory counts');
     }
 };
 
@@ -94,34 +95,28 @@ const getInventory = async (req, res) => {
         const { range, startDate, endDate } = req.query;
         let filterStartDate, filterEndDate;
 
-        const today = new Date();
-        today.setHours(23, 59, 59, 999);
-
+        const today = moment().endOf('day');
         if (range === 'daily') {
-            filterStartDate = new Date();
-            filterStartDate.setHours(0, 0, 0, 0);
+            filterStartDate = moment().startOf('day');
             filterEndDate = today;
         } else if (range === 'weekly') {
-            filterStartDate = moment().startOf('week').toDate();
+            filterStartDate = moment().startOf('week');
             filterEndDate = today;
         } else if (range === 'monthly') {
-            filterStartDate = moment().startOf('month').toDate();
+            filterStartDate = moment().startOf('month');
             filterEndDate = today;
         } else if (range === 'annually') {
-            filterStartDate = moment().startOf('year').toDate();
+            filterStartDate = moment().startOf('year');
             filterEndDate = today;
         } else if (startDate && endDate) {
-            filterStartDate = new Date(startDate);
-            filterEndDate = new Date(endDate);
-            filterEndDate.setHours(23, 59, 59, 999);
+            filterStartDate = moment(startDate).startOf('day');
+            filterEndDate = moment(endDate).endOf('day');
         } else {
             filterStartDate = null;
             filterEndDate = null;
         }
 
-        const dateFilter = filterStartDate && filterEndDate ? { startDate: filterStartDate, endDate: filterEndDate } : null;
-        console.log("Date filter:", dateFilter);
-
+        const dateFilter = filterStartDate && filterEndDate ? { startDate: filterStartDate.toDate(), endDate: filterEndDate.toDate() } : null;
         const inventory = await updateInventoryCounts(dateFilter);
 
         res.status(200).json(inventory);
