@@ -1,4 +1,5 @@
 const UserLG = require('../models/userLGModel')
+const Status = require('../models/statusModel');
 const jwt = require('jsonwebtoken')
 const mongoose = require('mongoose')
 const { updateInventoryCounts } = require('./inventoryController')
@@ -85,22 +86,38 @@ const getSingleUserLG = async (req, res) => {
 /** --- UPDATE USER --- */
 const updateUserLG = async (req, res) => {
   const { id } = req.params
+  const { status } = req.body
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(404).json({ error: 'No user found' })
   }
 
-  const userlg = await UserLG.findOneAndUpdate({ _id: id }, {
-    ...req.body
-  })
+  try {
+    const userlg = await UserLG.findOneAndUpdate({ _id: id }, {
+      ...req.body
+    }, { new: true })
 
-  if (!userlg) {
-    return res.status(400).json({ error: 'No user found' })
+    if (!userlg) {
+      return res.status(400).json({ error: 'No user found' })
+    }
+
+    // Parallelize non-dependent operations
+    const tasks = [updateInventoryCounts()]
+
+    const statusLog = new Status({
+      employeeName: userlg.name,
+      role: userlg.role,
+      status: userlg.status,
+    });
+    tasks.push(statusLog.save());
+
+    // Wait for all tasks to complete
+    await Promise.all(tasks);
+
+    res.status(200).json(userlg)
+  } catch (error) {
+    res.status(400).json({ error: error.message });
   }
-
-  await updateInventoryCounts()
-
-  res.status(200).json(userlg)
 }
 
 /** --- DELETE USER --- */
