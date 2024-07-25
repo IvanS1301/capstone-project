@@ -10,8 +10,8 @@ import { AiOutlineMenu } from "react-icons/ai";
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
 import MarkEmailReadIcon from '@mui/icons-material/MarkEmailRead';
-import SettingsIcon from '@mui/icons-material/Settings';
 import { Typography } from "@mui/material";
+import PermContactCalendarIcon from '@mui/icons-material/PermContactCalendar';
 
 /** --- IMPORT HOOKS --- */
 import { useAuthContext } from '../../hooks/useAuthContext';
@@ -55,19 +55,19 @@ const AdminSidebar = () => {
         setSelected("Emails");
         break;
       case "/AdminSignup":
-        setSelected("Add User");
+        setSelected("Add New User");
+        break;
+      case "/AdminStatus":
+        setSelected("Status Logs");
         break;
       case `/viewprofile/${userLG._id}`:
-        setSelected("Profile");
+        setSelected("Personal Info");
         break;
       case "/RecentBookings":
         setSelected("Recent Bookings");
         break;
       case "/AdminStaff":
         setSelected("Staff Performance");
-        break;
-      case "/Settings":
-        setSelected("Settings");
         break;
       default:
         setSelected("");
@@ -192,7 +192,15 @@ const AdminSidebar = () => {
           selected={selected}
           setSelected={setSelected}
         />
-        
+        <Item
+          title="Status Logs"
+          to="/AdminStatus"
+          icon={<PermContactCalendarIcon />}
+          selected={selected}
+          setSelected={setSelected}
+        />
+
+
         {!isCollapsed && (
           <div className="text-[#a3a3a3] m-3 ml-7">
             <Typography sx={{ fontSize: '14px', m: "15px 0 5px 20px" }}>Analytics</Typography>
