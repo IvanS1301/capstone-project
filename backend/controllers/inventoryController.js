@@ -18,6 +18,8 @@ const updateInventoryCounts = async (dateFilter) => {
             filter.updatedAt = { $gte: startDate, $lte: endDate };
         }
 
+        console.log('Filter for counting documents:', filter);
+
         const [
             totalLeads,
             totalUsers,
@@ -39,6 +41,18 @@ const updateInventoryCounts = async (dateFilter) => {
             Promise.all(["Team A", "Team B", "Team C"].map(async (team) => ({ team, count: await RecentBooking.countDocuments({ ...filter, callDisposition: 'Booked', team }) }))),
             Lead.countDocuments({ ...filter, callDisposition: { $exists: true } })
         ]);
+
+        console.log('Counts calculated:', {
+            totalLeads,
+            totalUsers,
+            totalEmails,
+            totalAssignedLeads,
+            totalUnassignedLeads,
+            typeCountsArray,
+            callDispositionCountsArray,
+            teamBookedCountsArray,
+            numberOfUpdatedLeads
+        });
 
         const typeCounts = typeCountsArray.reduce((acc, { type, count }) => {
             acc[type] = count;
@@ -64,10 +78,10 @@ const updateInventoryCounts = async (dateFilter) => {
                 numberOfAssignedLeads: totalAssignedLeads,
                 numberOfUnassignedLeads: totalUnassignedLeads,
                 numberOfEmails: totalEmails,
+                numberOfUpdatedLeads: numberOfUpdatedLeads,
                 typeCounts,
                 callDispositionCounts,
-                teamBookedCounts,
-                numberOfUpdatedLeads: numberOfUpdatedLeads
+                teamBookedCounts
             });
         } else {
             inventory.numberOfLeads = totalLeads;
@@ -75,11 +89,13 @@ const updateInventoryCounts = async (dateFilter) => {
             inventory.numberOfAssignedLeads = totalAssignedLeads;
             inventory.numberOfUnassignedLeads = totalUnassignedLeads;
             inventory.numberOfEmails = totalEmails;
+            inventory.numberOfUpdatedLeads = numberOfUpdatedLeads;
             inventory.typeCounts = typeCounts;
             inventory.callDispositionCounts = callDispositionCounts;
             inventory.teamBookedCounts = teamBookedCounts;
-            inventory.numberOfUpdatedLeads = numberOfUpdatedLeads;
         }
+
+        console.log('Saving inventory:', inventory);
 
         await inventory.save();
         return inventory;
@@ -118,6 +134,8 @@ const getInventory = async (req, res) => {
 
         const dateFilter = filterStartDate && filterEndDate ? { startDate: filterStartDate.toDate(), endDate: filterEndDate.toDate() } : null;
         const inventory = await updateInventoryCounts(dateFilter);
+
+        console.log('Returning inventory:', inventory);
 
         res.status(200).json(inventory);
     } catch (error) {
