@@ -18,8 +18,6 @@ const updateInventoryCounts = async (dateFilter) => {
             filter.updatedAt = { $gte: startDate, $lte: endDate };
         }
 
-        console.log("Filter for counting documents:", filter);
-
         const [
             totalLeads,
             totalUsers,
@@ -42,18 +40,6 @@ const updateInventoryCounts = async (dateFilter) => {
             Lead.countDocuments({ ...filter, callDisposition: { $exists: true } })
         ]);
 
-        console.log("Counts calculated:", {
-            totalLeads,
-            totalUsers,
-            totalEmails,
-            totalAssignedLeads,
-            totalUnassignedLeads,
-            typeCountsArray,
-            callDispositionCountsArray,
-            teamBookedCountsArray,
-            numberOfUpdatedLeads
-        });
-
         const typeCounts = typeCountsArray.reduce((acc, { type, count }) => {
             acc[type] = count;
             return acc;
@@ -68,8 +54,6 @@ const updateInventoryCounts = async (dateFilter) => {
             acc[team] = count;
             return acc;
         }, { 'Team A': 0, 'Team B': 0, 'Team C': 0 });
-
-        console.log("Creating or updating inventory document...");
 
         let inventory = await Inventory.findOne();
 
@@ -86,8 +70,6 @@ const updateInventoryCounts = async (dateFilter) => {
                 teamBookedCounts
             });
         } else {
-            console.log("Existing inventory found. Updating...");
-
             inventory.numberOfLeads = totalLeads;
             inventory.numberOfUsers = totalUsers;
             inventory.numberOfAssignedLeads = totalAssignedLeads;
@@ -99,12 +81,7 @@ const updateInventoryCounts = async (dateFilter) => {
             inventory.teamBookedCounts = teamBookedCounts;
         }
 
-        console.log("Saving inventory:", inventory);
-
         await inventory.save();
-
-        console.log("Inventory saved. Returning inventory:", inventory);
-
         return inventory;
 
     } catch (error) {
@@ -118,28 +95,34 @@ const getInventory = async (req, res) => {
         const { range, startDate, endDate } = req.query;
         let filterStartDate, filterEndDate;
 
-        const today = moment().endOf('day');
+        const today = new Date();
+        today.setHours(23, 59, 59, 999);
+
         if (range === 'daily') {
-            filterStartDate = moment().startOf('day');
+            filterStartDate = new Date();
+            filterStartDate.setHours(0, 0, 0, 0);
             filterEndDate = today;
         } else if (range === 'weekly') {
-            filterStartDate = moment().startOf('week');
+            filterStartDate = moment().startOf('week').toDate();
             filterEndDate = today;
         } else if (range === 'monthly') {
-            filterStartDate = moment().startOf('month');
+            filterStartDate = moment().startOf('month').toDate();
             filterEndDate = today;
         } else if (range === 'annually') {
-            filterStartDate = moment().startOf('year');
+            filterStartDate = moment().startOf('year').toDate();
             filterEndDate = today;
         } else if (startDate && endDate) {
-            filterStartDate = moment(startDate).startOf('day');
-            filterEndDate = moment(endDate).endOf('day');
+            filterStartDate = new Date(startDate);
+            filterEndDate = new Date(endDate);
+            filterEndDate.setHours(23, 59, 59, 999);
         } else {
             filterStartDate = null;
             filterEndDate = null;
         }
 
-        const dateFilter = filterStartDate && filterEndDate ? { startDate: filterStartDate.toDate(), endDate: filterEndDate.toDate() } : null;
+        const dateFilter = filterStartDate && filterEndDate ? { startDate: filterStartDate, endDate: filterEndDate } : null;
+        console.log("Date filter:", dateFilter);
+
         const inventory = await updateInventoryCounts(dateFilter);
 
         res.status(200).json(inventory);
