@@ -100,46 +100,49 @@ const StatusLists = ({ statuses, onStatusUpdate, onFilter }) => {
     };
 
     /** --- DOWNLOAD REPORTS AS CSV FILE --- */
-    const handleDownloadReports = () => {
-        // Define CSV headers
-        const csvHeaders = [
-            'Employee Name',
-            'Status',
-            'Role',
-            'Date'
-        ];
+const handleDownloadReports = () => {
+    // Define CSV headers
+    const csvHeaders = [
+        'Employee Name',
+        'Status',
+        'Role',
+        'Date'
+    ];
 
-        // Report header row
-        const reportHeader = [
-            'STATUS REPORT',
-            `As of ${moment().format('MMMM Do YYYY, h:mm:ss a')}`
-        ];
+    // Report header row
+    const reportHeader = [
+        'STATUS REPORT',
+        `As of ${moment().format('MMMM Do YYYY, h:mm:ss a')}`
+    ];
 
-        // Prepare report rows
-        const statusRows = statuses.map(status => [
-            `"${status.employeeName || ''}"`,
-            `"${status.status || ''}"`,
-            `"${status.role || ''}"`,
-            `"${moment(status.createdAt).format('MMM D, YYYY h:mm A') || ''}"`
-        ]);
+    // Prepare report rows
+    const statusRows = statuses.map(status => [
+        `"${status.employeeName || ''}"`,
+        `"${status.status || ''}"`,
+        `"${status.role || ''}"`,
+        `"${moment(status.createdAt).format('MMM D, YYYY h:mm A') || ''}"`
+    ]);
 
-        // Convert data to CSV format
-        const csvContent = [
-            reportHeader.join(','), // Add the report header row
-            csvHeaders.join(','),
-            ...statusRows.map(row => row.join(','))
-        ].join('\n');
+    // Convert data to CSV format
+    const csvContent = [
+        reportHeader.join(','), // Add the report header row
+        csvHeaders.join(','),
+        ...statusRows.map(row => row.join(','))
+    ].join('\n');
 
-        // Create and download CSV file
-        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.setAttribute('href', url);
-        link.setAttribute('download', `status_report_${moment().format('YYYY-MM-DD')}.csv`);
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    };
+    // Create and download CSV file
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', `status_report_${moment().format('YYYY-MM-DD')}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    // Release memory
+    URL.revokeObjectURL(url);
+};
 
     return (
         <Box m="40px">
