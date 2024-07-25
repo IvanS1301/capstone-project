@@ -86,7 +86,6 @@ const updateInventoryCounts = async (dateFilter) => {
 
     } catch (error) {
         console.error('Error updating inventory counts:', error);
-        throw new Error('Failed to update inventory counts');
     }
 };
 
