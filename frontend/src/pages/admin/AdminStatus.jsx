@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { CircularProgress } from "@mui/material";
+import { URL } from "../../utils/URL";
 
 /** --- COMPONENTS --- */
 import StatusLists from "../../components/admin/StatusLists";
@@ -20,7 +21,7 @@ const AdminStatus = () => {
 
     const fetchStatus = useCallback(async () => {
         try {
-            const response = await fetch('http://localhost:4000/api/status/status-logs', {
+            const response = await fetch(`${URL}/api/status/status-logs`, {
                 headers: { 'Authorization': `Bearer ${userLG.token}` },
             });
             const json = await response.json();
@@ -69,7 +70,7 @@ const AdminStatus = () => {
     const handleFilter = useCallback(async (startDate, endDate) => {
         setLoading(true);
         try {
-            const response = await fetch(`http://localhost:4000/api/status/status-logs?startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}`, {
+            const response = await fetch(`${URL}/api/status/status-logs?startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}`, {
                 headers: { 'Authorization': `Bearer ${userLG.token}` },
             });
             const json = await response.json();
