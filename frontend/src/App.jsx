@@ -28,6 +28,7 @@ import AdminSignup from './pages/admin/AdminSignup'
 import AdminEmails from './pages/admin/AdminEmails'
 import AdminBookings from './pages/admin/AdminBookings'
 import AdminStaff from './pages/admin/AdminStaff'
+import AdminStatus from './pages/admin/AdminStatus'
 import ReadLead from './pages/admin/ReadLead'
 import ReadEmail from './pages/admin/ReadEmail'
 import AssignPage from './pages/admin/AssignPage'
@@ -113,6 +114,7 @@ function App() {
             <Route path="/AdminEmails" element={userLG ? <AdminEmails /> : <Navigate to="/loginLG" />} />
             <Route path="/RecentBookings" element={userLG ? <AdminBookings /> : <Navigate to="/loginLG" />} />
             <Route path="/AdminStaff" element={userLG ? <AdminStaff /> : <Navigate to="/loginLG" />} />
+            <Route path="/AdminStatus" element={userLG ? <AdminStatus /> : <Navigate to="/loginLG" />} />
             <Route path="/viewprofile/:id" element={userLG ? <ReadProfile /> : <Navigate to="/loginLG" />} />
             <Route path="/TLview/:id" element={userLG ? <ReadLead /> : <Navigate to="/loginLG" />} />
             <Route path="/TLedit/:id" element={userLG ? <AssignPage /> : <Navigate to="/loginLG" />} />
