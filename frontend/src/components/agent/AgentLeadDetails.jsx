@@ -68,11 +68,11 @@ const AgentLeadDetails = ({ unassignedLeads, userlgs, onLeadUpdate }) => {
     const getStatusColor = (callDisposition) => {
       switch (callDisposition) {
         case 'Booked':
-          return { backgroundColor: '#0d9488', color: 'black' };
+          return { backgroundColor: '#0d9488', color: 'white' };
         case 'Warm Lead':
-          return { backgroundColor: '#818cf8', color: 'black' };
+          return { backgroundColor: '#818cf8', color: 'white' };
         case 'Email':
-          return { backgroundColor: '#2563eb', color: 'black' };
+          return { backgroundColor: '#2563eb', color: 'white' };
         default:
           return { color: '#0c0a09' };
       }
@@ -312,6 +312,7 @@ const AgentLeadDetails = ({ unassignedLeads, userlgs, onLeadUpdate }) => {
       <Modal
         open={openAssignModal}
         onClose={handleCloseAssignModal}
+        className="bounce-in-modal"
         aria-labelledby="assign-lead-modal-title"
         aria-describedby="assign-lead-modal-description"
       >
@@ -335,6 +336,7 @@ const AgentLeadDetails = ({ unassignedLeads, userlgs, onLeadUpdate }) => {
       <Modal
         open={openEmailModal}
         onClose={handleCloseEmailModal}
+        className="bounce-in-modal"
         aria-labelledby="email-lead-modal-title"
         aria-describedby="email-lead-modal-description"
       >
@@ -358,6 +360,7 @@ const AgentLeadDetails = ({ unassignedLeads, userlgs, onLeadUpdate }) => {
       <Modal
         open={openViewModal}
         onClose={handleCloseViewModal}
+        className="bounce-in-modal"
         aria-labelledby="view-lead-modal-title"
         aria-describedby="view-lead-modal-description"
       >
