@@ -10,6 +10,7 @@ import AnalyticsIcon from '@mui/icons-material/Analytics';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import MarkEmailReadIcon from '@mui/icons-material/MarkEmailRead';
 import { Typography } from "@mui/material";
+import PermContactCalendarIcon from '@mui/icons-material/PermContactCalendar';
 
 /** --- IMPORT HOOKS --- */
 import { useAuthContext } from '../../hooks/useAuthContext';
@@ -51,6 +52,9 @@ const AgentSidebar = () => {
                 break;
             case "/AgentService":
                 setSelected("Statistics");
+                break;
+            case "/AgentTime":
+                setSelected("Status Logs");
                 break;
             case `/viewuser/${userLG._id}`:
                 setSelected("Personal Info");
@@ -164,6 +168,19 @@ const AgentSidebar = () => {
                     title="Emails"
                     to="/AgentEmails"
                     icon={<MarkEmailReadIcon />}
+                    selected={selected}
+                    setSelected={setSelected}
+                />
+
+                {!isCollapsed && (
+                    <div className="text-[#a3a3a3] m-3 ml-7">
+                        <Typography sx={{ fontSize: '14px', m: "15px 0 5px 20px" }}>Status</Typography>
+                    </div>
+                )}
+                <Item
+                    title="Status Logs"
+                    to="/AgentTime"
+                    icon={<PermContactCalendarIcon />}
                     selected={selected}
                     setSelected={setSelected}
                 />
