@@ -9,6 +9,7 @@ import { AiOutlineMenu } from "react-icons/ai";
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import PostAddIcon from '@mui/icons-material/PostAdd';
 import { Typography } from "@mui/material";
+import PermContactCalendarIcon from '@mui/icons-material/PermContactCalendar';
 
 /** --- IMPORT HOOKS --- */
 import { useAuthContext } from '../../hooks/useAuthContext';
@@ -47,6 +48,9 @@ const LeadGenSidebar = () => {
                 break;
             case "/LeadGenAdd":
                 setSelected("Add New Lead");
+                break;
+            case "/LeadGenTime":
+                setSelected("Status Logs");
                 break;
             case `/viewuser/${userLG._id}`:
                 setSelected("Personal Info");
@@ -151,6 +155,19 @@ const LeadGenSidebar = () => {
                     title="Add New Lead"
                     to="/LeadGenAdd"
                     icon={<PostAddIcon />}
+                    selected={selected}
+                    setSelected={setSelected}
+                />
+
+                {!isCollapsed && (
+                    <div className="text-[#a3a3a3] m-3 ml-7">
+                        <Typography sx={{ fontSize: '14px', m: "15px 0 5px 20px" }}>Status</Typography>
+                    </div>
+                )}
+                <Item
+                    title="Status Logs"
+                    to="/LeadGenTime"
+                    icon={<PermContactCalendarIcon />}
                     selected={selected}
                     setSelected={setSelected}
                 />
