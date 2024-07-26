@@ -119,6 +119,7 @@ const ViewProfile = ({ onUserUpdate }) => {
             <Modal
                 open={openEditModal}
                 onClose={handleCloseEditModal}
+                className="bounce-in-modal"
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
                 closeAfterTransition
@@ -136,6 +137,7 @@ const ViewProfile = ({ onUserUpdate }) => {
             <Modal
                 open={openStatusModal}
                 onClose={handleCloseStatusModal}
+                className="bounce-in-modal"
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
                 closeAfterTransition
