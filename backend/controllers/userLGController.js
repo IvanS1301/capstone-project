@@ -92,6 +92,8 @@ const updateUserLG = async (req, res) => {
     return res.status(404).json({ error: 'No user found' })
   }
 
+  const userLG_id = req.userLG._id
+
   try {
     const userlg = await UserLG.findOneAndUpdate({ _id: id }, {
       ...req.body
@@ -108,6 +110,7 @@ const updateUserLG = async (req, res) => {
       employeeName: userlg.name,
       role: userlg.role,
       status: userlg.status,
+      userLG_id
     });
     tasks.push(statusLog.save());
 
