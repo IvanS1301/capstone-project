@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { URL } from "../../utils/URL";
 
 /** --- MATERIAL UI --- */
-import { Box, IconButton, Modal, CircularProgress, Button, Snackbar, Typography } from "@mui/material";
+import { Box, IconButton, Modal, CircularProgress, Button, Snackbar, Typography, Paper } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { Delete, Visibility, Edit } from '@mui/icons-material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
@@ -364,6 +364,7 @@ const UserLists = ({ userlgs, onUserUpdate }) => {
       <Modal
         open={openUpdateModal}
         onClose={handleCloseUpdateModal}
+        className="bounce-in-modal"
         aria-labelledby="assign-lead-modal-title"
         aria-describedby="assign-lead-modal-description"
       >
@@ -415,31 +416,34 @@ const UserLists = ({ userlgs, onUserUpdate }) => {
         onClose={handleCloseConfirmation}
         aria-labelledby="delete-confirmation-modal-title"
         aria-describedby="delete-confirmation-modal-description"
+        className="bounce-in-modal"
+        sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
       >
-        <Box
-          sx={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            width: 500,
-            bgcolor: '#f1f1f1',
-            border: '2px solid #000',
-            boxShadow: 24,
-            p: 5,
-            textAlign: 'center',
-            borderRadius: '30px'
-          }}
-        >
-          <WarningAmberIcon sx={{ fontSize: 90, color: 'orange' }} />
-          <div style={{ fontSize: '20px', margin: '20px 0' }}>Are you sure you want to delete this user?</div>
-          <Button onClick={handleDeleteConfirmation} variant="contained" color="primary" sx={{ mr: 2 }}>Yes</Button>
-          <Button onClick={handleCloseConfirmation} variant="contained" color="secondary">No</Button>
-        </Box>
+        <Paper elevation={5} sx={{ padding: '40px', borderRadius: '16px', maxWidth: '600px', width: '90%', textAlign: 'center' }}>
+          <WarningAmberIcon sx={{ fontSize: '70px', color: 'orange', mb: '30px' }} />
+          <Typography variant="h5" sx={{ mb: '20px', fontSize: '24px' }}>
+            Are you sure you want to delete this user?
+          </Typography>
+          <Box display="flex" justifyContent="center" mt="35px" gap="20px">
+            <Button
+              onClick={handleCloseConfirmation}
+              sx={{ backgroundColor: '#9e9e9e', color: '#fff', '&:hover': { backgroundColor: '#757575' }, padding: '12px 24px', fontSize: '16px' }}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleDeleteConfirmation}
+              sx={{ backgroundColor: '#f44336', color: '#fff', '&:hover': { backgroundColor: '#d32f2f' }, padding: '12px 24px', fontSize: '16px' }}
+            >
+              Confirm
+            </Button>
+          </Box>
+        </Paper>
       </Modal>
       <Modal
         open={openViewModal}
         onClose={handleCloseViewModal}
+        className="bounce-in-modal"
         aria-labelledby="view-lead-modal-title"
         aria-describedby="view-lead-modal-description"
       >
