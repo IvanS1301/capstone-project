@@ -8,6 +8,7 @@ import PermContactCalendarIcon from '@mui/icons-material/PermContactCalendar';
 import DeleteIcon from '@mui/icons-material/Delete';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import FilterAltOffIcon from '@mui/icons-material/FilterAltOff';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
 /** --- TIME AND DATE FORMAT --- */
 import moment from 'moment';
@@ -41,6 +42,7 @@ const StatusLists = ({ statuses, onStatusUpdate, onFilter }) => {
     const [isCalendarOpen, setIsCalendarOpen] = useState(false);
     const [feedbackMessage, setFeedbackMessage] = useState('');
     const [feedbackType, setFeedbackType] = useState('success');
+    const [openSuccessModal, setOpenSuccessModal] = useState(false);
 
     const handleDeleteClick = (statusId) => {
         setStatusToDelete(statusId);
@@ -68,9 +70,14 @@ const StatusLists = ({ statuses, onStatusUpdate, onFilter }) => {
 
             if (response.ok) {
                 dispatch({ type: 'DELETE_STATUS', payload: json });
-                onStatusUpdate();
                 setFeedbackMessage('Status deleted successfully.');
                 setFeedbackType('success');
+                setOpenSuccessModal(true); // Open success modal
+                // Delay the execution of onUserUpdate to show the modal first
+                setTimeout(() => {
+                    setOpenSuccessModal(false);
+                    onStatusUpdate();
+                }, 2000); // 2 seconds delay
             } else {
                 setErrorDelete(json.error || 'Failed to delete status');
                 setFeedbackMessage('Failed to delete status.');
@@ -99,6 +106,10 @@ const StatusLists = ({ statuses, onStatusUpdate, onFilter }) => {
 
     const handleCalendarClose = () => {
         setIsCalendarOpen(false);
+    };
+
+    const handleCloseSuccessModal = () => {
+        setOpenSuccessModal(false);
     };
 
     /** --- DOWNLOAD REPORTS AS CSV FILE --- */
@@ -228,7 +239,6 @@ const StatusLists = ({ statuses, onStatusUpdate, onFilter }) => {
                                     color: '#333'
                                 }
                             }}
-                            aria-label="Delete Status"
                         >
                             <DeleteIcon />
                         </IconButton>
@@ -236,68 +246,26 @@ const StatusLists = ({ statuses, onStatusUpdate, onFilter }) => {
                 </Box>
             ))}
 
-            {/* Confirmation Modal */}
-            <Modal open={showConfirmation} onClose={handleCloseConfirmation}>
-                <Box
-                    sx={{
-                        position: 'absolute',
-                        top: '50%',
-                        left: '50%',
-                        transform: 'translate(-50%, -50%)',
-                        width: 500,
-                        bgcolor: '#f1f1f1',
-                        border: '2px solid #000',
-                        boxShadow: 24,
-                        p: 5,
-                        textAlign: 'center',
-                        borderRadius: '30px'
-                    }}
-                >
-                    <WarningAmberIcon sx={{ color: '#ff9800', fontSize: '48px', mb: '20px' }} />
-                    <Typography variant="h6" sx={{ mb: '20px' }}>
-                        Are you sure you want to delete this status?
+            {/* Success Modal */}
+            <Modal
+                open={openSuccessModal}
+                onClose={handleCloseSuccessModal}
+                className="bounce-in-modal"
+                sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+            >
+                <Paper elevation={5} sx={{ padding: '40px', borderRadius: '16px', maxWidth: '600px', width: '90%', textAlign: 'center' }}>
+                    <CheckCircleIcon sx={{ color: '#4caf50', fontSize: '80px', mb: '30px' }} />
+                    <Typography variant="h5" sx={{ mb: '20px', fontSize: '24px' }}>
+                        Success!
+        </Typography>
+                    <Typography variant="body1" sx={{ fontSize: '24px' }}>
+                        {feedbackMessage}
                     </Typography>
-                    <Box display="flex" justifyContent="space-between" width="100%">
-                        <Button
-                            onClick={handleCloseConfirmation}
-                            sx={{
-                                backgroundColor: "#3e4396",
-                                color: "#fff",
-                                fontWeight: "bold",
-                                '&:hover': {
-                                    backgroundColor: "#2c3173"
-                                },
-                                flex: 1,
-                                marginRight: '10px'
-                            }}
-                        >
-                            Cancel
-                        </Button>
-                        <Button
-                            onClick={handleDeleteConfirmation}
-                            sx={{
-                                backgroundColor: "#e1306c",
-                                color: "#fff",
-                                fontWeight: "bold",
-                                '&:hover': {
-                                    backgroundColor: "#c13584"
-                                },
-                                flex: 1
-                            }}
-                        >
-                            {loadingDelete ? <CircularProgress size={24} color="inherit" /> : 'Delete'}
-                        </Button>
-                    </Box>
-                    {errorDelete && (
-                        <Typography variant="body2" sx={{ color: 'red', mt: '10px' }}>
-                            {errorDelete}
-                        </Typography>
-                    )}
-                </Box>
+                </Paper>
             </Modal>
 
             {/* Calendar Modal */}
-            <Modal open={isCalendarOpen} onClose={handleCalendarClose}>
+            <Modal open={isCalendarOpen} onClose={handleCalendarClose} className="bounce-in-modal">
                 <Box
                     display="flex"
                     flexDirection="column"
@@ -361,20 +329,94 @@ const StatusLists = ({ statuses, onStatusUpdate, onFilter }) => {
                 </Box>
             </Modal>
 
-            {/* Feedback Snackbar */}
+            <Modal
+                open={showConfirmation}
+                onClose={handleCloseConfirmation}
+                aria-labelledby="confirmation-modal-title"
+                aria-describedby="confirmation-modal-description"
+                sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+            >
+                <Paper
+                    elevation={5}
+                    className="bounce-in-modal" // Apply the zoom-in animation class
+                    sx={{
+                        padding: '40px',
+                        borderRadius: '16px',
+                        maxWidth: '600px',
+                        width: '90%',
+                        textAlign: 'center'
+                    }}
+                >
+                    <WarningAmberIcon sx={{ color: '#ff9800', fontSize: '70px', mb: '30px' }} />
+                    <Typography variant="h5" sx={{ mb: '20px', fontSize: '24px' }}>
+                        Are you sure you want to delete this status?
+                </Typography>
+                    {errorDelete && (
+                        <Alert severity="error" sx={{ mb: '30px' }}>
+                            {errorDelete}
+                        </Alert>
+                    )}
+                    <Box display="flex" justifyContent="center" mt="35px" gap="20px">
+                        <Button
+                            onClick={handleCloseConfirmation}
+                            sx={{
+                                backgroundColor: '#9e9e9e',
+                                color: '#fff',
+                                '&:hover': { backgroundColor: '#757575' },
+                                padding: '12px 24px',
+                                fontSize: '16px'
+                            }}
+                        >
+                            Cancel
+                    </Button>
+                        <Button
+                            onClick={handleDeleteConfirmation}
+                            sx={{
+                                backgroundColor: '#f44336',
+                                color: '#fff',
+                                '&:hover': { backgroundColor: '#d32f2f' },
+                                padding: '12px 24px',
+                                fontSize: '16px'
+                            }}
+                        >
+                            {loadingDelete ? <CircularProgress size={24} /> : 'Confirm'}
+                        </Button>
+                    </Box>
+                </Paper>
+            </Modal>
+
+            <Modal
+                open={loadingDelete}
+                aria-labelledby="loading-modal-title"
+                aria-describedby="loading-modal-description"
+            >
+                <Box
+                    sx={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        width: 400,
+                        bgcolor: '#f1f1f1',
+                        border: '2px solid #000',
+                        boxShadow: 24,
+                        p: 4,
+                        textAlign: 'center',
+                        borderRadius: '30px'
+                    }}
+                >
+                    <CircularProgress sx={{ fontSize: 60 }} />
+                    <div style={{ fontSize: '20px', marginTop: '10px' }}>Deleting, please wait...</div>
+                </Box>
+            </Modal>
+
+            {/* Snackbar for feedback */}
             <Snackbar
                 open={feedbackMessage !== ''}
                 autoHideDuration={6000}
                 onClose={() => setFeedbackMessage('')}
-                message={feedbackMessage}
-                action={
-                    <Button color="inherit" onClick={() => setFeedbackMessage('')}>
-                        Close
-                    </Button>
-                }
-                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
             >
-                <Alert onClose={() => setFeedbackMessage('')} severity={feedbackType}>
+                <Alert onClose={() => setFeedbackMessage('')} severity={feedbackType} sx={{ width: '100%' }}>
                     {feedbackMessage}
                 </Alert>
             </Snackbar>
