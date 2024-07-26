@@ -14,6 +14,11 @@ export const leadsReducer = (state, action) => {
                 ...state,
                 bookedUnits: action.payload
             }
+        case 'SET_STAFF_STATUS':
+            return {
+                ...state,
+                agentstatus: action.payload
+            }
         default:
             return state
     }
@@ -22,7 +27,8 @@ export const leadsReducer = (state, action) => {
 export const ServicesContextProvider = ({ children }) => {
     const [state, dispatch] = useReducer(leadsReducer, {
         leadGenStats: [],
-        bookedUnits: []
+        bookedUnits: [],
+        agentstatus: []
     })
 
     return (
