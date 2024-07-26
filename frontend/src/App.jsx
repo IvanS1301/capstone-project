@@ -4,6 +4,7 @@ import { useAuthContext } from './hooks/useAuthContext'
 /** --- LEAD GENERATION --- */
 import LeadGenDashboard from './pages/leadgen/LeadGenDashboard'
 import LeadGenLeads from './pages/leadgen/LeadGenLeads'
+import LeadGenTime from './pages/leadgen/LeadGenTime'
 import AddForm from './pages/leadgen/AddForm'
 import EditForm from './pages/leadgen/EditForm'
 import ReadForm from './pages/leadgen/ReadForm'
@@ -17,6 +18,7 @@ import AgentReadForm from './pages/agent/AgentReadForm'
 import AgentLeads from './pages/agent/AgentLeads'
 import AgentEmails from './pages/agent/AgentEmails'
 import AgentStatus from './pages/agent/AgentStatus'
+import AgentTime from './pages/agent/AgentTime'
 import AgentReadEmail from './pages/agent/AgentReadEmail'
 import AddEmail from './pages/agent/AddEmail'
 
@@ -97,6 +99,7 @@ function App() {
             <Route path="/view/:id" element={userLG ? <ReadForm /> : <Navigate to="/loginLG" />} />
             <Route path="/LeadGenAdd" element={userLG ? <AddForm /> : <Navigate to="/loginLG" />} />
             <Route path="/edit/:id" element={userLG ? <EditForm /> : <Navigate to="/loginLG" />} />
+            <Route path="/LeadGenTime" element={userLG ? <LeadGenTime /> : <Navigate to="/loginLG" />} />
 
             {/* TELEMARKETER ROUTES */}
             <Route path="/agentedit/:id" element={userLG ? <AgentEditForm /> : <Navigate to="/loginLG" />} />
@@ -106,6 +109,7 @@ function App() {
             <Route path="/agentadd/:id" element={userLG ? <AddEmail /> : <Navigate to="/loginLG" />} />
             <Route path="/AgentService" element={userLG ? <AgentAnalytics /> : <Navigate to="/loginLG" />} />
             <Route path="/editstatus/:id" element={userLG ? <AgentStatus /> : <Navigate to="/loginLG" />} />
+            <Route path="/AgentTime" element={userLG ? <AgentTime /> : <Navigate to="/loginLG" />} />
 
             {/* ADMIN ROUTES */}
             <Route path="/AdminLeads" element={userLG ? <AdminLeads /> : <Navigate to="/loginLG" />} />
