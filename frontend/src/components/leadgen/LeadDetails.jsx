@@ -202,6 +202,7 @@ const LeadDetails = ({ leads, userlgs, onLeadUpdate }) => {
       <Modal
         open={openAssignModal}
         onClose={handleCloseAssignModal}
+        className="bounce-in-modal"
         aria-labelledby="assign-lead-modal-title"
         aria-describedby="assign-lead-modal-description"
       >
@@ -225,6 +226,7 @@ const LeadDetails = ({ leads, userlgs, onLeadUpdate }) => {
       <Modal
         open={openViewModal}
         onClose={handleCloseViewModal}
+        className="bounce-in-modal"
         aria-labelledby="view-lead-modal-title"
         aria-describedby="view-lead-modal-description"
       >
