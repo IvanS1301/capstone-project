@@ -302,6 +302,7 @@ const AgentUpdateForm = ({ unassignedId, onLeadUpdate }) => {
             <Modal
                 open={openSuccessModal}
                 onClose={handleCloseSuccessModal}
+                className="bounce-in-modal"
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
             >
