@@ -151,7 +151,7 @@ const AdminSidebar = () => {
         <Item
           title="Dashboard"
           to="/"
-          icon={<HomeOutlined />}
+          icon={<HomeOutlined sx={{ marginRight: '7px' }} />}
           selected={selected}
           setSelected={setSelected}
         />
@@ -164,14 +164,14 @@ const AdminSidebar = () => {
         <Item
           title="Leads"
           to="/AdminLeads"
-          icon={<ContactsOutlined />}
+          icon={<ContactsOutlined sx={{ marginRight: '7px' }} />}
           selected={selected}
           setSelected={setSelected}
         />
         <Item
           title="Emails"
           to="/AdminEmails"
-          icon={<MarkEmailReadIcon />}
+          icon={<MarkEmailReadIcon sx={{ marginRight: '7px' }} />}
           selected={selected}
           setSelected={setSelected}
         />
@@ -184,21 +184,21 @@ const AdminSidebar = () => {
         <Item
           title="Users"
           to="/AdminUsers"
-          icon={<PeopleOutlined />}
+          icon={<PeopleOutlined sx={{ marginRight: '7px' }} />}
           selected={selected}
           setSelected={setSelected}
         />
         <Item
           title="Add New User"
           to="/AdminSignup"
-          icon={<GroupAddIcon />}
+          icon={<GroupAddIcon sx={{ marginRight: '7px' }} />}
           selected={selected}
           setSelected={setSelected}
         />
         <Item
           title="Status Logs"
           to="/AdminStatus"
-          icon={<PermContactCalendarIcon />}
+          icon={<PermContactCalendarIcon sx={{ marginRight: '7px' }} />}
           selected={selected}
           setSelected={setSelected}
         />
@@ -212,7 +212,7 @@ const AdminSidebar = () => {
         <Item
           title="Recent Bookings"
           to="/RecentBookings"
-          icon={<ReceiptOutlined />}
+          icon={<ReceiptOutlined sx={{ marginRight: '7px' }} />}
           selected={selected}
           setSelected={setSelected}
         />
@@ -232,7 +232,7 @@ const AdminSidebar = () => {
         <Item
           title="Personal Info"
           to={`/viewprofile/${userLG._id}`}
-          icon={<AccountCircleIcon />}
+          icon={<AccountCircleIcon sx={{ marginRight: '7px' }} />}
           selected={selected}
           setSelected={setSelected}
         />
@@ -244,7 +244,7 @@ const AdminSidebar = () => {
         )}
         <MenuItem
           title="Sign Out"
-          icon={<ExitToAppIcon />}
+          icon={<ExitToAppIcon sx={{ marginRight: '7px' }} />}
           onClick={handleClick}
           style={{ color: "white", padding: "10px 25px" }}
         >
