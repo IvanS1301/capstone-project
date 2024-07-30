@@ -118,7 +118,7 @@ const LeadGenSidebar = () => {
                             alt="profile-user"
                             width="100px"
                             height="100px"
-                            src={process.env.PUBLIC_URL + '/icon.png'}
+                            src={userLG.profileImage || process.env.PUBLIC_URL + '/icon.png'}
                             className="cursor-pointer rounded-full"
                         />
                     </div>
