@@ -142,7 +142,7 @@ const AdminSidebar = () => {
         </div>
 
         {!isCollapsed && (
-          <div className="text-center">
+          <div className="text-center mt-5">
             <h6 className="text-white font-bold mt-1 mb-0">{userLG.name}</h6>
             <h6 className="text-[#4cceac] mb-7">{userLG.role}</h6>
           </div>
