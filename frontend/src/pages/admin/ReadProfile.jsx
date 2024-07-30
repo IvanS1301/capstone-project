@@ -39,7 +39,7 @@ const ReadProfile = () => {
         <div className="flex">
             <AdminSidebar />
             <div className="flex flex-col w-full overflow-y-hidden mt-5">
-                <div className="p-1 mt-20">
+                <div className="mt-10">
                     {loading ? (
                         <div className="flex justify-center items-center h-full">
                             <CircularProgress />
