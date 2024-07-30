@@ -39,7 +39,7 @@ const ReadUserAG = () => {
         <div className="flex">
             <AgentSidebar />
             <div className="flex flex-col w-full overflow-y-hidden mt-14">
-                <div className="p-1 mt-15">
+                <div className="mt-15">
                     {loading ? (
                         <div className="flex justify-center items-center h-full">
                             <CircularProgress />
