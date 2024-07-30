@@ -120,15 +120,18 @@ const AgentSidebar = () => {
                 </MenuItem>
 
                 <div className="mt-5">
-                    <div className="flex justify-center items-center">
-                        <img
-                            alt="profile-user"
-                            width="100px"
-                            height="100px"
-                            src={userLG.profileImage || process.env.PUBLIC_URL + '/icon.png'}
-                            className="cursor-pointer rounded-full"
-                        />
+                  <div className="flex justify-center items-center">
+                    <div
+                      className="w-24 h-24 rounded-full overflow-hidden"
+                      style={{ borderRadius: '50%', width: '100px', height: '100px' }}
+                    >
+                      <img
+                        alt="profile-user"
+                        src={userLG.profileImage || process.env.PUBLIC_URL + '/icon.png'}
+                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                      />
                     </div>
+                  </div>
                 </div>
 
                 {!isCollapsed && (
