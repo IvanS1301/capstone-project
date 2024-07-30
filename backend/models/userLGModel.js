@@ -50,6 +50,9 @@ const userLGSchema = new Schema({
     type: String,
     enum: teamEnum // Define the enum here
   },
+  profileImage: {
+    type: String
+  },
   isActive: {
     type: Boolean,
     default: false  // Initially set to false (not active)
