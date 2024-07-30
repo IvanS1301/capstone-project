@@ -171,20 +171,7 @@ const AgentSidebar = () => {
                     selected={selected}
                     setSelected={setSelected}
                 />
-
-                {!isCollapsed && (
-                    <div className="text-[#a3a3a3] m-3 ml-7">
-                        <Typography sx={{ fontSize: '14px', m: "15px 0 5px 20px" }}>Status</Typography>
-                    </div>
-                )}
-                <Item
-                    title="Status Logs"
-                    to="/AgentTime"
-                    icon={<PermContactCalendarIcon />}
-                    selected={selected}
-                    setSelected={setSelected}
-                />
-
+                
                 {!isCollapsed && (
                     <div className="text-[#a3a3a3] m-3 ml-7">
                         <Typography sx={{ fontSize: '14px', m: "15px 0 5px 20px" }}>Analytics</Typography>
@@ -207,6 +194,13 @@ const AgentSidebar = () => {
                     title="Personal Info"
                     to={`/viewuser/${userLG._id}`}
                     icon={<AccountCircleIcon />}
+                    selected={selected}
+                    setSelected={setSelected}
+                />
+                <Item
+                    title="Status Logs"
+                    to="/AgentTime"
+                    icon={<PermContactCalendarIcon />}
                     selected={selected}
                     setSelected={setSelected}
                 />
