@@ -24,14 +24,14 @@ const ViewUserInfo = ({ userId }) => {
     return (
         <Container>
             <Box display="flex" justifyContent="center" alignItems="center" minHeight="80vh">
-                <Paper elevation={3} sx={{ padding: '40px', borderRadius: 6, boxShadow: '1px 1px 8px rgba(0, 0, 0, 0.065)', backgroundColor: '#041926', maxWidth: '500px', width: '100%' }}>
+                <Paper elevation={3} sx={{ padding: '40px', borderRadius: 6, boxShadow: '1px 1px 8px rgba(0, 0, 0, 0.065)', backgroundColor: '#111827', maxWidth: '500px', width: '100%' }}>
                     <Box display="flex" flexDirection="column" alignItems="center">
                         <Box mb={4}>
                             <img
                                 alt="profile-user"
                                 width="150px"
                                 height="150px"
-                                src={process.env.PUBLIC_URL + '/icon.png'}
+                                src={userlg.profileImage || process.env.PUBLIC_URL + '/icon.png'}
                                 className="cursor-pointer rounded-full"
                             />
                         </Box>
