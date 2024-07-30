@@ -115,8 +115,8 @@ const LeadGenSidebar = () => {
                 <div className="mt-5">
                   <div className="flex justify-center items-center">
                     <div
-                      className="w-24 h-24 rounded-full overflow-hidden"
-                      style={{ borderRadius: '50%', width: '100px', height: '100px' }}
+                      className={`rounded-full overflow-hidden transition-all duration-300 ${isCollapsed ? 'w-12 h-12' : 'w-24 h-24'}`}
+                      style={{ borderRadius: '50%' }}
                     >
                       <img
                         alt="profile-user"
