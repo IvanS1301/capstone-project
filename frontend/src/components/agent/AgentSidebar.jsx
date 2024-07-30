@@ -144,7 +144,7 @@ const AgentSidebar = () => {
                 <Item
                     title="Dashboard"
                     to="/"
-                    icon={<HomeOutlined />}
+                    icon={<HomeOutlined sx={{ marginRight: '7px' }} />}
                     selected={selected}
                     setSelected={setSelected}
                 />
@@ -157,7 +157,7 @@ const AgentSidebar = () => {
                 <Item
                     title="Leads"
                     to="/AgentLeads"
-                    icon={<ContactsOutlined />}
+                    icon={<ContactsOutlined sx={{ marginRight: '7px' }} />}
                     selected={selected}
                     setSelected={setSelected}
                 />
@@ -170,7 +170,7 @@ const AgentSidebar = () => {
                 <Item
                     title="Emails"
                     to="/AgentEmails"
-                    icon={<MarkEmailReadIcon />}
+                    icon={<MarkEmailReadIcon sx={{ marginRight: '7px' }} />}
                     selected={selected}
                     setSelected={setSelected}
                 />
@@ -183,7 +183,7 @@ const AgentSidebar = () => {
                 <Item
                     title="Statistics"
                     to="/AgentService"
-                    icon={<AnalyticsIcon />}
+                    icon={<AnalyticsIcon sx={{ marginRight: '7px' }}/>}
                     selected={selected}
                     setSelected={setSelected}
                 />
@@ -196,14 +196,14 @@ const AgentSidebar = () => {
                 <Item
                     title="Personal Info"
                     to={`/viewuser/${userLG._id}`}
-                    icon={<AccountCircleIcon />}
+                    icon={<AccountCircleIcon sx={{ marginRight: '7px' }} />}
                     selected={selected}
                     setSelected={setSelected}
                 />
                 <Item
                     title="Status Logs"
                     to="/AgentTime"
-                    icon={<PermContactCalendarIcon />}
+                    icon={<PermContactCalendarIcon sx={{ marginRight: '7px' }} />}
                     selected={selected}
                     setSelected={setSelected}
                 />
@@ -215,7 +215,7 @@ const AgentSidebar = () => {
                 )}
                 <MenuItem
                     title="Sign Out"
-                    icon={<ExitToAppIcon />}
+                    icon={<ExitToAppIcon sx={{ marginRight: '7px' }} />}
                     onClick={handleClick}
                     style={{ color: "white", padding: "10px 25px" }}
                 >
