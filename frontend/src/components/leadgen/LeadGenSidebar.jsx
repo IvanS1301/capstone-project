@@ -137,7 +137,7 @@ const LeadGenSidebar = () => {
                 <Item
                     title="Dashboard"
                     to="/"
-                    icon={<HomeOutlined />}
+                    icon={<HomeOutlined sx={{ marginRight: '7px' }} />}
                     selected={selected}
                     setSelected={setSelected}
                 />
@@ -150,14 +150,14 @@ const LeadGenSidebar = () => {
                 <Item
                     title="Leads"
                     to="/LeadGenLeads"
-                    icon={<ContactsOutlined />}
+                    icon={<ContactsOutlined sx={{ marginRight: '7px' }} />}
                     selected={selected}
                     setSelected={setSelected}
                 />
                 <Item
                     title="Add New Lead"
                     to="/LeadGenAdd"
-                    icon={<PostAddIcon />}
+                    icon={<PostAddIcon sx={{ marginRight: '7px' }} />}
                     selected={selected}
                     setSelected={setSelected}
                 />
@@ -170,14 +170,14 @@ const LeadGenSidebar = () => {
                 <Item
                     title="Personal Info"
                     to={`/viewuser/${userLG._id}`}
-                    icon={<AccountCircleIcon />}
+                    icon={<AccountCircleIcon sx={{ marginRight: '7px' }} />}
                     selected={selected}
                     setSelected={setSelected}
                 />
                 <Item
                     title="Status Logs"
                     to="/LeadGenTime"
-                    icon={<PermContactCalendarIcon />}
+                    icon={<PermContactCalendarIcon sx={{ marginRight: '7px' }} />}
                     selected={selected}
                     setSelected={setSelected}
                 />
@@ -189,7 +189,7 @@ const LeadGenSidebar = () => {
                 )}
                 <MenuItem
                     title="Sign Out"
-                    icon={<ExitToAppIcon />}
+                    icon={<ExitToAppIcon sx={{ marginRight: '7px' }} />}
                     onClick={handleClick}
                     style={{ color: "white", padding: "10px 25px" }}
                 >
