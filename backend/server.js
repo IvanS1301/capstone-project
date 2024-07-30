@@ -3,6 +3,7 @@ require('dotenv').config()
 const express = require('express')
 const mongoose = require('mongoose')
 const cors = require('cors')
+const bodyParser = require("body-parser");
 
 // ROUTES IMPORT
 const leadRoutes = require('./routes/leads')
@@ -18,9 +19,6 @@ const statusRoutes = require('./routes/status');
 
 // express app
 const app = express()
-
-// middleware
-app.use(express.json())
 
 // CORS middleware
 app.use(
@@ -42,6 +40,11 @@ app.use(
     }
 );
 
+app.use(bodyParser.json({ limit: "50mb" }));
+app.use(bodyParser.urlencoded({ extended: true, limit: "10mb" }));
+
+// middleware
+app.use(express.json())
 app.use((req, res, next) => {
     console.log(req.path, req.method)
     next()
