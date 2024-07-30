@@ -29,7 +29,8 @@ export const useLoginLG = () => {
         name: json.name,
         email: json.email,
         token: json.token,
-        role: json.role // Include the role in the user object
+        role: json.role,
+        profileImage: json.profileImage
       }))
 
       // Update the auth context
@@ -39,7 +40,8 @@ export const useLoginLG = () => {
           name: json.name,
           email: json.email,
           token: json.token,
-          role: json.role // Include the role in the user object
+          role: json.role,
+          profileImage: json.profileImage
         }
       })
 
