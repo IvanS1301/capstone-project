@@ -70,7 +70,7 @@ const AgentTime = () => {
     const handleFilter = useCallback(async (startDate, endDate) => {
         setLoading(true);
         try {
-            const response = await fetch(`http://localhost:4000/api/status/staff?startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}`, {
+            const response = await fetch(`${URL}/api/status/staff?startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}`, {
                 headers: { 'Authorization': `Bearer ${userLG.token}` },
             });
             const json = await response.json();
