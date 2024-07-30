@@ -228,6 +228,7 @@ const DashboardTabs = ({ inventory, recentBookings, timePeriod, onTimePeriodChan
             <Modal
                 open={showCalendar}
                 onClose={handleToggleCalendar}
+                className="bounce-in-modal"
                 aria-labelledby="calendar-modal-title"
                 aria-describedby="calendar-modal-description"
                 style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
