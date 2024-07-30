@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { URL } from "../../utils/URL";
 import { CircularProgress } from "@mui/material";
+import { URL } from "../../utils/URL";
 
 /** --- COMPONENTS --- */
 import LeadGenStatus from "../../components/leadgen/LeadGenStatus";
@@ -21,7 +21,7 @@ const LeadGenTime = () => {
 
     const fetchStatus = useCallback(async () => {
         try {
-            const response = await fetch(`${URL}api/status/staff`, {
+            const response = await fetch(`${URL}/api/status/staff`, {
                 headers: { 'Authorization': `Bearer ${userLG.token}` },
             });
             const json = await response.json();
