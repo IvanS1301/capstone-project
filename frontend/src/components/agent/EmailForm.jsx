@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { URL } from "../../utils/URL";
 
 /** --- MATERIAL UI --- */
-import { Box, Button, Typography, TextField, CircularProgress, Modal, Grid, MenuItem } from '@mui/material';
+import { Box, Button, Typography, TextField, CircularProgress, Modal, Grid, MenuItem, Paper } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
 /** --- IMPORT CONTEXT --- */
@@ -175,28 +175,34 @@ const EmailForm = ({ unassignedId, email, onLeadUpdate }) => {
                 top: '50%',
                 left: '50%',
                 transform: 'translate(-50%, -50%)',
-                width: 900,
-                bgcolor: '#f1f1f1',
-                border: '2px solid #f1f1f1',
+                width: '100%', // Increased width
+                maxWidth: 1000, // Increased max width
+                bgcolor: '#f0f4f8', // Single background color for the entire component
+                border: '9px solid #cbd5e1',
                 boxShadow: 24,
-                p: 5,
-                borderRadius: '30px'
+                p: 5, // Increased padding
+                borderRadius: 2,
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 3,
+                overflow: 'hidden' // Ensure no overflow or extra white space
             }}
         >
+            <Typography variant="h4" color="#333" fontWeight="bold">
+                Send An Email
+            </Typography>
+            <Box display="flex" justifyContent="space-between" mb={2}>
+                <Button
+                    variant="contained"
+                    onClick={() => setOpenTemplateModal(true)}
+                    sx={{ borderRadius: 1, backgroundColor: "#3e4396" }}
+                >
+                    Add New Template
+                </Button>
+            </Box>
             <form onSubmit={handleSubmit}>
-                <Typography variant="h4" color="#D22B2B" mb={3} fontWeight="medium">
-                    Send An Email
-                </Typography>
-                <Box display="flex" justifyContent="space-between" mb={2}>
-                    <Button
-                        variant="outlined"
-                        onClick={() => setOpenTemplateModal(true)}
-                    >
-                        Add New Template
-                    </Button>
-                </Box>
-                <Grid container spacing={2}>
-                    <Grid item xs={6}>
+                <Grid container spacing={3}> {/* Increased spacing */}
+                    <Grid item xs={12} sm={6}>
                         <TextField
                             fullWidth
                             label="From"
@@ -206,9 +212,10 @@ const EmailForm = ({ unassignedId, email, onLeadUpdate }) => {
                             margin="normal"
                             error={emptyFields.includes('from')}
                             helperText={emptyFields.includes('from') && 'This field is required'}
+                            InputProps={{ sx: { borderRadius: 1, bgcolor: '#e0e0e0' } }} // Gray background for input
                         />
                     </Grid>
-                    <Grid item xs={6}>
+                    <Grid item xs={12} sm={6}>
                         <TextField
                             fullWidth
                             label="To"
@@ -218,6 +225,7 @@ const EmailForm = ({ unassignedId, email, onLeadUpdate }) => {
                             margin="normal"
                             error={emptyFields.includes('to')}
                             helperText={emptyFields.includes('to') && 'This field is required'}
+                            InputProps={{ sx: { borderRadius: 1, bgcolor: '#e0e0e0' } }} // Gray background for input
                         />
                     </Grid>
                     <Grid item xs={12}>
@@ -231,6 +239,7 @@ const EmailForm = ({ unassignedId, email, onLeadUpdate }) => {
                             margin="normal"
                             error={emptyFields.includes('subject')}
                             helperText={emptyFields.includes('subject') && 'This field is required'}
+                            InputProps={{ sx: { borderRadius: 1, bgcolor: '#e0e0e0' } }} // Gray background for input
                         >
                             {subjectOptions.map((option, index) => (
                                 <MenuItem key={index} value={option}>
@@ -243,7 +252,7 @@ const EmailForm = ({ unassignedId, email, onLeadUpdate }) => {
                         <TextField
                             fullWidth
                             multiline
-                            rows={10}
+                            rows={10} // Increased rows
                             label="Text"
                             name="text"
                             value={emailData.text}
@@ -253,91 +262,124 @@ const EmailForm = ({ unassignedId, email, onLeadUpdate }) => {
                             helperText={emptyFields.includes('text') && 'This field is required'}
                             InputProps={{
                                 sx: {
-                                    padding: '0.5rem 1rem',
-                                    lineHeight: '1.5rem'
+                                    borderRadius: 1,
+                                    bgcolor: '#e0e0e0',
+                                    padding: '0.5rem 1rem'
                                 }
                             }}
                         />
                     </Grid>
                 </Grid>
-                <Box mt={3} display="flex" justifyContent="center">
+                <Box mt={4} display="flex" justifyContent="left">
                     <Button
                         type="submit"
                         variant="contained"
                         color="primary"
                         disabled={loading}
+                        sx={{
+                            borderRadius: 20,
+                            padding: '12px 24px',  // Increase padding for a larger button
+                            fontSize: '18px',      // Increase font size for larger text
+                            height: '56px'         // Set a larger height
+                        }}
                     >
                         {loading ? <CircularProgress size={24} /> : 'Send'}
                     </Button>
                 </Box>
-                {error && <Grid item xs={12}><div className="error">{error}</div></Grid>}
-                <Modal open={openSuccessModal} onClose={handleCloseSuccessModal}>
-                    <Box
-                        sx={{
-                            position: 'absolute',
-                            top: '50%',
-                            left: '50%',
-                            transform: 'translate(-50%, -50%)',
-                            bgcolor: '#fff',
-                            borderRadius: 2,
-                            p: 3,
-                            textAlign: 'center',
-                            boxShadow: 24
-                        }}
-                    >
-                        <CheckCircleIcon color="success" sx={{ fontSize: 60 }} />
-                        <Typography variant="h6" mt={2}>
-                            Email sent successfully!
-                        </Typography>
+                {error && (
+                    <Box mt={2} color="error.main">
+                        {error}
                     </Box>
-                </Modal>
-                <Modal open={openTemplateModal} onClose={() => setOpenTemplateModal(false)}>
-                    <Box
-                        sx={{
-                            position: 'absolute',
-                            top: '50%',
-                            left: '50%',
-                            transform: 'translate(-50%, -50%)',
-                            bgcolor: '#fff',
-                            borderRadius: 2,
-                            p: 3,
-                            width: 400,
-                            boxShadow: 24
-                        }}
-                    >
-                        <Typography variant="h6" mb={2}>
-                            Add New Template
-                        </Typography>
-                        <TextField
-                            fullWidth
-                            label="Subject"
-                            name="subject"
-                            value={newTemplate.subject}
-                            onChange={handleTemplateChange}
-                            margin="normal"
-                        />
-                        <TextField
-                            fullWidth
-                            multiline
-                            rows={4}
-                            label="Text"
-                            name="text"
-                            value={newTemplate.text}
-                            onChange={handleTemplateChange}
-                            margin="normal"
-                        />
-                        <Box mt={2} display="flex" justifyContent="center">
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                onClick={handleSaveTemplate}
-                            >
-                                Save Template
-                            </Button>
-                        </Box>
-                    </Box>
-                </Modal>
+                )}
             </form>
+            <Modal
+                open={openSuccessModal}
+                onClose={handleCloseSuccessModal}
+                sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+            >
+                <Paper elevation={5}
+                    sx={{ padding: '40px', borderRadius: '16px', maxWidth: '600px', width: '90%', textAlign: 'center' }}
+                >
+                    <CheckCircleIcon color="success" sx={{ color: '#4caf50', fontSize: '80px', mb: '30px' }} />
+                    <Typography variant="h6" mt={2}>
+                        Email sent successfully!
+                    </Typography>
+                </Paper>
+            </Modal>
+            <Modal open={openTemplateModal} onClose={() => setOpenTemplateModal(false)} className="bounce-in-modal">
+                <Box
+                    sx={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        bgcolor: '#f0f4f8', // Consistent background color
+                        borderRadius: 2,
+                        p: 6, // Increased padding
+                        boxShadow: 24,
+                        width: 600 // Increased width
+                    }}
+                >
+                    <Typography variant="h6" mb={2}>
+                        Add New Template
+                    </Typography>
+                    <TextField
+                        fullWidth
+                        label="Subject"
+                        name="subject"
+                        value={newTemplate.subject}
+                        onChange={handleTemplateChange}
+                        margin="normal"
+                        InputProps={{ sx: { borderRadius: 1, bgcolor: '#e0e0e0' } }} // Gray background for input
+                    />
+                    <TextField
+                        fullWidth
+                        multiline
+                        rows={6} // Increased rows
+                        label="Text"
+                        name="text"
+                        value={newTemplate.text}
+                        onChange={handleTemplateChange}
+                        margin="normal"
+                        InputProps={{ sx: { borderRadius: 1, bgcolor: '#e0e0e0' } }} // Gray background for input
+                    />
+                    <Box mt={3} display="flex" justifyContent="flex-end">
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={handleSaveTemplate}
+                            sx={{ borderRadius: 1 }}
+                        >
+                            Save Template
+                        </Button>
+                    </Box>
+                </Box>
+            </Modal>
+
+            <Modal
+                open={loading}
+                aria-labelledby="loading-modal-title"
+                aria-describedby="loading-modal-description"
+            >
+                <Box
+                    sx={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        width: 400,
+                        bgcolor: '#f1f1f1',
+                        border: '2px solid #000',
+                        boxShadow: 24,
+                        p: 4,
+                        textAlign: 'center',
+                        borderRadius: '30px'
+                    }}
+                >
+                    <CircularProgress sx={{ fontSize: 60 }} />
+                    <div style={{ fontSize: '20px', marginTop: '10px' }}>Sending, please wait...</div>
+                </Box>
+            </Modal>
         </Box>
     );
 };
