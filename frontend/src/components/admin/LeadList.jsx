@@ -114,11 +114,11 @@ const LeadList = ({ tlLeads, userlgs, onLeadUpdate }) => {
     const getStatusColor = (callDisposition) => {
       switch (callDisposition) {
         case 'Booked':
-          return { backgroundColor: '#0d9488', color: 'black' }; // bg-emerald-700
+          return { backgroundColor: '#0d9488', color: 'white' }; // bg-emerald-700
         case 'Warm Lead':
-          return { backgroundColor: '#818cf8', color: 'black' }; // bg-rose-900
+          return { backgroundColor: '#818cf8', color: 'white' }; // bg-rose-900
         case 'Email':
-          return { backgroundColor: '#2563eb', color: 'black' }; // bg-cyan-800
+          return { backgroundColor: '#2563eb', color: 'white' }; // bg-cyan-800
         default:
           return { color: '#0c0a09' }; // Default color for other statuses
       }
