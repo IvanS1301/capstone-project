@@ -129,8 +129,15 @@ const getInventory = async (req, res) => {
             filterStartDate = moment().startOf('year');
             filterEndDate = today;
         } else if (startDate && endDate) {
-            filterStartDate = moment(startDate).startOf('day');
-            filterEndDate = moment(endDate).endOf('day');
+            filterStartDate = moment(startDate);
+            filterEndDate = moment(endDate);
+
+            if (!filterStartDate.isValid() || !filterEndDate.isValid()) {
+                return res.status(400).json({ message: 'Invalid date format' });
+            }
+
+            filterStartDate = filterStartDate.startOf('day');
+            filterEndDate = filterEndDate.endOf('day');
         } else {
             filterStartDate = null;
             filterEndDate = null;
