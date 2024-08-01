@@ -73,7 +73,7 @@ const AdminDashboard = () => {
         const formattedStartDate = moment(startDate).toISOString();
         const formattedEndDate = moment(endDate).toISOString();
 
-        const inventoryRes = await fetch(`http://localhost:4000/api/inventories/inventory?startDate=${formattedStartDate}&endDate=${formattedEndDate}`, {
+        const inventoryRes = await fetch(`${URL}/api/inventories/inventory?startDate=${formattedStartDate}&endDate=${formattedEndDate}`, {
             headers: { 'Authorization': `Bearer ${userLG.token}` },
         });
 
