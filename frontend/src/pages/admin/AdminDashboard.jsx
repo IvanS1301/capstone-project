@@ -13,6 +13,8 @@ import { useAuthContext } from "../../hooks/useAuthContext";
 /** --- MATERIAL UI --- */
 import { CircularProgress } from "@mui/material";
 
+import moment from 'moment';
+
 const AdminDashboard = () => {
     const { dispatch } = useAdminContext();
     const { userLG } = useAuthContext();
@@ -84,9 +86,9 @@ const AdminDashboard = () => {
         }
     }, [dispatch, userLG]);
 
-    const fetchBookingsData = useCallback(async (period = 'annually', startDate, endDate) => {
+    const fetchBookingsData = useCallback(async () => {
         try {
-            const bookingsRes = await fetch(`${URL}/api/bookings/recent-bookings?range=${period}&startDate=${startDate}&endDate=${endDate}`, {
+            const bookingsRes = await fetch(`${URL}/api/bookings/recent-bookings`, {
                 headers: { 'Authorization': `Bearer ${userLG.token}` },
             });
 
@@ -137,8 +139,11 @@ const AdminDashboard = () => {
             const filtered = recentBookings.filter((booking) => {
                 const telemarketerName = booking.telemarketerName ? booking.telemarketerName.toLowerCase() : '';
                 const leadName = booking.leadName ? booking.leadName.toLowerCase() : '';
+                const createdAtFormatted = booking.createdAt
+                    ? moment(booking.createdAt).format('MMMM Do YYYY').toLowerCase()
+                    : '';
 
-                return telemarketerName.includes(lowerCaseQuery) || leadName.includes(lowerCaseQuery);
+                return telemarketerName.includes(lowerCaseQuery) || leadName.includes(lowerCaseQuery) || createdAtFormatted.includes(lowerCaseQuery);
             });
             setFilteredBookings(filtered);
         }
