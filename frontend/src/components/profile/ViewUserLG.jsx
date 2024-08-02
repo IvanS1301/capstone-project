@@ -26,6 +26,7 @@ const ViewUserLG = ({ onUserUpdate }) => {
     const { id } = useParams();
     const { userlgs, dispatch } = useUsersContext();
     const { userLG } = useAuthContext();
+    const { dispatch: authDispatch } = useAuthContext();
     const [openEditModal, setOpenEditModal] = useState(false);
     const [openStatusModal, setOpenStatusModal] = useState(false);
     const [openImageModal, setOpenImageModal] = useState(false);
@@ -101,6 +102,7 @@ const ViewUserLG = ({ onUserUpdate }) => {
                             if (response.ok) {
                                 console.log('Image uploaded successfully', data);
                                 dispatch({ type: 'UPDATE_USER', payload: data });
+                                authDispatch({ type: 'UPDATE_PROFILE_IMAGE', payload: data.profileImage }); // Update profile image in context
                                 setProfileImage(data.profileImage);
                                 setSnackbarMessage('Image uploaded successfully!');
                                 setSnackbarOpen(true);
