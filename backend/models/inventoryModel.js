@@ -16,6 +16,9 @@ const inventorySchema = new mongoose.Schema({
     numberOfEmails: {
         type: String
     },
+    numberOfUpdatedLeads: {
+        type: String
+    },
     typeCounts: {
         type: Map,
         of: Number,
