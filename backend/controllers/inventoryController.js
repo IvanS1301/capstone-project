@@ -44,7 +44,7 @@ const updateInventoryCounts = async (dateFilter) => {
             $gte: new Date(startDate),
             $lte: new Date(endDate)
         }
-    });
+    })
         ]);
 
         console.log('Counts retrieved:', {
