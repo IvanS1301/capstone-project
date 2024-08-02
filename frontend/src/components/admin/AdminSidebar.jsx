@@ -219,7 +219,7 @@ const AdminSidebar = () => {
         <Item
           title="Staff Performance"
           to="/AdminStaff"
-          icon={<AnalyticsIcon />}
+          icon={<AnalyticsIcon sx={{ marginRight: '7px' }}/>}
           selected={selected}
           setSelected={setSelected}
         />
