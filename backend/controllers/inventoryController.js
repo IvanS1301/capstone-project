@@ -39,7 +39,12 @@ const updateInventoryCounts = async (dateFilter) => {
             Promise.all(typeEnum.map(async (type) => ({ type, count: await Lead.countDocuments({ ...filter, type }) }))),
             Promise.all(callDispositionEnum.map(async (disposition) => ({ disposition, count: await Lead.countDocuments({ ...filter, callDisposition: disposition }) }))),
             Promise.all(["Team A", "Team B", "Team C"].map(async (team) => ({ team, count: await RecentBooking.countDocuments({ ...filter, callDisposition: 'Booked', team }) }))),
-            Lead.countDocuments({ ...filter, callDisposition: { $exists: true } })
+            Lead.countDocuments({
+        updatedAt: {
+            $gte: new Date(startDate),
+            $lte: new Date(endDate)
+        }
+    });
         ]);
 
         console.log('Counts retrieved:', {
