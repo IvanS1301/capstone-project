@@ -18,6 +18,8 @@ const updateInventoryCounts = async (dateFilter) => {
             filter.updatedAt = { $gte: startDate, $lte: endDate };
         }
 
+        console.log('Filter applied:', filter);
+
         const [
             totalLeads,
             totalUsers,
@@ -39,6 +41,18 @@ const updateInventoryCounts = async (dateFilter) => {
             Promise.all(["Team A", "Team B", "Team C"].map(async (team) => ({ team, count: await RecentBooking.countDocuments({ ...filter, callDisposition: 'Booked', team }) }))),
             Lead.countDocuments({ ...filter, callDisposition: { $exists: true } })
         ]);
+
+        console.log('Counts retrieved:', {
+            totalLeads,
+            totalUsers,
+            totalEmails,
+            totalAssignedLeads,
+            totalUnassignedLeads,
+            typeCountsArray,
+            callDispositionCountsArray,
+            teamBookedCountsArray,
+            numberOfUpdatedLeads
+        });
 
         const typeCounts = typeCountsArray.reduce((acc, { type, count }) => {
             acc[type] = count;
@@ -82,6 +96,7 @@ const updateInventoryCounts = async (dateFilter) => {
         }
 
         await inventory.save();
+        console.log('Inventory saved:', inventory);
         return inventory;
 
     } catch (error) {
