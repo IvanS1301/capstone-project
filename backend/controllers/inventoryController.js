@@ -71,6 +71,8 @@ const updateInventoryCounts = async (dateFilter) => {
 
         let inventory = await Inventory.findOne();
 
+        console.log('Existing inventory:', inventory);
+
         if (!inventory) {
             inventory = new Inventory({
                 numberOfLeads: totalLeads,
@@ -89,11 +91,15 @@ const updateInventoryCounts = async (dateFilter) => {
             inventory.numberOfAssignedLeads = totalAssignedLeads;
             inventory.numberOfUnassignedLeads = totalUnassignedLeads;
             inventory.numberOfEmails = totalEmails;
+            console.log('Before setting numberOfUpdatedLeads:', inventory.numberOfUpdatedLeads);
             inventory.numberOfUpdatedLeads = numberOfUpdatedLeads;
+            console.log('After setting numberOfUpdatedLeads:', inventory.numberOfUpdatedLeads);
             inventory.typeCounts = typeCounts;
             inventory.callDispositionCounts = callDispositionCounts;
             inventory.teamBookedCounts = teamBookedCounts;
         }
+
+        console.log('Inventory to be saved:', inventory);
 
         await inventory.save();
         console.log('Inventory saved:', inventory);
