@@ -11,7 +11,6 @@ const UpdateUserTL = ({ userId, onUserUpdate }) => {
     const { userLG } = useAuthContext();
 
     const [userData, setUserData] = useState({
-        name: '',
         birthday: '',
         number: '',
         homeaddress: '',
@@ -25,7 +24,6 @@ const UpdateUserTL = ({ userId, onUserUpdate }) => {
         const userlg = userlgs.find(userlg => userlg._id === userId);
         if (userlg) {
             setUserData({
-                name: userlg.name || '',
                 birthday: userlg.birthday ? moment(userlg.birthday).format('YYYY-MM-DD') : '',
                 number: userlg.number || '',
                 homeaddress: userlg.homeaddress || '',
@@ -100,15 +98,6 @@ const UpdateUserTL = ({ userId, onUserUpdate }) => {
             }}
         >
             <div className="text-[#D22B2B] text-2xl mb-3 font-medium">Update Profile</div>
-            <TextField
-                fullWidth
-                label="Name"
-                name="name"
-                value={userData.name}
-                onChange={handleChange}
-                margin="normal"
-                required
-            />
             <TextField
                 fullWidth
                 label="Birthday"
