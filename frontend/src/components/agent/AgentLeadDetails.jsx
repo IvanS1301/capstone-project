@@ -189,7 +189,15 @@ const AgentLeadDetails = ({ unassignedLeads, userlgs, onLeadUpdate }) => {
         <Box>
           <IconButton onClick={() => handleOpenViewModal(params.row._id)} style={iconButtonStyle}><Visibility /></IconButton>
           <IconButton onClick={() => handleOpenAssignModal(params.row._id)} style={iconButtonStyle}><Edit /></IconButton>
-          <IconButton href={`skype:${params.row.phonenumber}?call`} style={iconButtonStyle}><CallIcon /></IconButton>
+          <IconButton
+            component="a"
+            href={`callto:${String(params.row.phonenumber || "").replace(/[^\d+]/g, "")}`}
+            style={iconButtonStyle}
+            title="Call with MicroSIP"
+            aria-label="Call lead with MicroSIP"
+          >
+            <CallIcon />
+          </IconButton>
           <IconButton onClick={() => handleOpenEmailModal(params.row._id, params.row.emailaddress)} style={iconButtonStyle}><AttachEmailIcon /></IconButton>
         </Box>
       )
