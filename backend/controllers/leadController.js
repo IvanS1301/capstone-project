@@ -141,7 +141,7 @@ const createLead = async (req, res) => {
         }
 
         const userLG_id = req.userLG._id
-        const lead = await Lead.create({ name, type, phonenumber, streetaddress, city, postcode, emailaddress, callDisposition, remarks, userLG_id, assignedTo })
+        const lead = await Lead.create({ name, type, phonenumber, streetaddress, city, postcode, emailaddress, callDisposition, remarks, userLG_id, assignedTo, demoHidden: true })
 
         // Parallelize non-dependent operations
         const tasks = [updateInventoryCounts(), updateLeadGenPerformance(), updateBookedUnits(req.userLG.name)];
