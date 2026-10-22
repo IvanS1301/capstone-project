@@ -51,6 +51,10 @@ const leadSchema = new Schema({
         type: Schema.Types.ObjectId, // Reference to Telemarketer user
         ref: 'UserLG' // Reference to the UserLG model
     },
+    demoHidden: {
+        type: Boolean,
+        default: false
+    },
     Distributed: {
         type: Date
     }
