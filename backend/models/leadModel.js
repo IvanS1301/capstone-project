@@ -19,8 +19,7 @@ const leadSchema = new Schema({
         enum: typeEnum // Define the enum here
     },
     phonenumber: {
-        type: String,
-        required: true
+        type: String
     },
     streetaddress: {
         type: String,
@@ -35,8 +34,7 @@ const leadSchema = new Schema({
         required: true
     },
     emailaddress: {
-        type: String,
-        required: true
+        type: String
     },
     userLG_id: {
         type: String,
@@ -52,6 +50,10 @@ const leadSchema = new Schema({
     assignedTo: {
         type: Schema.Types.ObjectId, // Reference to Telemarketer user
         ref: 'UserLG' // Reference to the UserLG model
+    },
+    demoHidden: {
+        type: Boolean,
+        default: false
     },
     Distributed: {
         type: Date
