@@ -1,86 +1,244 @@
-require('dotenv').config()
-const UserLG = require('../models/userLGModel')
+require('dotenv').config();
+
+const UserLG = require('../models/userLGModel');
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
 
-// forgot password
+// ==========================================
+// EMAIL TRANSPORTER CONFIGURATION
+// ==========================================
+
+const transporter = nodemailer.createTransport({
+    service: 'Gmail',
+    auth: {
+        user: process.env.EMAIL,
+        pass: process.env.EMAIL_PASSWORD,
+    },
+
+    // Prevent SMTP operations from hanging indefinitely
+    connectionTimeout: 15000,
+    greetingTimeout: 10000,
+    socketTimeout: 20000,
+});
+
+// ==========================================
+// FORGOT PASSWORD
+// ==========================================
+
 const forgotPassword = async (req, res) => {
     const { email } = req.body;
 
+    console.log('[FORGOT PASSWORD] Request received');
+
     try {
-        const userLG = await UserLG.findOne({ email });
-        if (!userLG) {
-            throw new Error('No account with that email address exists.');
+        // ------------------------------------------
+        // STEP 1: Validate request
+        // ------------------------------------------
+
+        if (!email || typeof email !== 'string') {
+            return res.status(400).json({
+                error: 'A valid email address is required.',
+            });
         }
 
-        // Generate a token
-        const resetToken = crypto.randomBytes(3).toString('hex');
-        const resetTokenExpiration = Date.now() + 1800000 // 30 minutes
+        if (!process.env.EMAIL || !process.env.EMAIL_PASSWORD) {
+            console.error('[FORGOT PASSWORD] Email environment variables are missing');
 
-        // Set token and expiration on user
+            return res.status(500).json({
+                error: 'Email service is not configured.',
+            });
+        }
+
+        // ------------------------------------------
+        // STEP 2: Find account
+        // ------------------------------------------
+
+        console.log('[FORGOT PASSWORD] Checking account');
+
+        const userLG = await UserLG.findOne({
+            email: email.trim(),
+        }).maxTimeMS(10000);
+
+        console.log('[FORGOT PASSWORD] Account lookup completed');
+
+        if (!userLG) {
+            return res.status(400).json({
+                error: 'No account with that email address exists.',
+            });
+        }
+
+        // ------------------------------------------
+        // STEP 3: Generate verification code
+        // ------------------------------------------
+
+        const resetToken = crypto.randomBytes(3).toString('hex');
+        const resetTokenExpiration = Date.now() + 30 * 60 * 1000;
+
         userLG.resetPasswordToken = resetToken;
         userLG.resetPasswordExpires = resetTokenExpiration;
+
         await userLG.save();
 
-        // Send email with the token
-        const transporter = nodemailer.createTransport({
-            service: 'Gmail',
-            auth: {
-                user: process.env.EMAIL, // Your email
-                pass: process.env.EMAIL_PASSWORD, // Your email password
-            },
-        });
+        console.log('[FORGOT PASSWORD] Verification code generated');
+
+        // ------------------------------------------
+        // STEP 4: Prepare email
+        // ------------------------------------------
 
         const mailOptions = {
             to: userLG.email,
             from: process.env.EMAIL,
             subject: 'Password Reset',
-            text: `You are receiving this because you requested a password reset for your account. Please use this verification code to reset your password within the next 30 minutes: ${resetToken}`,
+            text: `You requested a password reset. Use this verification code within the next 30 minutes: ${resetToken}`,
             html: `
-                <p>You are receiving this because you requested a password reset for your account.<br>
-                Please use this verification code to reset your password within the next 30 minutes: <strong>${resetToken}</strong></p>
+                <p>You requested a password reset.</p>
+                <p>
+                    Use this verification code within the next
+                    30 minutes:
+                    <strong>${resetToken}</strong>
+                </p>
             `,
         };
 
+        // ------------------------------------------
+        // STEP 5: Send email
+        // ------------------------------------------
 
-        await transporter.sendMail(mailOptions);
+        console.log('[FORGOT PASSWORD] Connecting to email service');
 
-        res.status(200).json({ message: 'An e-mail has been sent to ' + userLG.email + ' with further instructions.' });
+        const emailResult = await transporter.sendMail(mailOptions);
+
+        console.log('[FORGOT PASSWORD] Email sent successfully', {
+            messageId: emailResult.messageId,
+            accepted: emailResult.accepted.length,
+            rejected: emailResult.rejected.length,
+        });
+
+        // ------------------------------------------
+        // STEP 6: Respond to frontend
+        // ------------------------------------------
+
+        return res.status(200).json({
+            message: 'A password reset verification code has been sent to your email.',
+        });
+
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        // ------------------------------------------
+        // ERROR HANDLING
+        // ------------------------------------------
+
+        console.error('[FORGOT PASSWORD ERROR]', {
+            message: error.message,
+            code: error.code,
+            command: error.command,
+            name: error.name,
+        });
+
+        if (error.code === 'ETIMEOUT' || error.code === 'ETIMEDOUT') {
+            return res.status(504).json({
+                error: 'The email service timed out. Please try again later.',
+            });
+        }
+
+        if (error.code === 'EAUTH') {
+            return res.status(500).json({
+                error: 'The email service could not authenticate. Please contact support.',
+            });
+        }
+
+        if (error.name === 'MongooseError' ||
+            error.name === 'MongoServerError') {
+            return res.status(500).json({
+                error: 'A database error occurred. Please try again later.',
+            });
+        }
+
+        return res.status(500).json({
+            error: 'Unable to process the password reset request.',
+        });
     }
 };
 
-// reset password
+// ==========================================
+// RESET PASSWORD
+// ==========================================
+
 const resetPassword = async (req, res) => {
     const { token, password } = req.body;
 
-    try {
-        const userLG = await UserLG.findOne({
-            resetPasswordToken: token,
-            resetPasswordExpires: { $gt: Date.now() },
-        });
+    console.log('[RESET PASSWORD] Request received');
 
-        if (!userLG) {
-            throw new Error('Password reset token is invalid or has expired.');
+    try {
+        // ------------------------------------------
+        // STEP 1: Validate request
+        // ------------------------------------------
+
+        if (
+            typeof token !== 'string' ||
+            !token.trim() ||
+            typeof password !== 'string' ||
+            password.length < 8
+        ) {
+            return res.status(400).json({
+                error: 'A valid verification code and a password of at least 8 characters are required.',
+            });
         }
 
-        // Update the password
+        // ------------------------------------------
+        // STEP 2: Find valid reset token
+        // ------------------------------------------
+
+        const userLG = await UserLG.findOne({
+            resetPasswordToken: token.trim(),
+            resetPasswordExpires: { $gt: Date.now() },
+        }).maxTimeMS(10000);
+
+        if (!userLG) {
+            return res.status(400).json({
+                error: 'The verification code is invalid or has expired.',
+            });
+        }
+
+        // ------------------------------------------
+        // STEP 3: Hash new password
+        // ------------------------------------------
+
         const salt = await bcrypt.genSalt(10);
         const hash = await bcrypt.hash(password, salt);
+
+        // ------------------------------------------
+        // STEP 4: Save new password
+        // ------------------------------------------
 
         userLG.password = hash;
         userLG.resetPasswordToken = undefined;
         userLG.resetPasswordExpires = undefined;
+
         await userLG.save();
 
-        res.status(200).json({ message: 'Password has been reset successfully.' });
+        console.log('[RESET PASSWORD] Password reset successfully');
+
+        return res.status(200).json({
+            message: 'Password has been reset successfully.',
+        });
+
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        console.error('[RESET PASSWORD ERROR]', {
+            message: error.message,
+            code: error.code,
+            name: error.name,
+        });
+
+        return res.status(500).json({
+            error: 'Unable to reset the password. Please try again later.',
+        });
     }
 };
+
+// ==========================================
+// EXPORT CONTROLLERS
+// ==========================================
 
 module.exports = {
     forgotPassword,
