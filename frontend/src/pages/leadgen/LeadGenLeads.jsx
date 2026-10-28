@@ -1,40 +1,61 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { URL } from "../../utils/URL";
 
 /** --- MATERIAL UI --- */
 import { CircularProgress } from "@mui/material";
 
 /** --- COMPONENTS --- */
-import LeadDetails from "../../components/leadgen/LeadDetails"
-import LeadGenNavbar from '../../components/leadgen/LeadGenNavbar'
-import LeadGenSidebar from "../../components/leadgen/LeadGenSidebar"
+import LeadDetails from "../../components/leadgen/LeadDetails";
+import LeadGenNavbar from '../../components/leadgen/LeadGenNavbar';
+import LeadGenSidebar from "../../components/leadgen/LeadGenSidebar";
 
 /** --- CONTEXT --- */
-import { useLeadgenContext } from "../../hooks/useLeadgenContext"
-import { useUsersContext } from "../../hooks/useUsersContext"
-import { useAuthContext } from "../../hooks/useAuthContext"
+import { useLeadgenContext } from "../../hooks/useLeadgenContext";
+import { useUsersContext } from "../../hooks/useUsersContext";
+import { useAuthContext } from "../../hooks/useAuthContext";
 
 const LeadGenLeads = () => {
-  const { leads, dispatch } = useLeadgenContext()
-  const { userlgs, dispatch: dispatchUsers } = useUsersContext()
-  const { userLG } = useAuthContext()
-  const [loading, setLoading] = useState(true); // Initialize loading state
-  const [filteredLeads, setFilteredLeads] = useState([]); // State to hold filtered leads
+  const { leads, dispatch } = useLeadgenContext();
+  const { userlgs, dispatch: dispatchUsers } = useUsersContext();
+  const { userLG } = useAuthContext();
 
+  const [loading, setLoading] = useState(true);
+  const [filteredLeads, setFilteredLeads] = useState([]);
+
+  // Fetch leads and exclude those marked as hidden
   const fetchLeads = useCallback(async () => {
+    if (!userLG?.token) {
+      setLoading(false);
+      return;
+    }
+
     try {
-      const response = await fetch('http://localhost:4000/api/leads', {
-        headers: { 'Authorization': `Bearer ${userLG.token}` },
-      })
-      const json = await response.json()
+      const response = await fetch(`${URL}/api/leads`, {
+        headers: {
+          'Authorization': `Bearer ${userLG.token}`
+        }
+      });
+
+      const json = await response.json();
 
       if (response.ok) {
-        dispatch({ type: 'SET_LEADS', payload: json })
-        setFilteredLeads(json); // Initialize filteredLeads with all leads initially
+        const visibleLeads = json.filter(
+          (lead) => lead.demoHidden !== true
+        );
+
+        dispatch({
+          type: 'SET_LEADS',
+          payload: visibleLeads
+        });
+
+        setFilteredLeads(visibleLeads);
+      } else {
+        console.error('Failed to fetch leads:', json.error);
       }
-      setLoading(false); // Set loading to false when data fetching is complete
     } catch (error) {
       console.error('Error fetching leads:', error);
-      setLoading(false); // Set loading to false even in case of error
+    } finally {
+      setLoading(false);
     }
   }, [dispatch, userLG]);
 
@@ -42,63 +63,94 @@ const LeadGenLeads = () => {
     fetchLeads();
   }, [fetchLeads]);
 
-  // Function to handle lead update
+  // Refresh leads after an update
   const handleLeadUpdate = useCallback(() => {
-    setLoading(true); // Set loading state to true to indicate data fetching
-    // Perform any necessary actions to update leads or refetch data
+    setLoading(true);
     fetchLeads();
   }, [fetchLeads]);
 
+  // Fetch Lead Generation users
   useEffect(() => {
     const fetchUsers = async () => {
-      const response = await fetch('http://localhost:4000/api/userLG')
-      const json = await response.json()
+      try {
+        const response = await fetch(`${URL}/api/userLG`);
+        const json = await response.json();
 
-      if (response.ok) {
-        dispatchUsers({ type: 'SET_USERS', payload: json })
+        if (response.ok) {
+          dispatchUsers({
+            type: 'SET_USERS',
+            payload: json
+          });
+        }
+      } catch (error) {
+        console.error('Error fetching users:', error);
       }
-    }
+    };
 
-    fetchUsers()
-  }, [dispatchUsers])
+    fetchUsers();
+  }, [dispatchUsers]);
 
-  // Function to handle search
+  // Search only among visible leads
   const handleSearch = useCallback((query) => {
-    const lowerCaseQuery = query.toLowerCase(); // Convert query to lowercase for case-insensitive search
+    const lowerCaseQuery = query.toLowerCase().trim();
 
-    if (lowerCaseQuery.trim() === "") {
-      setFilteredLeads(leads); // If query is empty, show all leads
-    } else {
-      const filtered = leads.filter((lead) => {
-        const name = lead.name ? lead.name.toLowerCase() : ''; // Check if lead.name is defined
-        const type = lead.type ? lead.type.toLowerCase() : '';
-        const assignedTo = lead.assignedTo ? lead.assignedTo.toLowerCase() : '';
+    const visibleLeads = leads.filter(
+      (lead) => lead.demoHidden !== true
+    );
 
-        return name.includes(lowerCaseQuery) || type.includes(lowerCaseQuery) || assignedTo.includes(lowerCaseQuery)
-      });
-      setFilteredLeads(filtered);
+    if (lowerCaseQuery === '') {
+      setFilteredLeads(visibleLeads);
+      return;
     }
+
+    const filtered = visibleLeads.filter((lead) => {
+      const name = lead.name
+        ? lead.name.toLowerCase()
+        : '';
+
+      const type = lead.type
+        ? lead.type.toLowerCase()
+        : '';
+
+      const assignedTo = lead.assignedTo
+        ? String(lead.assignedTo).toLowerCase()
+        : '';
+
+      return (
+        name.includes(lowerCaseQuery) ||
+        type.includes(lowerCaseQuery) ||
+        assignedTo.includes(lowerCaseQuery)
+      );
+    });
+
+    setFilteredLeads(filtered);
   }, [leads]);
 
   return (
     <div className="flex">
       <LeadGenSidebar />
+
       <div className="flex flex-col w-full overflow-y-hidden">
         <LeadGenNavbar onSearch={handleSearch} />
+
         <div className="p-1 flex-grow flex justify-center items-center">
           {loading ? (
             <CircularProgress />
           ) : (
-              <div className="flex flex-col w-full items-center overflow-y-hidden">
-                <div className="w-full">
-                  <LeadDetails leads={filteredLeads} userlgs={userlgs} onLeadUpdate={handleLeadUpdate} />
-                </div>
+            <div className="flex flex-col w-full items-center overflow-y-hidden">
+              <div className="w-full">
+                <LeadDetails
+                  leads={filteredLeads}
+                  userlgs={userlgs}
+                  onLeadUpdate={handleLeadUpdate}
+                />
               </div>
-            )}
+            </div>
+          )}
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
 export default LeadGenLeads;
