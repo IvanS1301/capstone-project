@@ -1,8 +1,9 @@
 import { useState } from 'react';
+import { URL } from "../../utils/URL";
 
 /** --- MATERIAL UI --- */
 import { Box, Button, TextField, Select, MenuItem, FormControl, InputLabel, CircularProgress, Modal, Grid } from '@mui/material';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CloseIcon from '@mui/icons-material/Close';
 
 /** --- IMPORT CONTEXT --- */
 import { useLeadgenContext } from "../../hooks/useLeadgenContext";
@@ -44,7 +45,7 @@ const LeadForm = () => {
       return;
     }
 
-    const response = await fetch('http://localhost:4000/api/leads', {
+    const response = await fetch(`${URL}/api/leads`, {
       method: 'POST',
       body: JSON.stringify(leadData),
       headers: {
@@ -162,7 +163,6 @@ const LeadForm = () => {
               value={leadData.phonenumber}
               onChange={handleChange}
               margin="normal"
-              error={emptyFields.includes('phonenumber')}
             />
           </Grid>
           <Grid item xs={12}>
@@ -203,10 +203,10 @@ const LeadForm = () => {
               fullWidth
               label="Email Address"
               name="emailaddress"
-              type="email"
               value={leadData.emailaddress}
               onChange={handleChange}
               margin="normal"
+              type="email"
               error={emptyFields.includes('emailaddress')}
             />
           </Grid>
@@ -245,31 +245,34 @@ const LeadForm = () => {
         </Box>
       </Modal>
       <Modal
-        open={openSuccessModal}
-        onClose={handleCloseSuccessModal}
-        className="bounce-in-modal"
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box
-          sx={{
-            position: 'absolute',
-            top: '50%',
-            left: '55%',
-            transform: 'translate(-50%, -50%)',
-            width: 400,
-            bgcolor: '#f1f1f1',
-            border: '2px solid #000',
-            boxShadow: 24,
-            p: 4,
-            textAlign: 'center',
-            borderRadius: '30px'
-          }}
-        >
-          <CheckCircleIcon sx={{ color: '#94e2cd', fontSize: 60 }} />
-          <div style={{ fontSize: '20px', marginTop: '10px' }}>New lead added!</div>
-        </Box>
-      </Modal>
+  open={openSuccessModal}
+  onClose={handleCloseSuccessModal}
+  className="bounce-in-modal"
+  aria-labelledby="modal-modal-title"
+  aria-describedby="modal-modal-description"
+>
+  <Box
+    sx={{
+      position: 'absolute',
+      top: '50%',
+      left: '55%',
+      transform: 'translate(-50%, -50%)',
+      width: 400,
+      bgcolor: '#f1f1f1',
+      border: '2px solid #000',
+      boxShadow: 24,
+      p: 4,
+      textAlign: 'center',
+      borderRadius: '30px'
+    }}
+  >
+    <CloseIcon sx={{ color: '#D22B2B', fontSize: 60 }} />
+
+    <div style={{ fontSize: '20px', marginTop: '10px' }}>
+      Cannot save lead.
+    </div>
+  </Box>
+</Modal>
     </Box>
   );
 };
