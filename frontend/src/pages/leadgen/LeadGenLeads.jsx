@@ -5,101 +5,182 @@ import { URL } from "../../utils/URL";
 import { CircularProgress } from "@mui/material";
 
 /** --- COMPONENTS --- */
-import LeadDetails from "../../components/leadgen/LeadDetails"
-import LeadGenNavbar from '../../components/leadgen/LeadGenNavbar'
-import LeadGenSidebar from "../../components/leadgen/LeadGenSidebar"
+import LeadDetails from "../../components/leadgen/LeadDetails";
+import LeadGenNavbar from '../../components/leadgen/LeadGenNavbar';
+import LeadGenSidebar from "../../components/leadgen/LeadGenSidebar";
 
 /** --- CONTEXT --- */
-import { useLeadgenContext } from "../../hooks/useLeadgenContext"
-import { useUsersContext } from "../../hooks/useUsersContext"
-import { useAuthContext } from "../../hooks/useAuthContext"
+import { useLeadgenContext } from "../../hooks/useLeadgenContext";
+import { useUsersContext } from "../../hooks/useUsersContext";
+import { useAuthContext } from "../../hooks/useAuthContext";
 
 const LeadGenLeads = () => {
-  const { leads, dispatch } = useLeadgenContext()
-  const { userlgs, dispatch: dispatchUsers } = useUsersContext()
-  const { userLG } = useAuthContext()
-  const [loading, setLoading] = useState(true); // Initialize loading state
-  const [filteredLeads, setFilteredLeads] = useState([]); // State to hold filtered leads
+  const { leads, dispatch } = useLeadgenContext();
+  const { userlgs, dispatch: dispatchUsers } = useUsersContext();
+  const { userLG } = useAuthContext();
 
+  const [loading, setLoading] = useState(true);
+  const [filteredLeads, setFilteredLeads] = useState([]);
+
+  // ==========================================
+  // FETCH LEADS
+  // ==========================================
   const fetchLeads = useCallback(async () => {
-    try {
-      const response = await fetch(`${URL}/api/leads/${leadId}`, {
-        headers: { 'Authorization': `Bearer ${userLG.token}` },
-      })
-      const json = await response.json()
+    if (!userLG || !userLG.token) {
+      setLoading(false);
+      return;
+    }
 
-      if (response.ok) {
-        dispatch({ type: 'SET_LEADS', payload: json })
-        setFilteredLeads(json); // Initialize filteredLeads with all leads initially
+    setLoading(true);
+
+    try {
+      const response = await fetch(`${URL}/api/leads`, {
+        headers: {
+          'Authorization': `Bearer ${userLG.token}`,
+        },
+      });
+
+      const json = await response.json();
+
+      if (!response.ok) {
+        throw new Error(json.error || 'Failed to fetch leads.');
       }
-      setLoading(false); // Set loading to false when data fetching is complete
+
+      dispatch({
+        type: 'SET_LEADS',
+        payload: json,
+      });
+
+      setFilteredLeads(json);
+
     } catch (error) {
       console.error('Error fetching leads:', error);
-      setLoading(false); // Set loading to false even in case of error
+    } finally {
+      setLoading(false);
     }
   }, [dispatch, userLG]);
 
+  // ==========================================
+  // FETCH LEADS ON PAGE LOAD
+  // ==========================================
   useEffect(() => {
     fetchLeads();
   }, [fetchLeads]);
 
-  // Function to handle lead update
+  // ==========================================
+  // HANDLE LEAD UPDATE
+  // ==========================================
   const handleLeadUpdate = useCallback(() => {
-    setLoading(true); // Set loading state to true to indicate data fetching
-    // Perform any necessary actions to update leads or refetch data
     fetchLeads();
   }, [fetchLeads]);
 
+  // ==========================================
+  // FETCH USERS
+  // ==========================================
   useEffect(() => {
     const fetchUsers = async () => {
-      const response = await fetch(`${URL}/api/userLG`)
-      const json = await response.json()
+      try {
+        const response = await fetch(`${URL}/api/userLG`, {
+          headers: userLG?.token
+            ? {
+                'Authorization': `Bearer ${userLG.token}`,
+              }
+            : {},
+        });
 
-      if (response.ok) {
-        dispatchUsers({ type: 'SET_USERS', payload: json })
+        const json = await response.json();
+
+        if (!response.ok) {
+          throw new Error(json.error || 'Failed to fetch users.');
+        }
+
+        dispatchUsers({
+          type: 'SET_USERS',
+          payload: json,
+        });
+
+      } catch (error) {
+        console.error('Error fetching users:', error);
       }
+    };
+
+    if (userLG?.token) {
+      fetchUsers();
     }
+  }, [dispatchUsers, userLG]);
 
-    fetchUsers()
-  }, [dispatchUsers])
-
-  // Function to handle search
+  // ==========================================
+  // HANDLE SEARCH
+  // ==========================================
   const handleSearch = useCallback((query) => {
-    const lowerCaseQuery = query.toLowerCase(); // Convert query to lowercase for case-insensitive search
+    const lowerCaseQuery = query.toLowerCase().trim();
 
-    if (lowerCaseQuery.trim() === "") {
-      setFilteredLeads(leads); // If query is empty, show all leads
-    } else {
-      const filtered = leads.filter((lead) => {
-        const name = lead.name ? lead.name.toLowerCase() : ''; // Check if lead.name is defined
-        const type = lead.type ? lead.type.toLowerCase() : '';
-        const assignedTo = lead.assignedTo ? lead.assignedTo.toLowerCase() : '';
-
-        return name.includes(lowerCaseQuery) || type.includes(lowerCaseQuery) || assignedTo.includes(lowerCaseQuery)
-      });
-      setFilteredLeads(filtered);
+    if (lowerCaseQuery === "") {
+      setFilteredLeads(leads);
+      return;
     }
+
+    const filtered = leads.filter((lead) => {
+
+      // Lead name
+      const name = lead.name
+        ? String(lead.name).toLowerCase()
+        : '';
+
+      // Lead type
+      const type = lead.type
+        ? String(lead.type).toLowerCase()
+        : '';
+
+      // Assigned user
+      const assignedTo = lead.assignedTo
+        ? typeof lead.assignedTo === 'object'
+          ? `${lead.assignedTo.firstname || ''} ${lead.assignedTo.lastname || ''} ${lead.assignedTo.email || ''} ${lead.assignedTo._id || ''}`
+          : String(lead.assignedTo)
+        : '';
+
+      return (
+        name.includes(lowerCaseQuery) ||
+        type.includes(lowerCaseQuery) ||
+        assignedTo.toLowerCase().includes(lowerCaseQuery)
+      );
+    });
+
+    setFilteredLeads(filtered);
+
   }, [leads]);
 
+  // ==========================================
+  // RENDER
+  // ==========================================
   return (
     <div className="flex">
       <LeadGenSidebar />
+
       <div className="flex flex-col w-full overflow-y-hidden">
+
         <LeadGenNavbar onSearch={handleSearch} />
+
         <div className="p-1 flex-grow flex justify-center items-center">
+
           {loading ? (
             <CircularProgress />
           ) : (
-              <div className="flex flex-col w-full items-center overflow-y-hidden">
-                <div className="w-full">
-                  <LeadDetails leads={filteredLeads} userlgs={userlgs} onLeadUpdate={handleLeadUpdate} />
-                </div>
+            <div className="flex flex-col w-full items-center overflow-y-hidden">
+              <div className="w-full">
+                <LeadDetails
+                  leads={filteredLeads}
+                  userlgs={userlgs}
+                  onLeadUpdate={handleLeadUpdate}
+                />
               </div>
-            )}
+            </div>
+          )}
+
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
 export default LeadGenLeads;
