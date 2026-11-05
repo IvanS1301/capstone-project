@@ -1,7 +1,20 @@
 import { useState } from 'react';
+import { URL } from "../../utils/URL";
 
 /** --- MATERIAL UI --- */
-import { Box, Button, TextField, Select, MenuItem, FormControl, InputLabel, CircularProgress, Modal, Grid } from '@mui/material';
+import {
+  Box,
+  Button,
+  TextField,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  CircularProgress,
+  Modal,
+  Grid
+} from '@mui/material';
+
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
 /** --- IMPORT CONTEXT --- */
@@ -9,10 +22,11 @@ import { useLeadgenContext } from "../../hooks/useLeadgenContext";
 import { useAuthContext } from "../../hooks/useAuthContext";
 
 const LeadForm = () => {
+
   const { dispatch } = useLeadgenContext();
   const { userLG } = useAuthContext();
 
-  const [leadData, setLeadData] = useState({
+  const initialLeadData = {
     name: '',
     type: '',
     phonenumber: '',
@@ -20,67 +34,130 @@ const LeadForm = () => {
     city: '',
     postcode: '',
     emailaddress: ''
-  });
+  };
+
+  const [leadData, setLeadData] = useState(initialLeadData);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [emptyFields, setEmptyFields] = useState([]);
   const [openSuccessModal, setOpenSuccessModal] = useState(false);
 
+  // ==========================================
+  // HANDLE INPUT CHANGES
+  // ==========================================
+
   const handleChange = (e) => {
     const { name, value } = e.target;
+
     setLeadData(prevData => ({
       ...prevData,
       [name]: value
     }));
+
+    setError(null);
   };
+
+  // ==========================================
+  // HANDLE FORM SUBMISSION
+  // ==========================================
 
   const handleSubmit = async (e) => {
+
     e.preventDefault();
+
+    if (loading) return;
+
     setLoading(true);
+    setError(null);
+    setEmptyFields([]);
 
-    if (!userLG) {
-      setError('You must be logged in');
-      setLoading(false);
-      return;
-    }
+    try {
 
-    const response = await fetch('http://localhost:4000/api/leads', {
-      method: 'POST',
-      body: JSON.stringify(leadData),
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${userLG.token}`
+      // ==========================================
+      // CHECK USER AUTHENTICATION
+      // ==========================================
+
+      if (!userLG || !userLG.token) {
+        setError('You must be logged in.');
+        return;
       }
-    });
 
-    const json = await response.json();
-    setLoading(false);
+      // ==========================================
+      // SUBMIT NEW LEAD TO BACKEND
+      // ==========================================
 
-    if (!response.ok) {
-      setError(json.error);
-      setEmptyFields(json.emptyFields || []);
-    } else {
-      setError(null);
-      setLeadData({
-        name: '',
-        type: '',
-        phonenumber: '',
-        streetaddress: '',
-        city: '',
-        postcode: '',
-        emailaddress: ''
+      const response = await fetch(`${URL}/api/leads`, {
+        method: 'POST',
+
+        body: JSON.stringify(leadData),
+
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${userLG.token}`
+        }
       });
+
+      // ==========================================
+      // READ SERVER RESPONSE
+      // ==========================================
+
+      const json = await response.json();
+
+      if (!response.ok) {
+
+        setError(
+          json.error || 'Failed to create lead. Please try again.'
+        );
+
+        setEmptyFields(json.emptyFields || []);
+
+        return;
+      }
+
+      // ==========================================
+      // SUCCESSFUL LEAD CREATION
+      // ==========================================
+
+      setError(null);
+      setLeadData(initialLeadData);
       setEmptyFields([]);
+
+      dispatch({
+        type: 'CREATE_LEAD',
+        payload: json
+      });
+
       setOpenSuccessModal(true);
-      dispatch({ type: 'CREATE_LEAD', payload: json });
+
+    } catch (err) {
+
+      console.error('Lead creation error:', err);
+
+      setError(
+        'Unable to connect to the server. Please try again.'
+      );
+
+    } finally {
+
+      setLoading(false);
+
     }
   };
+
+  // ==========================================
+  // CLOSE SUCCESS MODAL
+  // ==========================================
 
   const handleCloseSuccessModal = () => {
     setOpenSuccessModal(false);
   };
 
+  // ==========================================
+  // COMPONENT UI
+  // ==========================================
+
   return (
+
     <Box
       sx={{
         position: 'absolute',
@@ -95,12 +172,21 @@ const LeadForm = () => {
         borderRadius: '30px'
       }}
     >
+
       <form onSubmit={handleSubmit}>
-        <div className="text-[#D22B2B] text-2xl mb-3 font-medium">Add New Lead</div>
+
+        <div className="text-[#D22B2B] text-2xl mb-3 font-medium">
+          Add New Lead
+        </div>
+
         <Grid container spacing={2}>
+
+          {/* NAME */}
+
           <Grid item xs={12}>
             <TextField
               fullWidth
+              required
               label="Name"
               name="name"
               value={leadData.name}
@@ -109,9 +195,21 @@ const LeadForm = () => {
               error={emptyFields.includes('name')}
             />
           </Grid>
+
+          {/* TYPE */}
+
           <Grid item xs={12}>
-            <FormControl fullWidth margin="normal" error={emptyFields.includes('type')}>
-              <InputLabel id="type-label">Type</InputLabel>
+            <FormControl
+              fullWidth
+              required
+              margin="normal"
+              error={emptyFields.includes('type')}
+            >
+
+              <InputLabel id="type-label">
+                Type
+              </InputLabel>
+
               <Select
                 labelId="type-label"
                 name="type"
@@ -121,13 +219,17 @@ const LeadForm = () => {
                 MenuProps={{
                   PaperProps: {
                     style: {
-                      maxHeight: 240, // Adjust the maximum height
-                      width: 250 // Adjust the width
+                      maxHeight: 240,
+                      width: 250
                     }
                   }
                 }}
               >
-                <MenuItem value=""><em>Choose One</em></MenuItem>
+
+                <MenuItem value="">
+                  <em>Choose One</em>
+                </MenuItem>
+
                 <MenuItem value="Warehouse">Warehouse</MenuItem>
                 <MenuItem value="Restaurant">Restaurant</MenuItem>
                 <MenuItem value="Boutiques">Boutiques</MenuItem>
@@ -151,12 +253,18 @@ const LeadForm = () => {
                 <MenuItem value="Business Consultant">Business Consultant</MenuItem>
                 <MenuItem value="Financing">Financing</MenuItem>
                 <MenuItem value="Publishing">Publishing</MenuItem>
+
               </Select>
+
             </FormControl>
           </Grid>
+
+          {/* PHONE NUMBER */}
+
           <Grid item xs={12}>
             <TextField
               fullWidth
+              required
               label="Phone Number"
               name="phonenumber"
               value={leadData.phonenumber}
@@ -165,9 +273,13 @@ const LeadForm = () => {
               error={emptyFields.includes('phonenumber')}
             />
           </Grid>
+
+          {/* STREET ADDRESS */}
+
           <Grid item xs={12}>
             <TextField
               fullWidth
+              required
               label="Street Address"
               name="streetaddress"
               value={leadData.streetaddress}
@@ -176,9 +288,13 @@ const LeadForm = () => {
               error={emptyFields.includes('streetaddress')}
             />
           </Grid>
+
+          {/* CITY */}
+
           <Grid item xs={12}>
             <TextField
               fullWidth
+              required
               label="City"
               name="city"
               value={leadData.city}
@@ -187,9 +303,13 @@ const LeadForm = () => {
               error={emptyFields.includes('city')}
             />
           </Grid>
+
+          {/* POSTCODE */}
+
           <Grid item xs={12}>
             <TextField
               fullWidth
+              required
               label="Postcode"
               name="postcode"
               value={leadData.postcode}
@@ -198,9 +318,13 @@ const LeadForm = () => {
               error={emptyFields.includes('postcode')}
             />
           </Grid>
+
+          {/* EMAIL ADDRESS */}
+
           <Grid item xs={12}>
             <TextField
               fullWidth
+              required
               label="Email Address"
               name="emailaddress"
               type="email"
@@ -210,21 +334,60 @@ const LeadForm = () => {
               error={emptyFields.includes('emailaddress')}
             />
           </Grid>
+
+          {/* SUBMIT BUTTON */}
+
           <Grid item xs={12}>
+
             <Box mt={2}>
-              <Button variant="contained" type="submit" fullWidth sx={{ backgroundColor: '#3e4396' }}>
-                {loading ? <CircularProgress size={24} /> : "Submit"}
+
+              <Button
+                variant="contained"
+                type="submit"
+                fullWidth
+                disabled={loading}
+                sx={{
+                  backgroundColor: '#3e4396'
+                }}
+              >
+
+                {loading
+                  ? <CircularProgress size={24} color="inherit" />
+                  : "Submit"
+                }
+
               </Button>
+
             </Box>
+
           </Grid>
-          {error && <Grid item xs={12}><div className="error">{error}</div></Grid>}
+
+          {/* ERROR MESSAGE */}
+
+          {error && (
+
+            <Grid item xs={12}>
+              <div className="error">
+                {error}
+              </div>
+            </Grid>
+
+          )}
+
         </Grid>
+
       </form>
+
+      {/* ==========================================
+          LOADING MODAL
+      ========================================== */}
+
       <Modal
         open={loading}
         aria-labelledby="loading-modal-title"
         aria-describedby="loading-modal-description"
       >
+
         <Box
           sx={{
             position: 'absolute',
@@ -240,10 +403,26 @@ const LeadForm = () => {
             borderRadius: '30px'
           }}
         >
+
           <CircularProgress sx={{ fontSize: 60 }} />
-          <div style={{ fontSize: '20px', marginTop: '10px' }}>Saving, please wait...</div>
+
+          <div
+            style={{
+              fontSize: '20px',
+              marginTop: '10px'
+            }}
+          >
+            Saving, please wait...
+          </div>
+
         </Box>
+
       </Modal>
+
+      {/* ==========================================
+          SUCCESS MODAL
+      ========================================== */}
+
       <Modal
         open={openSuccessModal}
         onClose={handleCloseSuccessModal}
@@ -251,6 +430,7 @@ const LeadForm = () => {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
+
         <Box
           sx={{
             position: 'absolute',
@@ -266,10 +446,27 @@ const LeadForm = () => {
             borderRadius: '30px'
           }}
         >
-          <CheckCircleIcon sx={{ color: '#94e2cd', fontSize: 60 }} />
-          <div style={{ fontSize: '20px', marginTop: '10px' }}>New lead added!</div>
+
+          <CheckCircleIcon
+            sx={{
+              color: '#94e2cd',
+              fontSize: 60
+            }}
+          />
+
+          <div
+            style={{
+              fontSize: '20px',
+              marginTop: '10px'
+            }}
+          >
+            New lead added!
+          </div>
+
         </Box>
+
       </Modal>
+
     </Box>
   );
 };
