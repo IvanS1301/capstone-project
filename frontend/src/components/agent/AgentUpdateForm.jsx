@@ -24,6 +24,7 @@ const AgentUpdateForm = ({ unassignedId, onLeadUpdate }) => {
         callDisposition: '',
         remarks: ''
     });
+
     const [loading, setLoading] = useState(false); // State for loading indicator
     const [error, setError] = useState(null);
     const [openSuccessModal, setOpenSuccessModal] = useState(false);
@@ -52,10 +53,36 @@ const AgentUpdateForm = ({ unassignedId, onLeadUpdate }) => {
             ...prevData,
             [name]: value
         }));
+
+        // Clear error when user updates a field
+        setError(null);
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        // FRONTEND VALIDATION: ALL FIELDS REQUIRED
+        const requiredFields = {
+            name: 'Lead Name',
+            type: 'Type',
+            phonenumber: 'Phone Number',
+            streetaddress: 'Street Address',
+            city: 'City',
+            postcode: 'Postcode',
+            emailaddress: 'Email Address',
+            callDisposition: 'Call Disposition',
+            remarks: 'Remarks'
+        };
+
+        const emptyFields = Object.entries(requiredFields)
+            .filter(([field]) => !String(leadData[field] || '').trim())
+            .map(([, label]) => label);
+
+        if (emptyFields.length > 0) {
+            setError(`Please complete the following required fields: ${emptyFields.join(', ')}.`);
+            return;
+        }
+
         setLoading(true); // Start loading
 
         // Send the updated lead data to the backend for updating
@@ -117,10 +144,11 @@ const AgentUpdateForm = ({ unassignedId, onLeadUpdate }) => {
                             value={leadData.name}
                             onChange={handleChange}
                             margin="normal"
+                            required
                         />
                     </Grid>
                     <Grid item xs={12} sm={6}>
-                        <FormControl fullWidth margin="normal">
+                        <FormControl fullWidth margin="normal" required>
                             <InputLabel id="type-label">Type</InputLabel>
                             <Select
                                 labelId="type-label"
@@ -128,6 +156,7 @@ const AgentUpdateForm = ({ unassignedId, onLeadUpdate }) => {
                                 value={leadData.type}
                                 onChange={handleChange}
                                 label="Type"
+                                required
                                 MenuProps={{
                                     PaperProps: {
                                         style: {
@@ -172,6 +201,7 @@ const AgentUpdateForm = ({ unassignedId, onLeadUpdate }) => {
                             value={leadData.phonenumber}
                             onChange={handleChange}
                             margin="normal"
+                            required
                         />
                     </Grid>
                     <Grid item xs={12} sm={6}>
@@ -182,6 +212,7 @@ const AgentUpdateForm = ({ unassignedId, onLeadUpdate }) => {
                             value={leadData.streetaddress}
                             onChange={handleChange}
                             margin="normal"
+                            required
                         />
                     </Grid>
                     <Grid item xs={12} sm={6}>
@@ -192,6 +223,7 @@ const AgentUpdateForm = ({ unassignedId, onLeadUpdate }) => {
                             value={leadData.city}
                             onChange={handleChange}
                             margin="normal"
+                            required
                         />
                     </Grid>
                     <Grid item xs={12} sm={6}>
@@ -202,6 +234,7 @@ const AgentUpdateForm = ({ unassignedId, onLeadUpdate }) => {
                             value={leadData.postcode}
                             onChange={handleChange}
                             margin="normal"
+                            required
                         />
                     </Grid>
                     <Grid item xs={12}>
@@ -213,10 +246,11 @@ const AgentUpdateForm = ({ unassignedId, onLeadUpdate }) => {
                             onChange={handleChange}
                             margin="normal"
                             type="email"
+                            required
                         />
                     </Grid>
                     <Grid item xs={12}>
-                        <FormControl fullWidth margin="normal">
+                        <FormControl fullWidth margin="normal" required>
                             <InputLabel id="callDispo-label">Call Disposition</InputLabel>
                             <Select
                                 labelId="callDispo-label"
@@ -224,6 +258,7 @@ const AgentUpdateForm = ({ unassignedId, onLeadUpdate }) => {
                                 value={leadData.callDisposition}
                                 onChange={handleChange}
                                 label="Call Disposition"
+                                required
                                 MenuProps={{
                                     PaperProps: {
                                         style: {
@@ -260,6 +295,7 @@ const AgentUpdateForm = ({ unassignedId, onLeadUpdate }) => {
                             onChange={handleChange}
                             placeholder="Describe how your call went.."
                             margin="normal"
+                            required
                             InputProps={{
                                 sx: {
                                     padding: 4, // Increase padding
