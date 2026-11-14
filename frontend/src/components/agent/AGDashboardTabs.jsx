@@ -274,12 +274,22 @@ const AGDashboardTabs = ({ bookedUnits, unassignedLeads }) => {
                                     </Box>
                                     <Box flex={1} color="#e0e0e0" fontSize="17px">{unassigned.city}</Box>
                                     <Box
-                                        flex={1}
-                                        backgroundColor="#43ba9b"
-                                        p="5px 10px"
-                                        borderRadius="4px"
-                                        textAlign="center"
-                                        maxWidth="100px" // Adjust the width as needed
+                                        flex="0 0 140px"
+                                        sx={{
+                                            backgroundColor: "#43ba9b",
+                                            color: "#000000",
+                                            padding: "5px 10px",
+                                            borderRadius: "4px",
+                                            textAlign: "center",
+                                            width: "140px",
+                                            minWidth: "140px",
+                                            maxWidth: "140px",
+                                            boxSizing: "border-box",
+                                            whiteSpace: "nowrap",
+                                            overflow: "visible",
+                                            fontSize: "14px",
+                                            flexShrink: 0,
+                                        }}
                                     >
                                         {unassigned.type}
                                     </Box>
