@@ -61,6 +61,27 @@ const LeadForm = () => {
   };
 
   // ==========================================
+  // HANDLE NUMERIC INPUT CHANGES
+  // ==========================================
+
+  const handleNumericChange = (e) => {
+    const { name, value } = e.target;
+
+    // Remove all non-numeric characters
+    const numericValue = value.replace(/\D/g, '');
+
+    setLeadData(prevData => ({
+      ...prevData,
+      [name]: numericValue
+    }));
+
+    setError(null);
+    setEmptyFields(prevFields =>
+      prevFields.filter(field => field !== name)
+    );
+  };
+
+  // ==========================================
   // HANDLE FORM SUBMISSION
   // ==========================================
 
@@ -74,7 +95,7 @@ const LeadForm = () => {
     setEmptyFields([]);
 
     // ==========================================
-    // FRONTEND VALIDATION
+    // REQUIRED FIELD VALIDATION
     // ==========================================
 
     const requiredFields = [
@@ -98,6 +119,38 @@ const LeadForm = () => {
       setError(
         'Please complete all required fields. Empty or space-only entries are not allowed.'
       );
+
+      return;
+    }
+
+    // ==========================================
+    // PHONE NUMBER VALIDATION
+    // ==========================================
+
+    const phoneRegex = /^(09\d{9}|639\d{9})$/;
+
+    if (!phoneRegex.test(leadData.phonenumber.trim())) {
+
+      setError(
+        'Enter a valid Philippine mobile number (09XXXXXXXXX or 639XXXXXXXXX).'
+      );
+
+      setEmptyFields(['phonenumber']);
+
+      return;
+    }
+
+    // ==========================================
+    // POSTCODE VALIDATION
+    // ==========================================
+
+    const postcodeRegex = /^\d+$/;
+
+    if (!postcodeRegex.test(leadData.postcode.trim())) {
+
+      setError('Postcode must contain numbers only.');
+
+      setEmptyFields(['postcode']);
 
       return;
     }
@@ -316,10 +369,17 @@ const LeadForm = () => {
               required
               label="Phone Number"
               name="phonenumber"
+              type="text"
+              inputProps={{
+                inputMode: 'numeric',
+                pattern: '[0-9]*',
+                maxLength: 12
+              }}
               value={leadData.phonenumber}
-              onChange={handleChange}
+              onChange={handleNumericChange}
               margin="normal"
               error={emptyFields.includes('phonenumber')}
+              helperText="Format: 09XXXXXXXXX or 639XXXXXXXXX"
             />
           </Grid>
 
@@ -361,8 +421,13 @@ const LeadForm = () => {
               required
               label="Postcode"
               name="postcode"
+              type="text"
+              inputProps={{
+                inputMode: 'numeric',
+                pattern: '[0-9]*'
+              }}
               value={leadData.postcode}
-              onChange={handleChange}
+              onChange={handleNumericChange}
               margin="normal"
               error={emptyFields.includes('postcode')}
             />
