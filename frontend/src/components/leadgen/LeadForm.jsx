@@ -156,12 +156,15 @@ const LeadForm = () => {
     }
 
     // ==========================================
-    // EMAIL ADDRESS VALIDATION
+    // EMAIL ADDRESS FORMAT VALIDATION
     // ==========================================
 
-    const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$/;
+    const email = leadData.emailaddress.trim().toLowerCase();
 
-    if (!emailRegex.test(leadData.emailaddress.trim())) {
+    const emailRegex =
+      /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}$/;
+
+    if (!emailRegex.test(email)) {
 
       setError(
         'Please enter a valid email address (e.g., name@example.com.au).'
@@ -171,6 +174,56 @@ const LeadForm = () => {
 
       return;
     }
+
+    // ==========================================
+    // COMMON MISSPELLED EMAIL DOMAIN VALIDATION
+    // ==========================================
+
+    const commonDomainTypos = {
+      // Gmail
+      'gma.com': 'gmail.com',
+      'gmil.com': 'gmail.com',
+      'gmai.com': 'gmail.com',
+      'gmial.com': 'gmail.com',
+      'gmail.con': 'gmail.com',
+      'gmail.co': 'gmail.com',
+
+      // Yahoo
+      'yaho.com': 'yahoo.com',
+      'yahoo.con': 'yahoo.com',
+      'yahoo.co': 'yahoo.com',
+
+      // Hotmail
+      'hotmial.com': 'hotmail.com',
+      'hotmai.com': 'hotmail.com',
+      'hotmail.con': 'hotmail.com',
+
+      // Outlook
+      'outlok.com': 'outlook.com',
+      'outlook.con': 'outlook.com',
+      'outllok.com': 'outlook.com',
+
+      // iCloud
+      'iclould.com': 'icloud.com',
+      'icloud.con': 'icloud.com'
+    };
+
+    const domain = email.split('@')[1];
+
+    if (commonDomainTypos[domain]) {
+
+      setError(
+        `Incorrect email domain. Did you mean ${commonDomainTypos[domain]}? Please check your email address.`
+      );
+
+      setEmptyFields(['emailaddress']);
+
+      return;
+    }
+
+    // ==========================================
+    // START SUBMISSION
+    // ==========================================
 
     setLoading(true);
 
@@ -451,7 +504,7 @@ const LeadForm = () => {
               onChange={handleChange}
               margin="normal"
               error={emptyFields.includes('emailaddress')}
-              helperText="Example: name@example.com.au"
+              helperText="Example: name@example.com.au. Check the spelling of the email domain."
             />
           </Grid>
 
