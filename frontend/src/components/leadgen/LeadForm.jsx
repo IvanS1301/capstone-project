@@ -124,15 +124,15 @@ const LeadForm = () => {
     }
 
     // ==========================================
-    // PHONE NUMBER VALIDATION
+    // AUSTRALIAN PHONE NUMBER VALIDATION
     // ==========================================
 
-    const phoneRegex = /^(09\d{9}|639\d{9})$/;
+    const phoneRegex = /^(?:04\d{8}|0[2378]\d{8}|13\d{4}|1[38]00\d{6}|614\d{8}|61[2378]\d{8})$/;
 
     if (!phoneRegex.test(leadData.phonenumber.trim())) {
 
       setError(
-        'Enter a valid Philippine mobile number (09XXXXXXXXX or 639XXXXXXXXX).'
+        'Enter a valid Australian phone number. Examples: 0412345678, 0255504321, 1300975707, or 61412345678.'
       );
 
       setEmptyFields(['phonenumber']);
@@ -141,7 +141,7 @@ const LeadForm = () => {
     }
 
     // ==========================================
-    // POSTCODE VALIDATION
+    // AUSTRALIAN POSTCODE VALIDATION
     // ==========================================
 
     const postcodeRegex = /^\d+$/;
@@ -156,14 +156,16 @@ const LeadForm = () => {
     }
 
     // ==========================================
-    // EMAIL VALIDATION
+    // EMAIL ADDRESS VALIDATION
     // ==========================================
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$/;
 
     if (!emailRegex.test(leadData.emailaddress.trim())) {
 
-      setError('Please enter a valid email address.');
+      setError(
+        'Please enter a valid email address (e.g., name@example.com.au).'
+      );
 
       setEmptyFields(['emailaddress']);
 
@@ -190,7 +192,10 @@ const LeadForm = () => {
       const response = await fetch(`${URL}/api/leads`, {
         method: 'POST',
 
-        body: JSON.stringify(leadData),
+        body: JSON.stringify({
+          ...leadData,
+          emailaddress: leadData.emailaddress.trim()
+        }),
 
         headers: {
           'Content-Type': 'application/json',
@@ -373,13 +378,13 @@ const LeadForm = () => {
               inputProps={{
                 inputMode: 'numeric',
                 pattern: '[0-9]*',
-                maxLength: 12
+                maxLength: 11
               }}
               value={leadData.phonenumber}
               onChange={handleNumericChange}
               margin="normal"
               error={emptyFields.includes('phonenumber')}
-              helperText="Format: 09XXXXXXXXX or 639XXXXXXXXX"
+              helperText="Australian formats: 04XXXXXXXX, 0[2,3,7,8]XXXXXXXX, 13XXXX, 1300XXXXXX, 1800XXXXXX, or 61XXXXXXXXX"
             />
           </Grid>
 
@@ -446,6 +451,7 @@ const LeadForm = () => {
               onChange={handleChange}
               margin="normal"
               error={emptyFields.includes('emailaddress')}
+              helperText="Example: name@example.com.au"
             />
           </Grid>
 
