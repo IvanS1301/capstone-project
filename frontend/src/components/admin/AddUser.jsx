@@ -2,7 +2,18 @@ import React, { useState } from 'react';
 import { URL } from "../../utils/URL";
 
 /** --- MATERIAL UI --- */
-import { Box, Button, TextField, FormControl, InputLabel, Select as MuiSelect, MenuItem, Modal, CircularProgress } from '@mui/material';
+import {
+    Box,
+    Button,
+    TextField,
+    FormControl,
+    InputLabel,
+    Select as MuiSelect,
+    MenuItem,
+    Modal,
+    CircularProgress
+} from '@mui/material';
+
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -11,9 +22,51 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import { useUsersContext } from "../../hooks/useUsersContext";
 import { useAuthContext } from "../../hooks/useAuthContext";
 
+/** ==========================================
+    EMAIL VALIDATION HELPERS
+========================================== */
+
+// Common misspelled email domains
+const commonDomainTypos = {
+    'gma.com': 'gmail.com',
+    'gmil.com': 'gmail.com',
+    'gmai.com': 'gmail.com',
+    'gmial.com': 'gmail.com',
+    'gmail.con': 'gmail.com',
+    'gmail.co': 'gmail.com',
+
+    'yaho.com': 'yahoo.com',
+    'yahoo.con': 'yahoo.com',
+    'yahoo.co': 'yahoo.com',
+
+    'hotmial.com': 'hotmail.com',
+    'hotmai.com': 'hotmail.com',
+    'hotmail.con': 'hotmail.com',
+
+    'outlok.com': 'outlook.com',
+    'outlook.con': 'outlook.com',
+    'outllok.com': 'outlook.com',
+
+    'iclould.com': 'icloud.com',
+    'icloud.con': 'icloud.com'
+};
+
+// General email format validation
+const emailRegex =
+    /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}$/;
+
+// Check common misspelled domains
+const getDomainSuggestion = (email) => {
+    const domain = email.trim().toLowerCase().split('@')[1];
+
+    return commonDomainTypos[domain] || null;
+};
+
 const AddUser = () => {
+
     const { dispatch } = useUsersContext();
     const { userLG } = useAuthContext();
+
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
     const [openSuccessModal, setOpenSuccessModal] = useState(false);
@@ -25,85 +78,277 @@ const AddUser = () => {
     const [password, setPassword] = useState('');
     const [role, setRole] = useState('');
 
+    // ==========================================
+    // HANDLE FORM SUBMISSION
+    // ==========================================
+
     const handleSubmit = async (e) => {
+
         e.preventDefault();
 
-        if (!userLG) {
-            setError('You must be logged in');
+        if (loading) return;
+
+        setError(null);
+
+        // ==========================================
+        // CHECK AUTHENTICATION
+        // ==========================================
+
+        if (!userLG || !userLG.token) {
+
+            setError('You must be logged in.');
+
             return;
         }
 
-        const user = { name, email, password, role };
+        // ==========================================
+        // REQUIRED FIELD VALIDATION
+        // ==========================================
 
-        setLoading(true); // Set loading to true when submitting the form
+        if (!name.trim()) {
+
+            setError('Full Name is required. Empty or space-only entries are not allowed.');
+
+            return;
+        }
+
+        if (!email.trim()) {
+
+            setError('Email is required. Empty or space-only entries are not allowed.');
+
+            return;
+        }
+
+        if (!password.trim()) {
+
+            setError('Password is required. Empty or space-only entries are not allowed.');
+
+            return;
+        }
+
+        if (!role.trim()) {
+
+            setError('Please select a role.');
+
+            return;
+        }
+
+        // ==========================================
+        // CLEAN INPUT VALUES
+        // ==========================================
+
+        const cleanedName = name.trim();
+        const cleanedEmail = email.trim().toLowerCase();
+
+        // ==========================================
+        // EMAIL FORMAT VALIDATION
+        // ==========================================
+
+        if (!emailRegex.test(cleanedEmail)) {
+
+            setError('Please enter a valid email address.');
+
+            return;
+        }
+
+        // ==========================================
+        // COMMON MISSPELLED DOMAIN VALIDATION
+        // ==========================================
+
+        const suggestedDomain = getDomainSuggestion(cleanedEmail);
+
+        if (suggestedDomain) {
+
+            setError(
+                `Incorrect email domain. Did you mean ${suggestedDomain}? Please check the email address.`
+            );
+
+            return;
+        }
+
+        // ==========================================
+        // PREPARE USER DATA
+        // ==========================================
+
+        const user = {
+            name: cleanedName,
+            email: cleanedEmail,
+            password: password,
+            role: role.trim()
+        };
+
+        setLoading(true);
 
         try {
+
+            // ==========================================
+            // CREATE NEW USER REQUEST
+            // ==========================================
+
             const response = await fetch(`${URL}/api/userLG/signup`, {
+
                 method: 'POST',
+
                 body: JSON.stringify(user),
+
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${userLG.token}`
                 }
+
             });
 
             const json = await response.json();
 
             if (!response.ok) {
-                setError(json.error);
+
+                setError(
+                    json.error || 'Failed to create user. Please try again.'
+                );
+
             } else {
+
+                // ==========================================
+                // SUCCESSFUL USER CREATION
+                // ==========================================
+
                 setError(null);
+
                 setName('');
                 setEmail('');
                 setPassword('');
                 setRole('');
-                dispatch({ type: 'CREATE_USER', payload: json });
-                setOpenSuccessModal(true); // Open success modal when user is created successfully
+
+                dispatch({
+                    type: 'CREATE_USER',
+                    payload: json
+                });
+
+                setOpenSuccessModal(true);
+
             }
+
         } catch (error) {
-            setError('Something went wrong');
+
+            setError('Something went wrong.');
+
             console.error('Error creating user:', error);
+
         } finally {
-            setLoading(false); // Set loading to false after form submission
+
+            setLoading(false);
+
         }
+
     };
+
+    // ==========================================
+    // TOGGLE PASSWORD VISIBILITY
+    // ==========================================
 
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
     };
 
-    /** --- FOR SELECTION --- */
+    // ==========================================
+    // HANDLE INPUT CHANGES
+    // ==========================================
+
+    const handleNameChange = (e) => {
+        setName(e.target.value);
+        setError(null);
+    };
+
+    const handleEmailChange = (e) => {
+        setEmail(e.target.value);
+        setError(null);
+    };
+
+    const handlePasswordChange = (e) => {
+        setPassword(e.target.value);
+        setError(null);
+    };
+
+    const handleRoleChange = (e) => {
+        setRole(e.target.value);
+        setError(null);
+    };
+
+    // ==========================================
+    // ROLE OPTIONS
+    // ==========================================
+
     const roles = [
         { value: 'Lead Generation', label: 'Lead Generation' },
         { value: 'Telemarketer', label: 'Telemarketer' },
         { value: 'Team Leader', label: 'Team Leader' },
     ];
 
+    // ==========================================
+    // CLOSE SUCCESS MODAL
+    // ==========================================
+
     const handleCloseSuccessModal = () => {
         setOpenSuccessModal(false);
     };
 
+    // ==========================================
+    // COMPONENT UI
+    // ==========================================
+
     return (
-        <Box display="flex" justifyContent="center" mt={6} sx={{ width: '100%', padding: '10px', maxWidth: '1200px', mx: 'auto' }}>
+
+        <Box
+            display="flex"
+            justifyContent="center"
+            mt={6}
+            sx={{
+                width: '100%',
+                padding: '10px',
+                maxWidth: '1200px',
+                mx: 'auto'
+            }}
+        >
+
             <Box className="w-full max-w-xl mx-auto p-12 bg-[#1f2937] rounded-lg shadow-md">
+
                 <div className="flex items-center justify-center mb-6">
+
                     <img
                         src={process.env.PUBLIC_URL + '/logo.png'}
                         alt="logo"
                         className="image-xl mt-3 rounded cursor-pointer"
                     />
-                    <h2 className="font-bold text-3xl text-center text-[#f4f5fd] mt-3 ml-3">Chromagen</h2>
+
+                    <h2 className="font-bold text-3xl text-center text-[#f4f5fd] mt-3 ml-3">
+                        Chromagen
+                    </h2>
+
                 </div>
-                <h2 className='text-xl text-center text-[#4cceac] mb-7 ml-4'>Create New User</h2>
+
+                <h2 className='text-xl text-center text-[#4cceac] mb-7 ml-4'>
+                    Create New User
+                </h2>
+
                 <form onSubmit={handleSubmit}>
+
+                    {/* FULL NAME */}
+
                     <div className='mb-6'>
-                        <label className="block text-white text-sm font-semibold mb-2" htmlFor="fullName">Full Name</label>
+
+                        <label
+                            className="block text-white text-sm font-semibold mb-2"
+                            htmlFor="fullName"
+                        >
+                            Full Name
+                        </label>
+
                         <TextField
                             fullWidth
                             variant="outlined"
                             type="text"
                             placeholder="Full Name"
-                            onChange={(e) => setName(e.target.value)}
+                            onChange={handleNameChange}
                             value={name}
                             name="fullName"
                             required
@@ -126,15 +371,26 @@ const AddUser = () => {
                                 },
                             }}
                         />
+
                     </div>
+
+                    {/* EMAIL */}
+
                     <div className='mb-6'>
-                        <label className="block text-white text-sm font-semibold mb-2" htmlFor="email">Email</label>
+
+                        <label
+                            className="block text-white text-sm font-semibold mb-2"
+                            htmlFor="email"
+                        >
+                            Email
+                        </label>
+
                         <TextField
                             fullWidth
                             variant="outlined"
                             type="email"
                             placeholder="chromagen@sortr.com.au"
-                            onChange={(e) => setEmail(e.target.value)}
+                            onChange={handleEmailChange}
                             value={email}
                             name="email"
                             required
@@ -157,15 +413,26 @@ const AddUser = () => {
                                 },
                             }}
                         />
+
                     </div>
+
+                    {/* PASSWORD */}
+
                     <div className='mb-10'>
-                        <label className="block text-white text-sm font-semibold mb-2" htmlFor="password">Password</label>
+
+                        <label
+                            className="block text-white text-sm font-semibold mb-2"
+                            htmlFor="password"
+                        >
+                            Password
+                        </label>
+
                         <TextField
                             fullWidth
                             variant="outlined"
                             type={showPassword ? "text" : "password"}
                             placeholder="Enter unique password"
-                            onChange={(e) => setPassword(e.target.value)}
+                            onChange={handlePasswordChange}
                             value={password}
                             name="password"
                             required
@@ -189,25 +456,38 @@ const AddUser = () => {
                             }}
                             InputProps={{
                                 endAdornment: showPassword ? (
+
                                     <VisibilityOffIcon
                                         className="cursor-pointer"
                                         onClick={togglePasswordVisibility}
                                     />
+
                                 ) : (
-                                        <VisibilityIcon
-                                            className="cursor-pointer"
-                                            onClick={togglePasswordVisibility}
-                                        />
-                                    )
+
+                                    <VisibilityIcon
+                                        className="cursor-pointer"
+                                        onClick={togglePasswordVisibility}
+                                    />
+
+                                )
                             }}
                         />
+
                     </div>
+
+                    {/* SELECT ROLE */}
+
                     <div className='mb-9'>
+
                         <FormControl fullWidth variant="outlined" required>
-                            <InputLabel sx={{ color: '#ffffff' }}>Select Role</InputLabel>
+
+                            <InputLabel sx={{ color: '#ffffff' }}>
+                                Select Role
+                            </InputLabel>
+
                             <MuiSelect
                                 value={role}
-                                onChange={(e) => setRole(e.target.value)}
+                                onChange={handleRoleChange}
                                 label="Select Role"
                                 sx={{
                                     backgroundColor: '#4b5563',
@@ -223,14 +503,32 @@ const AddUser = () => {
                                     },
                                 }}
                             >
-                                <MenuItem value="">None</MenuItem>
+
+                                <MenuItem value="">
+                                    None
+                                </MenuItem>
+
                                 {roles.map((role) => (
-                                    <MenuItem key={role.value} value={role.value}>{role.label}</MenuItem>
+
+                                    <MenuItem
+                                        key={role.value}
+                                        value={role.value}
+                                    >
+                                        {role.label}
+                                    </MenuItem>
+
                                 ))}
+
                             </MuiSelect>
+
                         </FormControl>
+
                     </div>
+
+                    {/* SUBMIT BUTTON */}
+
                     <div className='flex justify-center mt-14'>
+
                         <Button
                             type="submit"
                             variant="contained"
@@ -243,18 +541,40 @@ const AddUser = () => {
                                 },
                             }}
                         >
-                            {loading ? <CircularProgress size={24} /> : "Add New User"}
+
+                            {loading
+                                ? <CircularProgress size={24} />
+                                : "Add New User"
+                            }
+
                         </Button>
+
                     </div>
-                    {error && <div className="text-red-500 mt-2 text-center">{error}</div>}
+
+                    {/* ERROR MESSAGE */}
+
+                    {error && (
+
+                        <div className="text-red-500 mt-2 text-center">
+                            {error}
+                        </div>
+
+                    )}
+
                 </form>
+
             </Box>
+
+            {/* ==========================================
+                LOADING MODAL
+            ========================================== */}
 
             <Modal
                 open={loading}
                 aria-labelledby="loading-modal-title"
                 aria-describedby="loading-modal-description"
             >
+
                 <Box
                     sx={{
                         position: 'absolute',
@@ -270,10 +590,23 @@ const AddUser = () => {
                         borderRadius: '30px'
                     }}
                 >
+
                     <CircularProgress sx={{ fontSize: 60 }} />
-                    <div style={{ fontSize: '20px', marginTop: '10px' }}>Saving, please wait...</div>
+
+                    <div style={{
+                        fontSize: '20px',
+                        marginTop: '10px'
+                    }}>
+                        Saving, please wait...
+                    </div>
+
                 </Box>
+
             </Modal>
+
+            {/* ==========================================
+                SUCCESS MODAL
+            ========================================== */}
 
             <Modal
                 open={openSuccessModal}
@@ -281,6 +614,7 @@ const AddUser = () => {
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
             >
+
                 <Box
                     sx={{
                         position: 'absolute',
@@ -296,10 +630,25 @@ const AddUser = () => {
                         borderRadius: '30px'
                     }}
                 >
-                    <CheckCircleIcon sx={{ color: '#94e2cd', fontSize: 60 }} />
-                    <div style={{ fontSize: '20px', marginTop: '10px' }}>New User Added Successfully!</div>
+
+                    <CheckCircleIcon
+                        sx={{
+                            color: '#94e2cd',
+                            fontSize: 60
+                        }}
+                    />
+
+                    <div style={{
+                        fontSize: '20px',
+                        marginTop: '10px'
+                    }}>
+                        New User Added Successfully!
+                    </div>
+
                 </Box>
+
             </Modal>
+
         </Box>
     );
 };
