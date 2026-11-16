@@ -34,6 +34,8 @@ const commonDomainTypos = {
     'gmial.com': 'gmail.com',
     'gmail.con': 'gmail.com',
     'gmail.co': 'gmail.com',
+    'gnail.co': 'gmail.com',
+    'gnail.com': 'gmail.com',
 
     'yaho.com': 'yahoo.com',
     'yahoo.con': 'yahoo.com',
