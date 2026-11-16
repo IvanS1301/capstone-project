@@ -55,6 +55,9 @@ const LeadForm = () => {
     }));
 
     setError(null);
+    setEmptyFields(prevFields =>
+      prevFields.filter(field => field !== name)
+    );
   };
 
   // ==========================================
@@ -67,9 +70,54 @@ const LeadForm = () => {
 
     if (loading) return;
 
-    setLoading(true);
     setError(null);
     setEmptyFields([]);
+
+    // ==========================================
+    // FRONTEND VALIDATION
+    // ==========================================
+
+    const requiredFields = [
+      'name',
+      'type',
+      'phonenumber',
+      'streetaddress',
+      'city',
+      'postcode',
+      'emailaddress'
+    ];
+
+    const missingFields = requiredFields.filter(field =>
+      !String(leadData[field] || '').trim()
+    );
+
+    if (missingFields.length > 0) {
+
+      setEmptyFields(missingFields);
+
+      setError(
+        'Please complete all required fields. Empty or space-only entries are not allowed.'
+      );
+
+      return;
+    }
+
+    // ==========================================
+    // EMAIL VALIDATION
+    // ==========================================
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(leadData.emailaddress.trim())) {
+
+      setError('Please enter a valid email address.');
+
+      setEmptyFields(['emailaddress']);
+
+      return;
+    }
+
+    setLoading(true);
 
     try {
 
@@ -216,6 +264,7 @@ const LeadForm = () => {
                 value={leadData.type}
                 onChange={handleChange}
                 label="Type"
+                required
                 MenuProps={{
                   PaperProps: {
                     style: {
