@@ -97,9 +97,7 @@ const AddUser = () => {
         // ==========================================
 
         if (!userLG || !userLG.token) {
-
             setError('You must be logged in.');
-
             return;
         }
 
@@ -107,31 +105,27 @@ const AddUser = () => {
         // REQUIRED FIELD VALIDATION
         // ==========================================
 
-        if (!name.trim()) {
-
-            setError('Full Name is required. Empty or space-only entries are not allowed.');
-
+        // Reject empty or space-only Full Name
+        if (name.trim().length === 0) {
+            setError('Full Name is required. Space-only entries are not allowed.');
             return;
         }
 
-        if (!email.trim()) {
-
+        // Reject empty or space-only Email
+        if (email.trim().length === 0) {
             setError('Email is required. Empty or space-only entries are not allowed.');
-
             return;
         }
 
-        if (!password.trim()) {
-
+        // Reject empty or space-only Password
+        if (password.trim().length === 0) {
             setError('Password is required. Empty or space-only entries are not allowed.');
-
             return;
         }
 
-        if (!role.trim()) {
-
+        // Reject empty role
+        if (role.trim().length === 0) {
             setError('Please select a role.');
-
             return;
         }
 
@@ -147,9 +141,7 @@ const AddUser = () => {
         // ==========================================
 
         if (!emailRegex.test(cleanedEmail)) {
-
             setError('Please enter a valid email address.');
-
             return;
         }
 
@@ -160,11 +152,9 @@ const AddUser = () => {
         const suggestedDomain = getDomainSuggestion(cleanedEmail);
 
         if (suggestedDomain) {
-
             setError(
                 `Incorrect email domain. Did you mean ${suggestedDomain}? Please check the email address.`
             );
-
             return;
         }
 
@@ -556,11 +546,9 @@ const AddUser = () => {
                     {/* ERROR MESSAGE */}
 
                     {error && (
-
                         <div className="text-red-500 mt-2 text-center">
                             {error}
                         </div>
-
                     )}
 
                 </form>
