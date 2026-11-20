@@ -184,7 +184,7 @@ const LGDashboardTabs = ({ leadGenStats, leads }) => {
                                     Recent Leads
                                 </Typography>
                                 <Typography color="#e0e0e0" variant="subtitle1" fontWeight="600" flex={1} textAlign="left">
-                                    Suburb
+                                    City
                                 </Typography>
                                 <Typography color="#e0e0e0" variant="subtitle1" fontWeight="600" flex={1} textAlign="left">
                                     Type
